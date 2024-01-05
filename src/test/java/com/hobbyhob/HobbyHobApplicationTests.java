@@ -8,7 +8,7 @@ class HobbyHobApplicationTests {
 
     @Test
     void contextLoads() {
-        int sum = 3;
+        int sum = 4;
     }
 
 }
