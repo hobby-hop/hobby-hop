@@ -1,10 +1,10 @@
-package com.hobbyhob;
+package com.hobbyhop;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class HobbyHobApplicationTests {
+class HobbyHopApplicationTests {
 
     @Test
     void contextLoads() {
