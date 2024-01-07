@@ -1,18 +1,17 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-    url: jdbc:mysql://localhost:3306/hobbyhop
+    username: {{USER_NAME}}
+    password: {{PASSWORD}}
+    url: jdbc:mysql://{{HOST}}:{{PORT}}/{{DATABASE_NAME}}
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     properties:
       hibernate:
         format_sql: true
     show-sql: true
-
 
 logging:
   level:
