@@ -24,7 +24,7 @@ public class PostController {
             @RequestBody @Valid PostRequestDTO postRequestDTO){
             //@AuthenticationPrincipal UserDetailsImpl userDetails){
 
-        return postService.createBoard(clubId, postRequestDTO);
+        return postService.createPost(clubId, postRequestDTO);
     }
 
     @GetMapping("/posts/{postId}")
