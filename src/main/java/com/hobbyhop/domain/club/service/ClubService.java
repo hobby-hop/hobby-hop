@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ClubService {
 
-    List<ClubResponseDTO> getAllList();
+    List<ClubResponseDTO> getAllClubs();
 
     ClubResponseDTO getClub(Long clubId);
 

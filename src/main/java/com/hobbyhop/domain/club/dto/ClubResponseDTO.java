@@ -13,6 +13,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Builder
 public class ClubResponseDTO {
+    private Long id;
     private String title;
     private String content;
     private Timestamp createdAt;
@@ -20,6 +21,7 @@ public class ClubResponseDTO {
 
     public static ClubResponseDTO fromEntity(Club club) {
         return ClubResponseDTO.builder()
+                .id(club.getId())
                 .title(club.getTitle())
                 .content(club.getContent())
                 .createdAt(club.getCreatedAt())
