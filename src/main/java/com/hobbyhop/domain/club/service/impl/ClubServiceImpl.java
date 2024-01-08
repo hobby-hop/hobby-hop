@@ -21,9 +21,11 @@ public class ClubServiceImpl implements ClubService {
     private final ClubRepository clubRepository;
 
     @Override
-    public List<ClubResponseDTO> getAllList() {
+    public List<ClubResponseDTO> getAllClubs() {
         List<ClubResponseDTO> list = clubRepository.findAll().stream().map(club ->
-                ClubResponseDTO.builder().title(club.getTitle())
+                ClubResponseDTO.builder()
+                        .id(club.getId())
+                        .title(club.getTitle())
                         .content(club.getContent())
                         .createdAt(club.getCreatedAt())
                         .modifiedAt(club.getModifiedAt())
