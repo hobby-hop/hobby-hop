@@ -24,4 +24,11 @@ public class Club extends BaseEntity {
     @Column(name="deleted_at")
     private Timestamp deletedAt;
 
+    public void changeTitle(String title) {
+        this.title = title;
+    }
+    public void changeContent(String content) {
+        this.content = content;
+    }
+
 }
