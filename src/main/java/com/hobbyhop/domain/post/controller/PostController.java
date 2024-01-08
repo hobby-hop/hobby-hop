@@ -20,7 +20,7 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping("/posts")
-    public PostResponseDTO createBoard(@PathVariable Long clubId,
+    public PostResponseDTO createPost(@PathVariable Long clubId,
             @RequestBody @Valid PostRequestDTO postRequestDTO){
             //@AuthenticationPrincipal UserDetailsImpl userDetails){
 
