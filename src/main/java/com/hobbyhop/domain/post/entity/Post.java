@@ -37,4 +37,16 @@ public class Post extends BaseEntity {
 
     @Column(name = "deleted_at")
     private Timestamp deletedAt;
+
+    public void changeTitle(String postTitle) {
+        this.postTitle = postTitle;
+    }
+
+    public void changeContent(String postContent) {
+        this.postContent = postContent;
+    }
+
+    public void changeImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 }

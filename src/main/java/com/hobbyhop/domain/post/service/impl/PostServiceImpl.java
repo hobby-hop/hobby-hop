@@ -5,8 +5,11 @@ import com.hobbyhop.domain.post.dto.PostResponseDTO;
 import com.hobbyhop.domain.post.entity.Post;
 import com.hobbyhop.domain.post.repository.PostRepository;
 import com.hobbyhop.domain.post.service.PostService;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +24,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostResponseDTO createPost(Long clubId, PostRequestDTO postRequestDTO) {
+    @Transactional
+    public PostResponseDTO makePost(Long clubId, PostRequestDTO postRequestDTO) {
 
         Post post = Post.builder()
                 .postTitle(postRequestDTO.getPostTitle())
@@ -30,7 +34,7 @@ public class PostServiceImpl implements PostService {
 
         Post savedPost = postRepository.save(post);
 
-        return new PostResponseDTO(savedPost);
+        return PostResponseDTO.fromEntity(savedPost);
     }
 
     @Override
@@ -38,6 +42,52 @@ public class PostServiceImpl implements PostService {
 
         Post post = postRepository.findById(postId).orElseThrow();
 
-        return new PostResponseDTO().getDto(post);
+        return PostResponseDTO.getDto(post);
+    }
+
+    @Override
+    public List<PostResponseDTO> getAllPost(Long postId) {
+
+        List<PostResponseDTO> list = postRepository.findAll().stream().map(post ->
+                PostResponseDTO.builder()
+                        .postId(post.getId())
+                        .postTitle(post.getPostTitle())
+                        .postContent(post.getPostContent())
+                        .createAt(post.getCreatedAt())
+                        .modifiedAt(post.getModifiedAt())
+                        .build()
+        ).collect(Collectors.toList());
+
+        return list;
+    }
+
+    @Override
+    @Transactional
+    public PostResponseDTO modifyPost(Long clubId, Long postId, PostRequestDTO postRequestDTO){
+
+        Post post = postRepository.findById(postId).orElseThrow();
+
+        if(postRequestDTO.getPostTitle() != null) {
+            post.changeTitle(postRequestDTO.getPostTitle());
+        }
+
+        if(postRequestDTO.getPostContent() != null) {
+            post.changeContent(postRequestDTO.getPostContent());
+        }
+
+        if(postRequestDTO.getImageUrl() != null) {
+            post.changeImageUrl(postRequestDTO.getImageUrl());
+        }
+
+        Post modifiedPost = postRepository.save(post);
+
+        return PostResponseDTO.fromEntity(modifiedPost);
+    }
+
+    @Override
+    @Transactional
+    public void deletePost(Long clubId, Long postId){
+
+        postRepository.deleteById(postId);
     }
 }

@@ -20,15 +20,18 @@ public class PostResponseDTO {
     private Timestamp createAt;
     private Timestamp modifiedAt;
 
-    public PostResponseDTO(Post savedPost) {
-        this.postId = savedPost.getId();
-        this.postTitle = savedPost.getPostTitle();
-        this.postContent = savedPost.getPostContent();
-        this.imageUrl = savedPost.getImageUrl();
-        this.createAt = savedPost.getCreatedAt();
+    public static PostResponseDTO fromEntity(Post savedPost) {
+        return PostResponseDTO.builder()
+                .postId(savedPost.getId())
+                .postTitle(savedPost.getPostTitle())
+                .postContent(savedPost.getPostContent())
+                .imageUrl(savedPost.getImageUrl())
+                .createAt(savedPost.getCreatedAt())
+                .modifiedAt(savedPost.getModifiedAt())
+                .build();
     }
 
-    public PostResponseDTO getDto(Post savedPost) {
+    public static PostResponseDTO getDto(Post savedPost) {
         return PostResponseDTO.builder()
                 .postId(savedPost.getId())
                 .postTitle(savedPost.getPostTitle())
