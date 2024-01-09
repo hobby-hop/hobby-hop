@@ -3,9 +3,11 @@ package com.hobbyhop.domain.post.controller;
 import com.hobbyhop.domain.post.dto.PostRequestDTO;
 import com.hobbyhop.domain.post.dto.PostResponseDTO;
 import com.hobbyhop.domain.post.service.PostService;
+import com.hobbyhop.global.response.ApiResponse;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -23,11 +25,13 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping("/posts")
-    public PostResponseDTO makePost(@PathVariable Long clubId,
-            @RequestBody @Valid PostRequestDTO postRequestDTO){
-            //@AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseEntity<ApiResponse> makePost(@PathVariable Long clubId,
+            @RequestBody @Valid PostRequestDTO postRequestDTO) {
+        //@AuthenticationPrincipal UserDetailsImpl userDetails){
 
-        return postService.makePost(clubId, postRequestDTO);
+        return ResponseEntity.ok(ApiResponse.ok(
+                postService.makePost(clubId, postRequestDTO)
+        ));
     }
 
     @GetMapping("/posts/{postId}")
