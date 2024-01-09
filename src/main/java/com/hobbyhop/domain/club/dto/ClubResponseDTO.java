@@ -18,12 +18,14 @@ public class ClubResponseDTO {
     private String content;
     private Timestamp createdAt;
     private Timestamp modifiedAt;
+    private Long categoryId;
 
     public static ClubResponseDTO fromEntity(Club club) {
         return ClubResponseDTO.builder()
                 .id(club.getId())
                 .title(club.getTitle())
                 .content(club.getContent())
+                .categoryId(club.getCategory().getId())
                 .createdAt(club.getCreatedAt())
                 .modifiedAt(club.getModifiedAt())
                 .build();
