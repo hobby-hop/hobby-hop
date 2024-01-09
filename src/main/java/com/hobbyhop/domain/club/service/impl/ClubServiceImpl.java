@@ -1,5 +1,7 @@
 package com.hobbyhop.domain.club.service.impl;
 
+import com.hobbyhop.domain.category.entity.Category;
+import com.hobbyhop.domain.category.repository.CategoryRepository;
 import com.hobbyhop.domain.club.dto.ClubRequestDTO;
 import com.hobbyhop.domain.club.dto.ClubResponseDTO;
 import com.hobbyhop.domain.club.entity.Club;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class ClubServiceImpl implements ClubService {
     private final ClubRepository clubRepository;
+    private final CategoryRepository categoryRepository;
 
     @Override
     public List<ClubResponseDTO> getAllClubs() {
@@ -45,9 +48,12 @@ public class ClubServiceImpl implements ClubService {
     @Override
     @Transactional
     public ClubResponseDTO makeClub(ClubRequestDTO clubRequestDTO) {
+        Category category = categoryRepository.findById(clubRequestDTO.getCategoryId()).orElseThrow();
+
         Club club = Club.builder()
                 .title(clubRequestDTO.getTitle())
                 .content(clubRequestDTO.getContent())
+                .category(category)
                 .build();
 
         Club savedClub = clubRepository.save(club);
@@ -72,6 +78,10 @@ public class ClubServiceImpl implements ClubService {
 
         if(clubRequestDTO.getContent() != null) {
             club.changeContent(clubRequestDTO.getContent());
+        }
+        if(clubRequestDTO.getCategoryId() != null) {
+            Category category = categoryRepository.findById(clubRequestDTO.getCategoryId()).orElseThrow();
+            club.changeCategory(category);
         }
 
         Club modifiedClub = clubRepository.save(club);
