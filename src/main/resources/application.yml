@@ -18,3 +18,7 @@ logging:
     org.springframework: info
     com.sparta: debug
     org.springframework.security: trace
+
+jwt:
+  secret:
+    key: ${JWT_KEY}
