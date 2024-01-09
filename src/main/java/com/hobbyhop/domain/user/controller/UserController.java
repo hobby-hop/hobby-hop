@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
-    private final JwtUtil jwtUtil;
 
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse> signup (@Valid @RequestBody SignupRequestDTO signupRequestDTO) {

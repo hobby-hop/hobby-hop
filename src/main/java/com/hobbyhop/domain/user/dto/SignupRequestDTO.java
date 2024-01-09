@@ -8,6 +8,7 @@ import lombok.Getter;
 
 @Getter
 public class SignupRequestDTO {
+
 	@NotBlank(message = "이름을 입력해주세요.")
 	@Pattern(regexp = "[a-zA-Z0-9가-힣]", message = "한글, 영어, 숫자만 입력해야 합니다.")
 	@Size(min = 1, max = 50, message = "이름은 최소 1자 이상, 최대 50자 이하로 입력해야 합니다.")

@@ -49,7 +49,7 @@ public class UserService {
             throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
         }
 
-        if (signupRequestDTO.getConfirmPassword() != signupRequestDTO.getPassword()) {
+        if (!signupRequestDTO.getConfirmPassword().equals(signupRequestDTO.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
     }
