@@ -1,6 +1,7 @@
 package com.hobbyhop.domain.club.entity;
 
 import com.hobbyhop.domain.BaseEntity;
+import com.hobbyhop.domain.category.entity.Category;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
@@ -8,7 +9,6 @@ import org.hibernate.annotations.SQLDelete;
 import java.sql.Timestamp;
 
 @Getter
-@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,6 +21,10 @@ public class Club extends BaseEntity {
     private String title;
     private String content;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
+
     @Column(name="deleted_at")
     private Timestamp deletedAt;
 
@@ -29,6 +33,9 @@ public class Club extends BaseEntity {
     }
     public void changeContent(String content) {
         this.content = content;
+    }
+    public void changeCategory(Category category) {
+        this.category = category;
     }
 
 }
