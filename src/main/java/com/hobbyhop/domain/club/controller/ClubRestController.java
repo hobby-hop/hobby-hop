@@ -27,6 +27,7 @@ public class ClubRestController {
         return ResponseEntity.ok(clubResponseDTO);
     }
 
+    // TODO : implement 검색, 카테고리별 정렬, 검색
     @Operation(summary = "모든 그룹 리스트 조회")
     @GetMapping
     public ResponseEntity<List> getClubList() {
