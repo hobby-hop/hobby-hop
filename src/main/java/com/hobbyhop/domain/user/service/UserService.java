@@ -60,19 +60,13 @@ public class UserService {
         String updateUsername = updateProfileDTO.getUsername();
         String updateEmail = updateProfileDTO.getEmail();
         String confirmPassword = updateProfileDTO.getConfirmPassword();
-        //        String introduce = updateProfileDTO.introduce();
+        //        String introduce = updateProfileDTO.getIntroduce();
 
         validatePassword(user, updateProfileDTO.getOldPassword());
         editComparison(updateProfileDTO);
         user.updateProfile(updateUsername, updateEmail, confirmPassword);
 
-        // 1. updateProfileDTO.getUsername() 이 user 에 있는 username 과 같은지 확인했을 때 다르다면 username 을 수정하기
-        // 2. updateProfileDTO.getEmail() 이 user 에 있는 email 과 같은지 확인했을 때 다르다면 email 을 수정하기
-        // 3-1. updateProfileDTO.getOldPassword() 가 user 에 있는 password 와 같은지 확인했을 때 같고,
-        // 3-2. updateProfileDTO.getNewPassword() 가 updateProfileDTO.getConfirmPassword() 와 같은지 확인했을 때 같다면 Password 를 수정하기
     }
-
-    //----------------------
 
     private void validatePassword (User user, String password) {
         if (!passwordEncoder.matches(password, user.getPassword())) {

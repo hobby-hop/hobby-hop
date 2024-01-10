@@ -5,7 +5,6 @@ import com.hobbyhop.domain.user.dto.SignupRequestDTO;
 import com.hobbyhop.domain.user.dto.UpdateProfileDTO;
 import com.hobbyhop.domain.user.service.UserService;
 import com.hobbyhop.global.response.ApiResponse;
-import com.hobbyhop.global.security.jwt.JwtUtil;
 import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
