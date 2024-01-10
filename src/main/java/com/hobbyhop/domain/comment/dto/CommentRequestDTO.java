@@ -1,6 +1,5 @@
 package com.hobbyhop.domain.comment.dto;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 

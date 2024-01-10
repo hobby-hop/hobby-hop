@@ -1,10 +1,12 @@
 package com.hobbyhop.domain.comment.service.impl;
 
-import com.hobbyhop.domain.comment.dto.*;
+import com.hobbyhop.domain.comment.dto.CommentListResponseDTO;
+import com.hobbyhop.domain.comment.dto.CommentPageable;
+import com.hobbyhop.domain.comment.dto.CommentRequestDTO;
+import com.hobbyhop.domain.comment.dto.CommentResponseDTO;
 import com.hobbyhop.domain.comment.entity.Comment;
 import com.hobbyhop.domain.comment.repository.CommentRepository;
 import com.hobbyhop.domain.comment.service.CommentService;
-import com.hobbyhop.global.exception.common.ErrorCode;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
