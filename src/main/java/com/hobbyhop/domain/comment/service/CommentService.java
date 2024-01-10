@@ -1,8 +1,6 @@
 package com.hobbyhop.domain.comment.service;
 
-import com.hobbyhop.domain.comment.dto.CommentListResponseDTO;
-import com.hobbyhop.domain.comment.dto.CommentRequestDTO;
-import com.hobbyhop.domain.comment.dto.CommentResponseDTO;
+import com.hobbyhop.domain.comment.dto.*;
 import org.springframework.data.domain.Pageable;
 
 public interface CommentService {

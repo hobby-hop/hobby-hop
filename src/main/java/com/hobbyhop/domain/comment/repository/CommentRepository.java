@@ -3,7 +3,6 @@ package com.hobbyhop.domain.comment.repository;
 import com.hobbyhop.domain.comment.entity.Comment;
 import com.hobbyhop.domain.comment.repository.custom.CommentRepositoryCustom;
 import com.hobbyhop.domain.post.entity.Post;
-import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
