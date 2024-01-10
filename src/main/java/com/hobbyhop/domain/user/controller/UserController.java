@@ -1,11 +1,15 @@
 package com.hobbyhop.domain.user.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hobbyhop.domain.user.dto.LoginRequestDTO;
 import com.hobbyhop.domain.user.dto.SignupRequestDTO;
 import com.hobbyhop.domain.user.dto.UpdateProfileDTO;
+import com.hobbyhop.domain.user.service.KakaoService;
 import com.hobbyhop.domain.user.service.UserService;
 import com.hobbyhop.global.response.ApiResponse;
+import com.hobbyhop.global.security.jwt.JwtUtil;
 import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final KakaoService kakaoService;
 
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse> signup (
@@ -55,5 +60,16 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.ok(
                 "사용자 정보 수정 성공"
         ));
+    }
+
+    @GetMapping("/user/kakao/callback")
+    public String kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+        String token = kakaoService.kakaoLogin(code);
+
+        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, token);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+
+        return "redirect:/";
     }
 }
