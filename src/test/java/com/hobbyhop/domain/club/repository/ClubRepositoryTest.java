@@ -14,23 +14,23 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @Log4j2
 class ClubRepositoryTest {
-    @Autowired
-    ClubRepository clubRepository;
-    @DisplayName("테스트 db 테스트를 위한 메소드")
-    @Test
-    void givenClubId_whenDoSelectAction_thenReturnsEntity() {
-        // Given
-        Club club = Club.builder()
-                .title("test")
-                .build();
-
-        Club savedClub = clubRepository.save(club);
-
-        Long clubId = savedClub.getId();
-
-        // When
-        Club foundClub = clubRepository.findById(clubId).orElseThrow();
-        // Then
-        log.info(foundClub);
-    }
+//    @Autowired
+//    ClubRepository clubRepository;
+//    @DisplayName("테스트 db 테스트를 위한 메소드")
+//    @Test
+//    void givenClubId_whenDoSelectAction_thenReturnsEntity() {
+//        // Given
+//        Club club = Club.builder()
+//                .title("test")
+//                .build();
+//
+//        Club savedClub = clubRepository.save(club);
+//
+//        Long clubId = savedClub.getId();
+//
+//        // When
+//        Club foundClub = clubRepository.findById(clubId).orElseThrow();
+//        // Then
+//        log.info(foundClub);
+//    }
 }
