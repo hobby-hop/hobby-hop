@@ -28,3 +28,4 @@ public class Cocomment {
         createdAt = ZonedDateTime.now();
     }
 }
+

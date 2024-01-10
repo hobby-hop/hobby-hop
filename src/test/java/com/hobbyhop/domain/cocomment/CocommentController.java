@@ -1,11 +1,6 @@
 package com.hobbyhop.domain.cocomment;
 
-import io.swagger.v3.oas.annotations.Operation;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-@RestController
+/*@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/")
 public class CommentController {
@@ -41,3 +36,4 @@ public class CommentController {
         return ResponseEntity.ok(Response.success());
     }
 }
+ */

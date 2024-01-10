@@ -1,6 +1,6 @@
 package com.hobbyhop.domain.cocomment;
 
-package com.hobbyhop.comment.exception;
+/*package com.hobbyhop.comment.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,3 +17,5 @@ public class CommentException extends RuntimeException {
         this.msg = commentErrorCode.getMessage();
     }
 }
+
+ */

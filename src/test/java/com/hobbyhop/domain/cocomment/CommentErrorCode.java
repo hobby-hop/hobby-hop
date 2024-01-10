@@ -1,6 +1,6 @@
 package com.hobbyhop.domain.cocomment;
 
-package com.hobbyhop.comment.exception;
+/*package com.hobbyhop.comment.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -22,3 +22,5 @@ public enum CommentErrorCode {
         this.message = message;
     }
 }
+
+ */

@@ -1,5 +1,5 @@
 package com.hobbyhop.domain.cocomment;
-
+/*
 import com.hobbyhop.comment.entity.Comment;
 import com.hobbyhop.comment.exception.CommentErrorCode;
 import com.hobbyhop.comment.exception.CommentException;
@@ -69,3 +69,5 @@ public class CommentService {
         );
     }
 }
+
+ */
