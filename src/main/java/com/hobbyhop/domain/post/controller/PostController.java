@@ -55,6 +55,7 @@ public class PostController {
             @PathVariable Long postId,
             @RequestBody @Valid PostRequestDTO postRequestDTO) {
 
+
         return ResponseEntity.ok(ApiResponse.ok(
                 postService.modifyPost(clubId, postId, postRequestDTO)
         ));
