@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @Log4j2
 class CategoryRepositoryTest {
+
 //    @Autowired
 //    private CategoryRepository categoryRepository;
 //    @Test
@@ -22,4 +23,5 @@ class CategoryRepositoryTest {
 //
 //        log.info(categoryRepository.save(category).getHobbyCategory());
 //    }
+
 }

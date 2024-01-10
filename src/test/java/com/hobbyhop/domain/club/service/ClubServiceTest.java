@@ -105,4 +105,5 @@ class ClubServiceTest {
 //
 //        assertThatCode(() -> sut.removeClubById(id)).doesNotThrowAnyException();
 //    }
+
 }
