@@ -6,6 +6,7 @@ import com.hobbyhop.domain.comment.repository.CommentRepository;
 import com.hobbyhop.domain.comment.service.CommentService;
 import com.hobbyhop.domain.post.entity.Post;
 import com.hobbyhop.domain.post.repository.PostRepository;
+import com.hobbyhop.global.exception.comment.CommentNotFoundException;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,8 +40,6 @@ public class CommentServiceImpl implements CommentService {
                 .createdAt(comment.getCreatedAt())
                 .build();
     }
-
-
 
     @Override
     @Transactional
@@ -77,6 +76,6 @@ public class CommentServiceImpl implements CommentService {
     }
 
     private Comment findById(Long commentId) {
-        return commentRepository.findById(commentId).orElseThrow(/*NOT_FOUND_COMMENT_EXCEPTION::new*/);
+        return commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
     }
 }
