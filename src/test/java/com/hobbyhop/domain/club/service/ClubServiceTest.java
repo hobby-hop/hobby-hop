@@ -1,30 +1,30 @@
-//package com.hobbyhop.domain.club.service;
-//
-//import com.hobbyhop.domain.category.entity.Category;
-//import com.hobbyhop.domain.category.enums.HobbyCategory;
-//import com.hobbyhop.domain.category.repository.CategoryRepository;
-//import com.hobbyhop.domain.club.dto.ClubRequestDTO;
-//import com.hobbyhop.domain.club.dto.ClubResponseDTO;
-//import com.hobbyhop.domain.club.entity.Club;
-//import com.hobbyhop.domain.club.repository.ClubRepository;
-//import lombok.extern.log4j.Log4j2;
-//import org.junit.jupiter.api.DisplayName;
-//import org.junit.jupiter.api.Test;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.context.SpringBootTest;
-//import org.springframework.boot.test.mock.mockito.MockBean;
-//
-//import java.util.Optional;
-//
-//import static org.mockito.ArgumentMatchers.any;
-//import static org.assertj.core.api.Assertions.*;
-//import static org.mockito.Mockito.*;
-//
-//@DisplayName("비즈니스 로직 - 모임")
-//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-//@Log4j2
-//class ClubServiceTest {
-//
+package com.hobbyhop.domain.club.service;
+
+import com.hobbyhop.domain.category.entity.Category;
+import com.hobbyhop.domain.category.enums.HobbyCategory;
+import com.hobbyhop.domain.category.repository.CategoryRepository;
+import com.hobbyhop.domain.club.dto.ClubRequestDTO;
+import com.hobbyhop.domain.club.dto.ClubResponseDTO;
+import com.hobbyhop.domain.club.entity.Club;
+import com.hobbyhop.domain.club.repository.ClubRepository;
+import lombok.extern.log4j.Log4j2;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+
+import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+@DisplayName("비즈니스 로직 - 모임")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@Log4j2
+class ClubServiceTest {
+
 //    @Autowired
 //    private ClubService sut;
 //
@@ -105,4 +105,5 @@
 //
 //        assertThatCode(() -> sut.removeClubById(id)).doesNotThrowAnyException();
 //    }
-//}
+
+}
