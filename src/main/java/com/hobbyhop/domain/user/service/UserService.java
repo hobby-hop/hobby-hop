@@ -31,8 +31,8 @@ public class UserService {
                 .username(signupRequestDTO.getUsername())
                 .password(passwordEncoder.encode(signupRequestDTO.getPassword()))
                 .email(signupRequestDTO.getEmail())
+//                .role(signupRequestDTO.getRole())
                 .build();
-
         userRepository.save(user);
     }
 
@@ -44,13 +44,12 @@ public class UserService {
                 .orElseThrow();
 
         validatePassword(user, password);
-
         response.setHeader("Authorization", jwtUtil.createToken(username));
     }
 
-    public void logout(HttpServletResponse response) {
-        response.setHeader("Authorization", jwtUtil.createToken(null));
-    }
+//    public void logout(HttpServletResponse response) {
+//        response.setHeader("Authorization", jwtUtil.createToken(null));
+//    }
 
     @Transactional
     public void updateProfile(UpdateProfileDTO updateProfileDTO, UserDetailsImpl userDetails) {
@@ -65,7 +64,6 @@ public class UserService {
         validatePassword(user, updateProfileDTO.getOldPassword());
         editComparison(updateProfileDTO);
         user.updateProfile(updateUsername, updateEmail, confirmPassword);
-
     }
 
     private void validatePassword (User user, String password) {

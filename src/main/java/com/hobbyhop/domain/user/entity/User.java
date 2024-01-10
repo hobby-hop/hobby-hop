@@ -14,6 +14,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static com.hobbyhop.domain.user.constant.UserRoleEnum.USER;
+
 @Entity
 @Getter
 @AllArgsConstructor
@@ -35,14 +37,14 @@ public class User {
 
 //	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
-	private UserRoleEnum role = UserRoleEnum.USER;
+	private UserRoleEnum role = USER;
 
 	@Builder
 	public User(String username, String email, String password, UserRoleEnum role) {
 		this.username = username;
 		this.email = email;
 		this.password = password;
-		this.role = role;
+		this.role = USER;
 	}
 
 	public void updateProfile(String updateUsername, String updateEmail, String updatePassword) {

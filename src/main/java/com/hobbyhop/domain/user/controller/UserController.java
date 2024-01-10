@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -38,18 +39,18 @@ public class UserController {
         ));
     }
 
-    @PostMapping("/logout")
-    public ResponseEntity<ApiResponse> logout(HttpServletResponse httpServletResponse) {
-        userService.logout(httpServletResponse);
-        return ResponseEntity.ok(ApiResponse.ok(
-                "로그아웃 성공"
-        ));
-    }
+//    @PostMapping("/logout")
+//    public ResponseEntity<ApiResponse> logout(HttpServletResponse httpServletResponse) {
+//        userService.logout(httpServletResponse);
+//        return ResponseEntity.ok(ApiResponse.ok(
+//                "로그아웃 성공"
+//        ));
+//    }
 
-    @PatchMapping("/update") // {userId} 안 받아도 되나요? API 명세에는 없습니다. 그리고 프로필 조회 API 는 없어도 되나요?
+    @PatchMapping("/update")
     public ResponseEntity<ApiResponse> update (
             @RequestBody UpdateProfileDTO updateProfileDTO,
-            UserDetailsImpl userDetails) {
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
         userService.updateProfile(updateProfileDTO, userDetails);
         return ResponseEntity.ok(ApiResponse.ok(
                 "사용자 정보 수정 성공"
