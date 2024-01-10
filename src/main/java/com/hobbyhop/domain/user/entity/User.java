@@ -45,8 +45,9 @@ public class User {
 		this.role = role;
 	}
 
-	public void updateProfile(String updateUsername, String updateEmail) {
+	public void updateProfile(String updateUsername, String updateEmail, String updatePassword) {
 		this.username = updateUsername;
 		this.email = updateEmail;
+		this.password = updatePassword;
 	}
 }
