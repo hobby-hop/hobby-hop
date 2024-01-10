@@ -29,10 +29,10 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.save(comment);
 
         return CommentResponseDTO.builder()
-                .id(comment.getId())
                 .content(comment.getContent())
+                //.writer(comment.getUser().getUsername())
+                //.like()
                 .createdAt(comment.getCreatedAt())
-                .modifiedAt(comment.getModifiedAt())
                 .build();
     }
 

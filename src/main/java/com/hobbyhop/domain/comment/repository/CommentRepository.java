@@ -10,6 +10,6 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface CommentRepository extends JpaRepository<Comment, Long>, CommentRepositoryCustom {
 
-    @Query("select Comment.content, User.username, Comment.createdAt from Comment left join User.id where Comment.postId = postId")
+    //@Query("select Comment.content, User.username, Comment.createdAt from Comment left join User.id where Comment.postId = postId")
     Optional<List<CommentResponseDTO>> findByPostId(Long postId);
 }
