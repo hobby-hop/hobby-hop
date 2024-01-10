@@ -60,7 +60,7 @@ public class CommentServiceImpl implements CommentService {
 
         return CommentListResponseDTO.builder()
                 .page(pageable.getPage())
-                .totalCount((int)(Math.ceil(commentList.size()/pageable.getSize())))
+                .totalCount((int)(Math.ceil((double) commentList.size() / pageable.getSize())))
                 .data(commentList)
                 .build();
     }
