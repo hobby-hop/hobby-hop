@@ -21,4 +21,4 @@ logging:
 
 jwt:
   secret:
-    key: {{JWT_KEY}}
+    key: {{JWT_SECRET_KEY}}

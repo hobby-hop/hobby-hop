@@ -1,11 +1,9 @@
 package com.hobbyhop.domain.post.controller;
 
 import com.hobbyhop.domain.post.dto.PostRequestDTO;
-import com.hobbyhop.domain.post.dto.PostResponseDTO;
 import com.hobbyhop.domain.post.service.PostService;
 import com.hobbyhop.global.response.ApiResponse;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,27 +33,41 @@ public class PostController {
     }
 
     @GetMapping("/posts/{postId}")
-    public PostResponseDTO getPostById(@PathVariable Long clubId, @PathVariable Long postId) {
+    public ResponseEntity<ApiResponse> getPostById(@PathVariable Long clubId,
+            @PathVariable Long postId) {
 
-        return postService.getPostById(clubId, postId);
+        return ResponseEntity.ok(ApiResponse.ok(
+                postService.getPostById(clubId, postId)
+        ));
+
     }
 
     @GetMapping("/posts")
-    public List<PostResponseDTO> getAllPost(@PathVariable Long clubId) {
+    public ResponseEntity<ApiResponse> getAllPost(@PathVariable Long clubId) {
 
-        return postService.getAllPost(clubId);
+        return ResponseEntity.ok(ApiResponse.ok(
+                postService.getAllPost(clubId)
+        ));
     }
 
     @PatchMapping("/posts/{postId}")
-    public PostResponseDTO modifyPost(@PathVariable Long clubId, @PathVariable Long postId,
+    public ResponseEntity<ApiResponse> modifyPost(@PathVariable Long clubId,
+            @PathVariable Long postId,
             @RequestBody @Valid PostRequestDTO postRequestDTO) {
 
-        return postService.modifyPost(clubId, postId, postRequestDTO);
+
+        return ResponseEntity.ok(ApiResponse.ok(
+                postService.modifyPost(clubId, postId, postRequestDTO)
+        ));
     }
 
     @DeleteMapping("/posts/{postId}")
-    public void deletePost(@PathVariable Long clubId, @PathVariable Long postId) {
+    public ResponseEntity<ApiResponse> deletePost(@PathVariable Long clubId,
+            @PathVariable Long postId) {
 
         postService.deletePost(clubId, postId);
+        return ResponseEntity.ok(ApiResponse.ok(
+                "삭제 성공"
+        ));
     }
 }
