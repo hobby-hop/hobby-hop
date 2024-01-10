@@ -1,12 +1,12 @@
 package com.hobbyhop.domain.user.service;
 
-import com.hobbyhop.domain.user.dto.LoginRequestDTO;
-import com.hobbyhop.domain.user.dto.SignupRequestDTO;
 import com.hobbyhop.domain.user.dto.UpdateProfileDTO;
-import com.hobbyhop.domain.user.entity.User;
-import com.hobbyhop.domain.user.repository.UserRepository;
 import com.hobbyhop.global.security.jwt.JwtUtil;
 import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
+import com.hobbyhop.domain.user.dto.LoginRequestDTO;
+import com.hobbyhop.domain.user.dto.SignupRequestDTO;
+import com.hobbyhop.domain.user.entity.User;
+import com.hobbyhop.domain.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -95,7 +95,6 @@ public class UserService {
     }
 
     private void validateExistingUser (SignupRequestDTO signupRequestDTO) {
-
         if(userRepository.findByUsername((signupRequestDTO.getUsername())).isPresent()){
             throw new IllegalArgumentException("이미 존재하는 유저입니다.");
         }
@@ -108,6 +107,4 @@ public class UserService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
     }
-
-
 }
