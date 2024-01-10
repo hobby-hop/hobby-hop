@@ -12,6 +12,8 @@ import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -56,12 +58,12 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentListResponseDTO getComments(Long postId) {
+    public CommentListResponseDTO getComments(Pageable pageable, Long postId) {
         Post post = postRepository.findById(postId).orElseThrow();
         //List<CommentResponseDTO> commentList = commentRepository.findByPostId(postId).orElseThrow();
-        List<Comment> comments = commentRepository.findAllByPost(post);
+        Page<Comment> comments = commentRepository.findAllByPost(pageable, post);
         List<CommentResponseDTO> commentList = new ArrayList<>();
-        comments.forEach((comment) -> {
+        comments.getContent().forEach((comment) -> {
             commentList.add(CommentResponseDTO.builder()
                 .content(comment.getContent())
                 //.writer(comment.getUser().getUsername())
@@ -70,8 +72,8 @@ public class CommentServiceImpl implements CommentService {
                 .build());
         });
         return CommentListResponseDTO.builder()
-                //.page(pageable.getPage())
-                //.totalCount((int)(Math.ceil((double) commentList.size() / pageable.getSize())))
+                .page(pageable.getPageNumber())
+                .totalCount(comments.getTotalPages())
                 .data(commentList)
                 .build();
     }
