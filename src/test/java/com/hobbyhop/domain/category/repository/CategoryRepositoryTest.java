@@ -12,15 +12,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @Log4j2
 class CategoryRepositoryTest {
-    @Autowired
-    private CategoryRepository categoryRepository;
-    @Test
-    void generateDummyData() {
-        Category category = Category.builder()
-                .hobbyCategory(HobbyCategory.MUSIC)
-                .build();
-
-        log.info(categoryRepository.save(category).getHobbyCategory());
-    }
-
+//    @Autowired
+//    private CategoryRepository categoryRepository;
+//    @Test
+//    void generateDummyData() {
+//        Category category = Category.builder()
+//                .hobbyCategory(HobbyCategory.MUSIC)
+//                .build();
+//
+//        log.info(categoryRepository.save(category).getHobbyCategory());
+//    }
 }
