@@ -7,6 +7,8 @@ import com.hobbyhop.domain.club.dto.ClubResponseDTO;
 import com.hobbyhop.domain.club.entity.Club;
 import com.hobbyhop.domain.club.repository.ClubRepository;
 import com.hobbyhop.domain.club.service.ClubService;
+import com.hobbyhop.global.exception.category.CategoryNotFoundException;
+import com.hobbyhop.global.exception.club.ClubNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -40,7 +42,7 @@ public class ClubServiceImpl implements ClubService {
 
     @Override
     public ClubResponseDTO getClub(Long clubId) {
-        Club club = clubRepository.findById(clubId).orElseThrow();
+        Club club = clubRepository.findById(clubId).orElseThrow(CategoryNotFoundException::new);
 
         return ClubResponseDTO.fromEntity(club);
     }
@@ -48,7 +50,7 @@ public class ClubServiceImpl implements ClubService {
     @Override
     @Transactional
     public ClubResponseDTO makeClub(ClubRequestDTO clubRequestDTO) {
-        Category category = categoryRepository.findById(clubRequestDTO.getCategoryId()).orElseThrow();
+        Category category = categoryRepository.findById(clubRequestDTO.getCategoryId()).orElseThrow(CategoryNotFoundException::new);
 
         Club club = Club.builder()
                 .title(clubRequestDTO.getTitle())
@@ -70,7 +72,7 @@ public class ClubServiceImpl implements ClubService {
     @Override
     @Transactional
     public ClubResponseDTO modifyClub(Long clubId, ClubRequestDTO clubRequestDTO) {
-        Club club = clubRepository.findById(clubId).orElseThrow();
+        Club club = clubRepository.findById(clubId).orElseThrow(ClubNotFoundException::new);
 
         if(clubRequestDTO.getTitle() != null) {
             club.changeTitle(clubRequestDTO.getTitle());
@@ -80,7 +82,8 @@ public class ClubServiceImpl implements ClubService {
             club.changeContent(clubRequestDTO.getContent());
         }
         if(clubRequestDTO.getCategoryId() != null) {
-            Category category = categoryRepository.findById(clubRequestDTO.getCategoryId()).orElseThrow();
+            Category category = categoryRepository.findById(clubRequestDTO.getCategoryId()).orElseThrow(
+                    CategoryNotFoundException::new);
             club.changeCategory(category);
         }
 

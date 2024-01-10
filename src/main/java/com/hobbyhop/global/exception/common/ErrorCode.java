@@ -29,12 +29,18 @@ public enum ErrorCode {
     MISMATCHED_AUTH_CODE_EXCEPTION(401, "인증번호가 일치하지 않습니다."),
     NOT_FOUND_AUTH_CODE_EXCEPTION(401, "없는 인증 번호입니다."),
 
-    // Group
-    NOT_FOUND_GROUP_EXCEPTION(401, "해당 그룹를 찾을 수 없습니다."),
-    ALREADY_USER_OF_GROUP_EXCEPTION(401, "이미 그룹에 유저가 있습니다."),
+    // Club
+    NOT_FOUND_CLUB_EXCEPTION(401, "해당 클럽을 찾을 수 없습니다."),
+    ALREADY_USER_OF_CLUB_EXCEPTION(401, "이미 클럽에 유저가 있습니다."),
 
     // Comment
-    NOT_FOUND_COMMENT_EXCEPTION(401, "해당 댓글을 찾을 수 없습니다.");
+    NOT_FOUND_COMMENT_EXCEPTION(401, "해당 댓글을 찾을 수 없습니다."),
+
+    // Post
+    NOT_FOUND_POST_EXCEPTION(401, "해당 게시글을 찾을 수 없습니다."),
+
+    // Category
+    NOT_FOUND_CATEGORY_EXCEPTION(401, "해당 카테고리를 찾을 수 없습니다.");
 
     private final int status;
 

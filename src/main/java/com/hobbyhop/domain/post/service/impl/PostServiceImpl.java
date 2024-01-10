@@ -5,6 +5,7 @@ import com.hobbyhop.domain.post.dto.PostResponseDTO;
 import com.hobbyhop.domain.post.entity.Post;
 import com.hobbyhop.domain.post.repository.PostRepository;
 import com.hobbyhop.domain.post.service.PostService;
+import com.hobbyhop.global.exception.post.PostNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public Post findById(Long postId) {
 
-        return postRepository.findById(postId).orElseThrow();
+        return postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
     }
 
     @Override
@@ -40,7 +41,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostResponseDTO getPostById(Long clubId, Long postId) {
 
-        Post post = postRepository.findById(postId).orElseThrow();
+        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
 
         return PostResponseDTO.getDto(post);
     }
@@ -65,7 +66,7 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public PostResponseDTO modifyPost(Long clubId, Long postId, PostRequestDTO postRequestDTO){
 
-        Post post = postRepository.findById(postId).orElseThrow();
+        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
 
         if(postRequestDTO.getPostTitle() != null) {
             post.changeTitle(postRequestDTO.getPostTitle());
