@@ -3,7 +3,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: {{USER_NAME}}
     password: {{PASSWORD}}
-    url: jdbc:mysql://{{HOST}}:{{PORT}}/{{DATABASE_NAME}}
+    url: {{DB_URL}}
 
   jpa:
     hibernate:
@@ -16,7 +16,7 @@ spring:
 logging:
   level:
     org.springframework: info
-    com.sparta: debug
+    com.hobbyhop: debug
     org.springframework.security: trace
 
 jwt:
