@@ -2,18 +2,11 @@ package com.hobbyhop.domain.post.entity;
 
 
 import com.hobbyhop.domain.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.hobbyhop.domain.club.entity.Club;
+import com.hobbyhop.domain.user.entity.User;
+import jakarta.persistence.*;
 import java.sql.Timestamp;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 
 @Entity
@@ -31,9 +24,14 @@ public class Post extends BaseEntity {
     private String postTitle;
     private String postContent;
     private String imageUrl;
-//    @ManyToOne
-//    @JoinColumn(name = "user_id")
-//    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "club_id")
+    private Club club;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Column(name = "deleted_at")
     private Timestamp deletedAt;
