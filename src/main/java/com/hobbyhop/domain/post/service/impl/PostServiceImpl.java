@@ -16,6 +16,7 @@ import com.hobbyhop.global.exception.post.PostNotCorrespondUser;
 import com.hobbyhop.global.exception.post.PostNotFoundException;
 import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,14 +26,20 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
 
+    private final ClubService clubService;
     private final PostRepository postRepository;
-    private final ClubRepository clubRepository;
+
+    @Override
+    public Post findPost(Long postId) {
+
+        return postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+    }
 
     @Override
     @Transactional
     public PostResponseDTO makePost(UserDetailsImpl userDetails, Long clubId, PostRequestDTO postRequestDTO) {
 
-        Club club = clubRepository.findById(clubId).orElseThrow(ClubNotFoundException::new);
+        Club club = clubService.findClub(clubId);
 
         Post post = Post.builder()
                 .postTitle(postRequestDTO.getPostTitle())
@@ -56,7 +63,7 @@ public class PostServiceImpl implements PostService {
 
     public Post findAndCheckPostAndClub(Long clubId, Long postId){
 
-        Club club = clubRepository.findById(clubId).orElseThrow(ClubNotFoundException::new);
+        Club club = clubService.findClub(clubId);
 
         Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
 
