@@ -50,11 +50,23 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostResponseDTO getPostById(Long clubId, Long postId) {
 
-        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+        Post post = findAndCheckPostAndClub(clubId, postId);
 
         return PostResponseDTO.getDto(post);
     }
 
+    public Post findAndCheckPostAndClub(Long clubId, Long postId){
+
+        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+
+        Club club = clubRepository.findById(clubId).orElseThrow(ClubNotFoundException::new);
+
+        if(!club.getId().equals(post.getClub().getId())){
+            throw new PostNotCorrespondUser();
+        }
+
+        return post;
+    }
     @Override
     public List<PostResponseDTO> getAllPost(Long postId) {
 
@@ -75,7 +87,7 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public PostResponseDTO modifyPost(UserDetailsImpl userDetails, Long clubId, Long postId, PostRequestDTO postRequestDTO){
 
-        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+        Post post = findAndCheckPostAndClub(clubId, postId);
 
         User dbuser = userRepository.findById(userDetails.getUser().getId()).orElseThrow();
 
@@ -104,7 +116,7 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public void deletePost(UserDetailsImpl userDetails, Long clubId, Long postId){
 
-        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+        Post post = findAndCheckPostAndClub(clubId, postId);
 
         User dbuser = userRepository.findById(userDetails.getUser().getId()).orElseThrow();
 
