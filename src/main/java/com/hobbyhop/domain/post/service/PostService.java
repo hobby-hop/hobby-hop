@@ -12,8 +12,6 @@ import org.springframework.stereotype.Service;
 
 public interface PostService {
 
-    Post findById(Long postId);
-
     PostResponseDTO makePost(UserDetailsImpl userDetails, Long clubId, PostRequestDTO postRequestDTO);
 
     PostResponseDTO getPostById(Long clubId, Long postId);
