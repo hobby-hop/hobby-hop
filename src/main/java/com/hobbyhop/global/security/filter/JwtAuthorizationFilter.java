@@ -27,19 +27,19 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
 
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
         String tokenValue = jwtUtil.getJwtFromHeader(request);
 
-        if(StringUtils.hasText(tokenValue)) {
-            if(!jwtUtil.validateToken(tokenValue)) {
+        if (StringUtils.hasText(tokenValue)) {
+            if (!jwtUtil.validateToken(tokenValue)) {
                 ObjectMapper objectMapper = new ObjectMapper();
 
-                response.setStatus(400);
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
-                response.sendError(400, "유효한 토큰이 아닙니다.");
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "유효한 토큰이 아닙니다.");
 
                 return;
             }
@@ -52,6 +52,31 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
+//    @Override
+//    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+//
+//        String tokenValue = jwtUtil.getJwtFromHeader(request);
+//
+//        if(StringUtils.hasText(tokenValue)) {
+//            if(!jwtUtil.validateToken(tokenValue)) {
+//                ObjectMapper objectMapper = new ObjectMapper();
+//
+//                response.setStatus(400);
+//                response.setContentType("application/json");
+//                response.setCharacterEncoding("UTF-8");
+//                response.sendError(400, "유효한 토큰이 아닙니다.");
+//
+//                return;
+//            }
+//
+//            Claims info = jwtUtil.getUserInfo(tokenValue);
+//
+//            String userName = info.getSubject();
+//            setAuthentication(userName);
+//        }
+//
+//        filterChain.doFilter(request, response);
+//    }
 
     public void setAuthentication(String userName) {
 
