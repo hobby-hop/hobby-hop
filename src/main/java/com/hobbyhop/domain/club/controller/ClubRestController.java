@@ -3,6 +3,8 @@ package com.hobbyhop.domain.club.controller;
 import com.hobbyhop.domain.club.dto.ClubRequestDTO;
 import com.hobbyhop.domain.club.dto.ClubResponseDTO;
 import com.hobbyhop.domain.club.service.ClubService;
+import com.hobbyhop.global.request.PageRequestDTO;
+import com.hobbyhop.global.response.PageResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -30,8 +32,8 @@ public class ClubRestController {
     // TODO : implement 검색, 카테고리별 정렬, 검색
     @Operation(summary = "모든 그룹 리스트 조회")
     @GetMapping
-    public ResponseEntity<List> getClubList() {
-        List<ClubResponseDTO> list = clubService.getAllClubs();
+    public ResponseEntity<PageResponseDTO<ClubResponseDTO>> getClubList(PageRequestDTO pageRequestDTO) {
+        PageResponseDTO<ClubResponseDTO> list = clubService.getAllClubs(pageRequestDTO);
         return ResponseEntity.ok(list);
     }
 
