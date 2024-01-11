@@ -30,12 +30,6 @@ public class PostServiceImpl implements PostService {
     private final ClubRepository clubRepository;
 
     @Override
-    public Post findById(Long postId) {
-
-        return postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
-    }
-
-    @Override
     @Transactional
     public PostResponseDTO makePost(UserDetailsImpl userDetails, Long clubId, PostRequestDTO postRequestDTO) {
 
