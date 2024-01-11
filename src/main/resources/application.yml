@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: {{USER_NAME}}
-    password: {{PASSWORD}}
-    url: {{DB_URL}}
+    username: ${USER_NAME}
+    password: ${PASSWORD}
+    url: ${DB_URL}
 
   jpa:
     hibernate:
@@ -21,4 +21,4 @@ logging:
 
 jwt:
   secret:
-    key: {{JWT_SECRET_KEY}}
+    key: ${JWT_SECRET_KEY}
