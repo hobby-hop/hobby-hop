@@ -51,7 +51,6 @@ public class PostController {
             @RequestBody @Valid PostRequestDTO postRequestDTO,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-
         return ResponseEntity.ok(ApiResponse.ok(
                 postService.modifyPost(userDetails, clubId, postId, postRequestDTO)
         ));

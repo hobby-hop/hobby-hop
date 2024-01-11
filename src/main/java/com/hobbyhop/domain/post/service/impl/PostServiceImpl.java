@@ -57,9 +57,9 @@ public class PostServiceImpl implements PostService {
 
     public Post findAndCheckPostAndClub(Long clubId, Long postId){
 
-        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
-
         Club club = clubRepository.findById(clubId).orElseThrow(ClubNotFoundException::new);
+
+        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
 
         if(!club.getId().equals(post.getClub().getId())){
             throw new PostNotCorrespondUser();
@@ -89,9 +89,7 @@ public class PostServiceImpl implements PostService {
 
         Post post = findAndCheckPostAndClub(clubId, postId);
 
-        User dbuser = userRepository.findById(userDetails.getUser().getId()).orElseThrow();
-
-        if(!dbuser.getId().equals(post.getUser().getId())){
+        if(!userDetails.getUser().getId().equals(post.getUser().getId())){
             throw new PostNotCorrespondUser();
         }
 
@@ -118,9 +116,7 @@ public class PostServiceImpl implements PostService {
 
         Post post = findAndCheckPostAndClub(clubId, postId);
 
-        User dbuser = userRepository.findById(userDetails.getUser().getId()).orElseThrow();
-
-        if(!dbuser.getId().equals(post.getUser().getId())){
+        if(!userDetails.getUser().getId().equals(post.getUser().getId())){
             throw new PostNotCorrespondUser();
         }
 
