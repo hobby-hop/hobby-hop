@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
 
-    private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final ClubRepository clubRepository;
 
