@@ -42,9 +42,9 @@ public class PostServiceImpl implements PostService {
                 .user(userDetails.getUser())
                 .build();
 
-        Post savedPost = postRepository.save(post);
+        postRepository.save(post);
 
-        return PostResponseDTO.fromEntity(savedPost);
+        return PostResponseDTO.fromEntity(post);
     }
 
     @Override
