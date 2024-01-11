@@ -3,9 +3,12 @@ package com.hobbyhop.domain.post.entity;
 
 import com.hobbyhop.domain.BaseEntity;
 import com.hobbyhop.domain.club.entity.Club;
+import com.hobbyhop.domain.comment.entity.Comment;
 import com.hobbyhop.domain.user.entity.User;
 import jakarta.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 
@@ -26,12 +29,15 @@ public class Post extends BaseEntity {
     private String imageUrl;
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
     @JoinColumn(name = "club_id")
     private Club club;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @OneToMany(mappedBy = "post", orphanRemoval = true)
+    private List<Comment> commentList = new ArrayList<>();
 
     @Column(name = "deleted_at")
     private Timestamp deletedAt;
