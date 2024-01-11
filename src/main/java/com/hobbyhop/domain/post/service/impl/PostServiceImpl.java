@@ -1,12 +1,22 @@
 package com.hobbyhop.domain.post.service.impl;
 
+import com.hobbyhop.domain.club.entity.Club;
+import com.hobbyhop.domain.club.repository.ClubRepository;
+import com.hobbyhop.domain.club.service.ClubService;
 import com.hobbyhop.domain.post.dto.PostRequestDTO;
 import com.hobbyhop.domain.post.dto.PostResponseDTO;
 import com.hobbyhop.domain.post.entity.Post;
 import com.hobbyhop.domain.post.repository.PostRepository;
 import com.hobbyhop.domain.post.service.PostService;
+import com.hobbyhop.domain.user.entity.User;
+import com.hobbyhop.domain.user.repository.UserRepository;
+import com.hobbyhop.domain.user.service.UserService;
+import com.hobbyhop.global.exception.club.ClubNotFoundException;
+import com.hobbyhop.global.exception.post.PostNotCorrespondUser;
 import com.hobbyhop.global.exception.post.PostNotFoundException;
+import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,36 +26,53 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
 
+    private final ClubService clubService;
     private final PostRepository postRepository;
 
     @Override
-    public Post findById(Long postId) {
+    public Post findPost(Long postId) {
 
         return postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
     }
 
     @Override
     @Transactional
-    public PostResponseDTO makePost(Long clubId, PostRequestDTO postRequestDTO) {
+    public PostResponseDTO makePost(UserDetailsImpl userDetails, Long clubId, PostRequestDTO postRequestDTO) {
+
+        Club club = clubService.findClub(clubId);
 
         Post post = Post.builder()
                 .postTitle(postRequestDTO.getPostTitle())
                 .postContent(postRequestDTO.getPostContent())
+                .club(club)
+                .user(userDetails.getUser())
                 .build();
 
-        Post savedPost = postRepository.save(post);
+        postRepository.save(post);
 
-        return PostResponseDTO.fromEntity(savedPost);
+        return PostResponseDTO.fromEntity(post);
     }
 
     @Override
     public PostResponseDTO getPostById(Long clubId, Long postId) {
 
-        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+        Post post = findAndCheckPostAndClub(clubId, postId);
 
         return PostResponseDTO.getDto(post);
     }
 
+    public Post findAndCheckPostAndClub(Long clubId, Long postId){
+
+        Club club = clubService.findClub(clubId);
+
+        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+
+        if(!club.getId().equals(post.getClub().getId())){
+            throw new PostNotCorrespondUser();
+        }
+
+        return post;
+    }
     @Override
     public List<PostResponseDTO> getAllPost(Long postId) {
 
@@ -64,9 +91,13 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public PostResponseDTO modifyPost(Long clubId, Long postId, PostRequestDTO postRequestDTO){
+    public PostResponseDTO modifyPost(UserDetailsImpl userDetails, Long clubId, Long postId, PostRequestDTO postRequestDTO){
 
-        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+        Post post = findAndCheckPostAndClub(clubId, postId);
+
+        if(!userDetails.getUser().getId().equals(post.getUser().getId())){
+            throw new PostNotCorrespondUser();
+        }
 
         if(postRequestDTO.getPostTitle() != null) {
             post.changeTitle(postRequestDTO.getPostTitle());
@@ -87,7 +118,13 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public void deletePost(Long clubId, Long postId){
+    public void deletePost(UserDetailsImpl userDetails, Long clubId, Long postId){
+
+        Post post = findAndCheckPostAndClub(clubId, postId);
+
+        if(!userDetails.getUser().getId().equals(post.getUser().getId())){
+            throw new PostNotCorrespondUser();
+        }
 
         postRepository.deleteById(postId);
     }

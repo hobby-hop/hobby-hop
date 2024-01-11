@@ -29,7 +29,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentResponseDTO postComment(CommentRequestDTO request, Long postId, User user) {
-        Post post = postService.findById(postId);
+        Post post = postService.findPost(postId);
 
         Comment comment = Comment.builder()
                 .content(request.getContent())
@@ -63,7 +63,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentListResponseDTO getComments(Pageable pageable, Long postId) {
-        Post post = postService.findById(postId);
+        Post post = postService.findPost(postId);
         //List<CommentResponseDTO> commentList = commentRepository.findByPostId(postId).orElseThrow();
         Page<Comment> comments = commentRepository.findAllByPost(pageable, post);
         List<CommentResponseDTO> commentList = new ArrayList<>();
