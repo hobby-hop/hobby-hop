@@ -5,6 +5,14 @@ spring:
     username: sa
     password: password
 
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+
 jwt:
   secret:
     key: i4uIOycoOy5mOybkCDrlYzqsIAg7KKL7JWY64ukIOynhOynnCws
