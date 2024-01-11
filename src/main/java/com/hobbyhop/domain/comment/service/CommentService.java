@@ -1,12 +1,20 @@
 package com.hobbyhop.domain.comment.service;
 
-import com.hobbyhop.domain.comment.dto.*;
+import com.hobbyhop.domain.comment.dto.CommentListResponseDTO;
+import com.hobbyhop.domain.comment.dto.CommentRequestDTO;
+import com.hobbyhop.domain.comment.dto.CommentResponseDTO;
+import com.hobbyhop.domain.user.entity.User;
 import org.springframework.data.domain.Pageable;
 
 public interface CommentService {
 
-    CommentResponseDTO postComment(CommentRequestDTO request, Long postId);
-    void patchComment(CommentRequestDTO requestDto, Long commentId);
-    void deleteComment(Long commentId);
+    CommentResponseDTO postComment(CommentRequestDTO request, Long postId, User user);
+
+    void patchComment(CommentRequestDTO requestDto, Long commentId, User user);
+
+    void deleteComment(Long commentId, User user);
+
     CommentListResponseDTO getComments(Pageable pageable, Long postId);
+
+    void likeComment(Long commentId, User user);
 }
