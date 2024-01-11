@@ -3,36 +3,31 @@ package com.hobbyhop.domain.post.controller;
 import com.hobbyhop.domain.post.dto.PostRequestDTO;
 import com.hobbyhop.domain.post.service.PostService;
 import com.hobbyhop.global.response.ApiResponse;
+import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/clubs/{clubId}")
+@RequestMapping("/api/clubs/{clubId}/posts")
 @RequiredArgsConstructor
 public class PostController {
 
     private final PostService postService;
 
-    @PostMapping("/posts")
+    @PostMapping
     public ResponseEntity<ApiResponse> makePost(@PathVariable Long clubId,
-            @RequestBody @Valid PostRequestDTO postRequestDTO) {
-        //@AuthenticationPrincipal UserDetailsImpl userDetails){
+            @RequestBody @Valid PostRequestDTO postRequestDTO,
+        @AuthenticationPrincipal UserDetailsImpl userDetails){
 
         return ResponseEntity.ok(ApiResponse.ok(
-                postService.makePost(clubId, postRequestDTO)
+                postService.makePost(userDetails, clubId, postRequestDTO)
         ));
     }
 
-    @GetMapping("/posts/{postId}")
+    @GetMapping("/{postId}")
     public ResponseEntity<ApiResponse> getPostById(@PathVariable Long clubId,
             @PathVariable Long postId) {
 
@@ -42,7 +37,7 @@ public class PostController {
 
     }
 
-    @GetMapping("/posts")
+    @GetMapping
     public ResponseEntity<ApiResponse> getAllPost(@PathVariable Long clubId) {
 
         return ResponseEntity.ok(ApiResponse.ok(
@@ -50,22 +45,22 @@ public class PostController {
         ));
     }
 
-    @PatchMapping("/posts/{postId}")
+    @PatchMapping("/{postId}")
     public ResponseEntity<ApiResponse> modifyPost(@PathVariable Long clubId,
             @PathVariable Long postId,
-            @RequestBody @Valid PostRequestDTO postRequestDTO) {
-
+            @RequestBody @Valid PostRequestDTO postRequestDTO,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         return ResponseEntity.ok(ApiResponse.ok(
-                postService.modifyPost(clubId, postId, postRequestDTO)
+                postService.modifyPost(userDetails, clubId, postId, postRequestDTO)
         ));
     }
 
-    @DeleteMapping("/posts/{postId}")
+    @DeleteMapping("/{postId}")
     public ResponseEntity<ApiResponse> deletePost(@PathVariable Long clubId,
-            @PathVariable Long postId) {
+            @PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        postService.deletePost(clubId, postId);
+        postService.deletePost(userDetails, clubId, postId);
         return ResponseEntity.ok(ApiResponse.ok(
                 "삭제 성공"
         ));
