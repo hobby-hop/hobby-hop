@@ -17,10 +17,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 @Log4j2
@@ -42,7 +38,7 @@ public class ClubServiceImpl implements ClubService {
 
     @Override
     public ClubResponseDTO getClub(Long clubId) {
-        Club club = clubRepository.findById(clubId).orElseThrow(CategoryNotFoundException::new);
+        Club club = clubRepository.findById(clubId).orElseThrow(ClubNotFoundException::new);
 
         return ClubResponseDTO.fromEntity(club);
     }
@@ -95,7 +91,7 @@ public class ClubServiceImpl implements ClubService {
 
     @Override
     public Club findClub(Long clubId) {
-        Club club = clubRepository.findById(clubId).orElseThrow();
+        Club club = clubRepository.findById(clubId).orElseThrow(ClubNotFoundException::new);
         return club;
     }
 }
