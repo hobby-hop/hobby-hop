@@ -57,10 +57,24 @@ public class User {
 		this.kakaoId =kakaoId;
 	}
 
+//	public void updateProfile(String updateUsername, String updateEmail, String updatePassword) {
+//		this.username = updateUsername;
+//		this.email = updateEmail;
+//		this.password = updatePassword;
+//	}
+
 	public void updateProfile(String updateUsername, String updateEmail, String updatePassword) {
-		this.username = updateUsername;
-		this.email = updateEmail;
-		this.password = updatePassword;
+		if (updateUsername != null && !updateUsername.isEmpty()) {
+			this.username = updateUsername;
+		}
+
+		if (updateEmail != null && !updateEmail.isEmpty()) {
+			this.email = updateEmail;
+		}
+
+		if (updatePassword != null && !updatePassword.isEmpty()) {
+			this.password = updatePassword;
+		}
 	}
 
 	public User kakaoIdUpdate(Long kakaoId) {

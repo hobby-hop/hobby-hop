@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 public class UserDetailsService {
     private final UserRepository userRepository;
 
-    public UserDetailsImpl getUserDetails(String username) {
+    public UserDetailsImpl getUserDetails(String email) {
 
-        User user = userRepository.findByUsername(username).orElseThrow();
+        User user = userRepository.findByEmail(email).orElseThrow();
 
         return new UserDetailsImpl(user);
     }

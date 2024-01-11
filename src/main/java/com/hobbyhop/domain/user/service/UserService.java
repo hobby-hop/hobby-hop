@@ -37,14 +37,14 @@ public class UserService {
     }
 
     public void login(LoginRequestDTO loginRequestDTO, HttpServletResponse response) {
-        String username = loginRequestDTO.getUsername();
+        String email = loginRequestDTO.getEmail();
         String password = loginRequestDTO.getPassword();
 
-        User user = userRepository.findByUsername(username)
+        User user = userRepository.findByEmail(email)
                 .orElseThrow();
 
         validatePassword(user, password);
-        response.setHeader("Authorization", jwtUtil.createToken(username));
+        response.setHeader("Authorization", jwtUtil.createToken(email));
     }
 
 //    public void logout(HttpServletResponse response) {
@@ -56,23 +56,20 @@ public class UserService {
         User user = userRepository.findById(userDetails.getUser().getId())
                 .orElseThrow();
 
-        String updateUsername = updateProfileDTO.getUsername();
-        String updateEmail = updateProfileDTO.getEmail();
-        String confirmPassword = updateProfileDTO.getConfirmPassword();
-        //        String introduce = updateProfileDTO.getIntroduce();
-
         validatePassword(user, updateProfileDTO.getOldPassword());
         editComparison(updateProfileDTO);
-        user.updateProfile(updateUsername, updateEmail, confirmPassword);
+
+        // Call the updateProfile method in the User entity
+        user.updateProfile(updateProfileDTO.getUsername(), updateProfileDTO.getEmail(), updateProfileDTO.getConfirmPassword());
     }
 
-    private void validatePassword (User user, String password) {
+    private void validatePassword(User user, String password) {
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
     }
 
-    private void editComparison (UpdateProfileDTO updateProfileDTO) {
+    private void editComparison(UpdateProfileDTO updateProfileDTO) {
         if (userRepository.existsByUsername(updateProfileDTO.getUsername())) {
             throw new IllegalArgumentException("username 이 수정 전과 같습니다.");
         }
@@ -81,7 +78,7 @@ public class UserService {
             throw new IllegalArgumentException("email 이 수정 전과 같습니다.");
         }
 
-        if (! updateProfileDTO.getNewPassword().equals(updateProfileDTO.getConfirmPassword())) {
+        if (!updateProfileDTO.getNewPassword().equals(updateProfileDTO.getConfirmPassword())) {
             throw new IllegalArgumentException("새 비밀번호가 일치하지 않습니다.");
         }
     }
