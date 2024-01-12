@@ -11,6 +11,7 @@ import com.hobbyhop.domain.post.entity.Post;
 import com.hobbyhop.domain.post.service.PostService;
 import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.global.exception.comment.CommentNotFoundException;
+import com.hobbyhop.global.request.SortStandardRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -57,8 +58,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentListResponseDTO getComments(Pageable pageable, Long postId) {
-        return commentRepository.findAllByPostId(pageable, postId);
+    public CommentListResponseDTO getComments(Pageable pageable, SortStandardRequest standard, Long postId) {
+        return commentRepository.findAllByPostId(pageable, standard, postId);
     }
 
     @Override

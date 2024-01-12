@@ -4,12 +4,11 @@ import static com.hobbyhop.domain.comment.entity.QComment.comment;
 import static com.hobbyhop.domain.commentuser.entity.QCommentUser.commentUser;
 import static com.hobbyhop.domain.user.entity.QUser.user;
 
-import com.hobbyhop.domain.comment.dto.CommentListResponseDTO;
-import com.hobbyhop.domain.comment.dto.CommentResponseDTO;
+import com.hobbyhop.domain.comment.dto.*;
+import com.hobbyhop.global.request.SortStandardRequest;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 
@@ -19,7 +18,7 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public CommentListResponseDTO findAllByPostId(Pageable pageable, Long postId) {
+    public CommentListResponseDTO findAllByPostId(Pageable pageable, SortStandardRequest standard, Long postId) {
         List<CommentResponseDTO> query = jpaQueryFactory
                 .select(
                         Projections.constructor(
@@ -39,6 +38,26 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
                 .groupBy(comment.id)
                 .orderBy(comment.id.asc())
                 .fetch();
+
+        switch (standard.getSortStandard()){
+            case 1:
+                if (standard.isDesc()) {
+                    query.sort(Comparator.comparing(CommentResponseDTO::getLike));
+                } else {
+                    query.sort(Comparator.comparing(CommentResponseDTO::getLike).reversed());
+                }
+                break;
+                // 대댓글 적용 후 추가 예정
+//            case 2:
+//                break;
+            default:
+                if (standard.isDesc()) {
+                    query.sort(Comparator.comparing(CommentResponseDTO::getCreatedAt));
+                } else {
+                    query.sort(Comparator.comparing(CommentResponseDTO::getCreatedAt).reversed());
+                }
+                break;
+        }
 
         List<CommentResponseDTO> paging = new ArrayList<>();
 
