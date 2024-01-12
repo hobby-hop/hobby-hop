@@ -2,6 +2,7 @@ package com.hobbyhop.domain.post.service.impl;
 
 import com.hobbyhop.domain.club.entity.Club;
 import com.hobbyhop.domain.club.service.ClubService;
+import com.hobbyhop.domain.post.dto.PostPageResponseDTO;
 import com.hobbyhop.domain.post.dto.PostRequestDTO;
 import com.hobbyhop.domain.post.dto.PostResponseDTO;
 import com.hobbyhop.domain.post.entity.Post;
@@ -15,6 +16,7 @@ import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -71,22 +73,11 @@ public class PostServiceImpl implements PostService {
 
         return post;
     }
+
     @Override
-    public List<PostResponseDTO> getAllPost(Long postId) {
+    public PostPageResponseDTO getAllPost(Pageable pageable, Long clubId) {
 
-        List<PostResponseDTO> list = postRepository.findAll().stream().map(post ->
-                PostResponseDTO.builder()
-                        .postId(post.getId())
-                        .postTitle(post.getPostTitle())
-                        .postContent(post.getPostContent())
-                        .imageUrl(post.getImageUrl())
-                        .likeCnt(post.getLikeCnt())
-                        .createAt(post.getCreatedAt())
-                        .modifiedAt(post.getModifiedAt())
-                        .build()
-        ).collect(Collectors.toList());
-
-        return list;
+        return postRepository.findAllByClubId(pageable, clubId);
     }
 
     @Override
