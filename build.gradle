@@ -59,6 +59,12 @@ dependencies {
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
 
+
+    // 카카오 로그인을 위한 oauth, webclient 의존성 추가
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation platform('org.springframework.boot:spring-boot-dependencies:2.7.15')
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
     // QueryDsl
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}:jakarta"
 
