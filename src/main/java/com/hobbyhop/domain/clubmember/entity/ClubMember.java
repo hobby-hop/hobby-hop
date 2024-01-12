@@ -23,6 +23,6 @@ public class ClubMember {
     private Club club;
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(name = "user_id")
     private User user;
 }
