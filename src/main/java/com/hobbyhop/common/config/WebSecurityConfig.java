@@ -1,8 +1,7 @@
 package com.hobbyhop.common.config;
 
-//import com.hobbyhop.domain.user.service.KakaoService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hobbyhop.global.exception.common.ErrorResponse;
+import com.hobbyhop.global.response.ApiResponse;
 import com.hobbyhop.global.security.filter.JwtAuthorizationFilter;
 import com.hobbyhop.global.security.jwt.JwtUtil;
 import com.hobbyhop.global.security.userdetails.UserDetailsService;
@@ -23,8 +22,6 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -88,10 +85,10 @@ public class WebSecurityConfig {
     // 이거 따로 customAccessDeniedHandler 구현 할 수 있습니다!
     private AccessDeniedHandler accessDeniedHandler() {
         return (request, response, ex) -> {
-            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN,List.of(ex.getMessage()));
+            ApiResponse apiResponse = ApiResponse.of(HttpStatus.FORBIDDEN,ex.getMessage());
             response.setStatus(HttpStatus.FORBIDDEN.value());
             response.setContentType("application/json; charset=UTF-8");
-            response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
+            response.getWriter().write(objectMapper.writeValueAsString(apiResponse));
         };
     }
 
@@ -99,10 +96,10 @@ public class WebSecurityConfig {
     private AuthenticationEntryPoint errorPoint() {
         return (request, response, authException) -> {
             authException.printStackTrace();
-            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.BAD_REQUEST, "유효한 토큰이 아닙니다. 혹은 url을 다시 확인하세요.");
+            ApiResponse apiResponse = ApiResponse.of(HttpStatus.BAD_REQUEST, "유효한 토큰이 아닙니다. 혹은 url을 다시 확인하세요.");
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.setContentType("application/json; charset=UTF-8");
-            response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
+            response.getWriter().write(objectMapper.writeValueAsString(apiResponse));
         };
     }
 }
