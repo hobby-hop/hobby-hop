@@ -1,22 +1,18 @@
 package com.hobbyhop.domain.post.service.impl;
 
 import com.hobbyhop.domain.club.entity.Club;
-import com.hobbyhop.domain.club.repository.ClubRepository;
 import com.hobbyhop.domain.club.service.ClubService;
 import com.hobbyhop.domain.post.dto.PostRequestDTO;
 import com.hobbyhop.domain.post.dto.PostResponseDTO;
 import com.hobbyhop.domain.post.entity.Post;
 import com.hobbyhop.domain.post.repository.PostRepository;
 import com.hobbyhop.domain.post.service.PostService;
+import com.hobbyhop.domain.postlike.service.PostLikeService;
 import com.hobbyhop.domain.user.entity.User;
-import com.hobbyhop.domain.user.repository.UserRepository;
-import com.hobbyhop.domain.user.service.UserService;
-import com.hobbyhop.global.exception.club.ClubNotFoundException;
 import com.hobbyhop.global.exception.post.PostNotCorrespondUser;
 import com.hobbyhop.global.exception.post.PostNotFoundException;
 import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PostServiceImpl implements PostService {
 
     private final ClubService clubService;
+    private final PostLikeService postLikeService;
     private final PostRepository postRepository;
 
     @Override
@@ -46,6 +43,7 @@ public class PostServiceImpl implements PostService {
                 .postContent(postRequestDTO.getPostContent())
                 .club(club)
                 .user(userDetails.getUser())
+                .likeCnt(0L)
                 .build();
 
         postRepository.save(post);
@@ -58,7 +56,7 @@ public class PostServiceImpl implements PostService {
 
         Post post = findAndCheckPostAndClub(clubId, postId);
 
-        return PostResponseDTO.getDto(post);
+        return PostResponseDTO.fromEntity(post);
     }
 
     public Post findAndCheckPostAndClub(Long clubId, Long postId){
@@ -81,6 +79,8 @@ public class PostServiceImpl implements PostService {
                         .postId(post.getId())
                         .postTitle(post.getPostTitle())
                         .postContent(post.getPostContent())
+                        .imageUrl(post.getImageUrl())
+                        .likeCnt(post.getLikeCnt())
                         .createAt(post.getCreatedAt())
                         .modifiedAt(post.getModifiedAt())
                         .build()
@@ -127,5 +127,15 @@ public class PostServiceImpl implements PostService {
         }
 
         postRepository.deleteById(postId);
+    }
+
+    @Override
+    @Transactional
+    public void makePostLike(UserDetailsImpl userDetails, Long clubId, Long postId){
+
+        User user = userDetails.getUser();
+        Post post = findAndCheckPostAndClub(clubId, postId);
+
+        postLikeService.postLike(user, post);
     }
 }

@@ -65,4 +65,14 @@ public class PostController {
                 "삭제 성공"
         ));
     }
+
+    @PostMapping("/{postId}/likes")
+    public ResponseEntity<ApiResponse> likePost(@PathVariable Long clubId,
+            @PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        postService.makePostLike(userDetails, clubId, postId);
+        return ResponseEntity.ok(ApiResponse.ok(
+                "좋아요 성공"
+        ));
+    }
 }

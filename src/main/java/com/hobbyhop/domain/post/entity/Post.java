@@ -28,6 +28,9 @@ public class Post extends BaseEntity {
     private String postContent;
     private String imageUrl;
 
+    @Column(nullable = false)
+    private Long likeCnt;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -37,6 +40,7 @@ public class Post extends BaseEntity {
     private Club club;
 
     @OneToMany(mappedBy = "post", orphanRemoval = true)
+    @Builder.Default
     private List<Comment> commentList = new ArrayList<>();
 
     @Column(name = "deleted_at")
@@ -52,5 +56,13 @@ public class Post extends BaseEntity {
 
     public void changeImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public void updateLikeCnt(Boolean updated) {
+        if (updated) {
+            this.likeCnt++;
+            return;
+        }
+        this.likeCnt--;
     }
 }
