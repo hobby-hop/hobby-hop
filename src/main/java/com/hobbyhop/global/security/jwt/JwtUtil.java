@@ -215,5 +215,4 @@ public class JwtUtil {
                         .signWith(key, signatureAlgorithm)
                         .compact();
     }
-
 }

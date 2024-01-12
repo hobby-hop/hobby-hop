@@ -34,7 +34,7 @@ public class KakaoService {
     private final RestTemplate restTemplate;
     private final JwtUtil jwtUtil;
 
-    public String kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
+    public void kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
         String accessToken = getToken(code);
 
@@ -45,9 +45,19 @@ public class KakaoService {
         User kakaoUser = registerKakaoUserIfNeeded(kakaoUserInfo);
 
         // 4. JWT 토큰 반환
-        String createToken =  jwtUtil.createToken(kakaoUser.getUsername());
 
-        return createToken;
+        // accessToken 생성
+        String username = kakaoUser.getUsername();
+        String userAccessToken = jwtUtil.createAccessToken(username);
+        // accessToken 을 클라이언트에게 헤더로 넣어 보냄
+        response.setHeader("Authorization", userAccessToken);
+        // username을 key로, accessToken을 value로 -> redis에 저장
+        jwtUtil.saveAccessTokenByUsername(username, userAccessToken);
+
+        // refreshToken 생성
+        String refreshToken = jwtUtil.createRefreshToken(username);
+        // accessToken을 key로, refreshToken을 value로 -> redis에 저장
+        jwtUtil.saveRefreshTokenByAccessToken(userAccessToken, refreshToken);
     }
 
     private String getToken(String code) throws JsonProcessingException {
@@ -66,8 +76,8 @@ public class KakaoService {
         // HTTP Body 생성
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
-        body.add("client_id", "6666e4d3e7955e33eac0eb2e6609e3e5"); // REST API 키
-        body.add("redirect_uri", "http://localhost:8080/api/user/kakao/callback");
+        body.add("client_id", "6666e4d3e7955e33eac0eb2e6609e3e5"); // REST API 키 6666e4d3e7955e33eac0eb2e6609e3e5
+        body.add("redirect_uri", "http://localhost:8080/api/users/login/kakao/callback");
         body.add("code", code);
 
         RequestEntity<MultiValueMap<String, String>> requestEntity = RequestEntity

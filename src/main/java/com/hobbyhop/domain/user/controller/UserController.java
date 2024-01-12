@@ -7,9 +7,7 @@ import com.hobbyhop.domain.user.dto.UpdateProfileDTO;
 import com.hobbyhop.domain.user.service.KakaoService;
 import com.hobbyhop.domain.user.service.UserService;
 import com.hobbyhop.global.response.ApiResponse;
-import com.hobbyhop.global.security.jwt.JwtUtil;
 import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -28,7 +26,7 @@ public class UserController {
     private final KakaoService kakaoService;
 
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponse> signup (
+    public ResponseEntity<ApiResponse> signup(
             @Valid
             @RequestBody SignupRequestDTO signupRequestDTO) {
         userService.signup(signupRequestDTO);
@@ -38,7 +36,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse> login (
+    public ResponseEntity<ApiResponse> login(
             @RequestBody LoginRequestDTO loginRequestDTO,
             HttpServletResponse response) {
         userService.login(loginRequestDTO, response);
@@ -56,7 +54,7 @@ public class UserController {
     }
 
     @PatchMapping("/update")
-    public ResponseEntity<ApiResponse> update (
+    public ResponseEntity<ApiResponse> update(
             @RequestBody UpdateProfileDTO updateProfileDTO,
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             HttpServletResponse httpServletResponse,
@@ -70,14 +68,14 @@ public class UserController {
         ));
     }
 
+    // https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=6666e4d3e7955e33eac0eb2e6609e3e5&redirect_uri=
     @GetMapping("/login/kakao/callback")
-    public String kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
-        String token = kakaoService.kakaoLogin(code, response);
+    public ResponseEntity<ApiResponse> kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+        kakaoService.kakaoLogin(code, response);
 
-        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, token.substring(7));
-        cookie.setPath("/");
-        response.addCookie(cookie);
-
-        return "redirect:/";
+        return ResponseEntity.ok(ApiResponse.ok(
+                "카카오 로그인 성공"
+        ));
     }
+
 }

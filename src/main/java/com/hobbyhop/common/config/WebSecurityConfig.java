@@ -66,7 +66,7 @@ public class WebSecurityConfig {
                                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()// resources 접근 허용 설
 //						.requestMatchers("/**","/error/**").permitAll() // 메인페이지, error 페이지 접근 허용
                                 .requestMatchers("/api/users/signup", "/api/users/login").permitAll() // 회원가입, 로그인 페이지 접근 허용
-                                .requestMatchers("/api/users/kakao/callback").permitAll() // 카카오 소셜 로그인 허용
+                                .requestMatchers("/api/users/login/kakao/callback").permitAll() // 카카오 소셜 로그인 허용
 //						.requestMatchers("/api/users/**").permitAll()
 //						.requestMatchers("/api/**").permitAll()
 //						.requestMatchers("/api/clubs/emailcheck/**").permitAll() // 그룹 이메일 초대 허용
