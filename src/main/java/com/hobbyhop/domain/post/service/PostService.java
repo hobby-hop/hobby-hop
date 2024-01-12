@@ -24,4 +24,6 @@ public interface PostService {
     PostResponseDTO modifyPost(UserDetailsImpl userDetails, Long clubId, Long postId, PostRequestDTO postRequestDTO);
 
     void deletePost(UserDetailsImpl userDetails, Long clubId, Long postId);
+
+    void makePostLike(UserDetailsImpl userDetails, Long clubId, Long postId);
 }
