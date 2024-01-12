@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @DisplayName("비즈니스 로직 - 모임")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Log4j2
 class ClubServiceTest {
 
