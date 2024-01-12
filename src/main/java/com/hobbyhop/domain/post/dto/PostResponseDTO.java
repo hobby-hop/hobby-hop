@@ -32,15 +32,4 @@ public class PostResponseDTO {
                 .modifiedAt(savedPost.getModifiedAt())
                 .build();
     }
-
-    public static PostResponseDTO getDto(Post savedPost) {
-        return PostResponseDTO.builder()
-                .postId(savedPost.getId())
-                .postTitle(savedPost.getPostTitle())
-                .postContent(savedPost.getPostContent())
-                .imageUrl(savedPost.getImageUrl())
-                .createAt(savedPost.getCreatedAt())
-                .modifiedAt(savedPost.getModifiedAt())
-                .build();
-    }
 }
