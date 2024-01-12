@@ -1,6 +1,5 @@
 package com.hobbyhop.domain.category.entity;
 
-import com.hobbyhop.domain.category.enums.HobbyCategory;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +16,8 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private HobbyCategory hobbyCategory;
+    @Column(nullable = false, name = "category_name")
+    private String categoryName;
+
+    private String description;
 }
