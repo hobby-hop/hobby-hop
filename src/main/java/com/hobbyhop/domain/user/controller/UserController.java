@@ -10,9 +10,11 @@ import com.hobbyhop.global.response.ApiResponse;
 import com.hobbyhop.global.security.jwt.JwtUtil;
 import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
+@Log4j2
 public class UserController {
     private final UserService userService;
     private final KakaoService kakaoService;
@@ -45,8 +48,8 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<ApiResponse> logout(HttpServletResponse httpServletResponse) {
-        userService.logout(httpServletResponse);
+    public ResponseEntity<ApiResponse> logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        userService.logout(httpServletRequest, httpServletResponse);
         return ResponseEntity.ok(ApiResponse.ok(
                 "로그아웃 성공"
         ));
@@ -55,14 +58,19 @@ public class UserController {
     @PatchMapping("/update")
     public ResponseEntity<ApiResponse> update (
             @RequestBody UpdateProfileDTO updateProfileDTO,
-            @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        userService.updateProfile(updateProfileDTO, userDetails);
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            HttpServletResponse httpServletResponse,
+            HttpServletRequest httpServletRequest) {
+        log.info("컨트롤러단 진입");
+        log.info("userDetails : " + userDetails);
+
+        userService.updateProfile(updateProfileDTO, userDetails, httpServletResponse, httpServletRequest);
         return ResponseEntity.ok(ApiResponse.ok(
                 "사용자 정보 수정 성공"
         ));
     }
 
-    @GetMapping("/kakao/callback")
+    @GetMapping("/login/kakao/callback")
     public String kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
         String token = kakaoService.kakaoLogin(code, response);
 

@@ -7,6 +7,7 @@ import com.hobbyhop.domain.user.dto.LoginRequestDTO;
 import com.hobbyhop.domain.user.dto.SignupRequestDTO;
 import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.domain.user.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -45,15 +46,41 @@ public class UserService {
         String username = user.getUsername();
 
         validatePassword(user, password);
-        response.setHeader("Authorization", jwtUtil.createToken(username));
+
+        // accessToken 생성
+        String accessToken = jwtUtil.createAccessToken(username);
+        // accessToken 을 클라이언트에게 헤더로 넣어 보냄
+        response.setHeader("Authorization", accessToken);
+        // username을 key로, accessToken을 value로 -> redis에 저장
+        jwtUtil.saveAccessTokenByUsername(username, accessToken);
+
+        // refreshToken 생성
+        String refreshToken = jwtUtil.createRefreshToken(username);
+        // accessToken을 key로, refreshToken을 value로 -> redis에 저장
+        jwtUtil.saveRefreshTokenByAccessToken(accessToken, refreshToken);
     }
 
-    public void logout(HttpServletResponse response) {
-        response.setHeader("Authorization", jwtUtil.createToken(null));
+    public void logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        String accessToken = httpServletRequest.getHeader(JwtUtil.AUTHORIZATION_HEADER);
+
+        if (jwtUtil.validateToken(accessToken.substring(7))) {
+            // request의 accessToken이 유효하다면 그대로 로그아웃 진행
+            jwtUtil.removeRefreshToken(accessToken);
+            jwtUtil.removeAccessToken(accessToken);
+        } else {
+            // 접근한 request의 accessToken이 유효하지 않다면 response에 새로운 accessToken을 발급했으므로 response에서 가져와서 로그아웃 진행
+            String responseHeaderAccessToken = httpServletResponse.getHeader(JwtUtil.AUTHORIZATION_HEADER);
+            jwtUtil.removeRefreshToken(responseHeaderAccessToken);
+            jwtUtil.removeAccessToken(responseHeaderAccessToken);
+        }
+
+        // response header에 token 반환하지 않도록
+        httpServletResponse.setHeader(JwtUtil.AUTHORIZATION_HEADER, "logged-out");
     }
 
     @Transactional
-    public void updateProfile(UpdateProfileDTO updateProfileDTO, UserDetailsImpl userDetails) {
+    public void updateProfile(UpdateProfileDTO updateProfileDTO, UserDetailsImpl userDetails,
+                              HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
         User user = userRepository.findById(userDetails.getUser().getId())
                 .orElseThrow();
 
@@ -62,6 +89,22 @@ public class UserService {
 
         // Call the updateProfile method in the User entity
         user.updateProfile(updateProfileDTO.getUsername(), updateProfileDTO.getEmail(), updateProfileDTO.getConfirmPassword());
+
+        // token의 subject를 username으로 발급했기 때문에
+        // token을 바뀐 username으로 재발급
+        String requestHeaderAccessToken = httpServletRequest.getHeader(JwtUtil.AUTHORIZATION_HEADER);
+        String newAccessToken = jwtUtil.createAccessToken(user.getUsername());
+        if (jwtUtil.validateToken(requestHeaderAccessToken.substring(7))) {
+            // request의 accessToken이 유효하다면 그대로
+            jwtUtil.rebaseToken(newAccessToken, requestHeaderAccessToken);
+        } else {
+            // 접근한 request의 accessToken이 유효하지 않다면 response에 새로운 accessToken을 발급했으므로 response에서 가져와서
+            String responseHeaderAccessToken = httpServletResponse.getHeader(JwtUtil.AUTHORIZATION_HEADER);
+            jwtUtil.rebaseToken(newAccessToken, responseHeaderAccessToken);
+        }
+
+        // 바뀐 username을 가진 토큰을 response에 반환
+        httpServletResponse.setHeader(JwtUtil.AUTHORIZATION_HEADER, newAccessToken);
     }
 
     private void validatePassword(User user, String password) {
