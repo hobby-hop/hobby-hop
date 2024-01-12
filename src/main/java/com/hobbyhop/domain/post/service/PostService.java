@@ -1,5 +1,6 @@
 package com.hobbyhop.domain.post.service;
 
+import com.hobbyhop.domain.post.dto.PostPageResponseDTO;
 import com.hobbyhop.domain.post.dto.PostRequestDTO;
 import com.hobbyhop.domain.post.dto.PostResponseDTO;
 import com.hobbyhop.domain.post.entity.Post;
@@ -8,6 +9,7 @@ import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 
@@ -19,9 +21,11 @@ public interface PostService {
 
     PostResponseDTO getPostById(Long clubId, Long postId);
 
-    List<PostResponseDTO> getAllPost(Long clubId);
+    PostPageResponseDTO getAllPost(Pageable pageable, Long clubId);
 
     PostResponseDTO modifyPost(UserDetailsImpl userDetails, Long clubId, Long postId, PostRequestDTO postRequestDTO);
 
     void deletePost(UserDetailsImpl userDetails, Long clubId, Long postId);
+
+    void makePostLike(UserDetailsImpl userDetails, Long clubId, Long postId);
 }

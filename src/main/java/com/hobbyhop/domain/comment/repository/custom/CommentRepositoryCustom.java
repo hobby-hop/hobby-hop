@@ -1,6 +1,9 @@
 package com.hobbyhop.domain.comment.repository.custom;
 
-public interface CommentRepositoryCustom {
+import com.hobbyhop.domain.comment.dto.CommentListResponseDTO;
+import com.hobbyhop.global.request.SortStandardRequest;
+import org.springframework.data.domain.Pageable;
 
-    //List<Comment> findByPostId(Long postId);
+public interface CommentRepositoryCustom {
+    CommentListResponseDTO findAllByPostId(Pageable pageable, SortStandardRequest standard, Long postId);
 }

@@ -11,11 +11,9 @@ import com.hobbyhop.domain.post.entity.Post;
 import com.hobbyhop.domain.post.service.PostService;
 import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.global.exception.comment.CommentNotFoundException;
+import com.hobbyhop.global.request.SortStandardRequest;
 import jakarta.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -46,8 +44,6 @@ public class CommentServiceImpl implements CommentService {
                 .build();
     }
 
-
-
     @Override
     @Transactional
     public void patchComment(CommentRequestDTO requestDto, Long commentId, User user) {
@@ -62,30 +58,13 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentListResponseDTO getComments(Pageable pageable, Long postId) {
-        Post post = postService.findPost(postId);
-        //List<CommentResponseDTO> commentList = commentRepository.findByPostId(postId).orElseThrow();
-        Page<Comment> comments = commentRepository.findAllByPost(pageable, post);
-        List<CommentResponseDTO> commentList = new ArrayList<>();
-        comments.getContent().forEach((comment) -> {
-            commentList.add(CommentResponseDTO.builder()
-                    .content(comment.getContent())
-                    .writer(comment.getUser().getUsername())
-                    .like(commentUserService.countLike(comment))
-                    .createdAt(comment.getCreatedAt())
-                    .build());
-        });
-        return CommentListResponseDTO.builder()
-                .page(pageable.getPageNumber())
-                .totalCount(comments.getTotalPages())
-                .data(commentList)
-                .build();
+    public CommentListResponseDTO getComments(Pageable pageable, SortStandardRequest standard, Long postId) {
+        return commentRepository.findAllByPostId(pageable, standard, postId);
     }
 
     @Override
     public void likeComment(Long commentId, User user) {
         Comment comment = findById(commentId);
-        //UserDetails에서 User정보 받기
         commentUserService.modifyCommentUser(comment, user);
     }
 

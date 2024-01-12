@@ -14,7 +14,8 @@ public class CommentUserService {
     private final CommentUserRepository commentUserRepository;
 
     public void modifyCommentUser(Comment comment, User user) {
-        CommentUser commentUser = commentUserRepository.findByCommentUserPK_CommentAndCommentUserPK_User(comment, user).orElse(null);
+        CommentUser commentUser = commentUserRepository
+                .findCommentUserByIds(comment.getId(), user.getId()).orElse(null);
         if(commentUser == null){
             saveCommentUser(comment, user);
         } else {
@@ -23,7 +24,7 @@ public class CommentUserService {
     }
 
     public int countLike(Comment comment){
-        return commentUserRepository.countByCommentUserPK_Comment(comment);
+        return commentUserRepository.countLike(comment.getId());
     }
 
     private void saveCommentUser(Comment comment, User user) {

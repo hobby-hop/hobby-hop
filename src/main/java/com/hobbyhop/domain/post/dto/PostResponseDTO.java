@@ -17,6 +17,7 @@ public class PostResponseDTO {
     private String postTitle;
     private String postContent;
     private String imageUrl;
+    private Long likeCnt;
     private Timestamp createAt;
     private Timestamp modifiedAt;
 
@@ -26,17 +27,7 @@ public class PostResponseDTO {
                 .postTitle(savedPost.getPostTitle())
                 .postContent(savedPost.getPostContent())
                 .imageUrl(savedPost.getImageUrl())
-                .createAt(savedPost.getCreatedAt())
-                .modifiedAt(savedPost.getModifiedAt())
-                .build();
-    }
-
-    public static PostResponseDTO getDto(Post savedPost) {
-        return PostResponseDTO.builder()
-                .postId(savedPost.getId())
-                .postTitle(savedPost.getPostTitle())
-                .postContent(savedPost.getPostContent())
-                .imageUrl(savedPost.getImageUrl())
+                .likeCnt(savedPost.getLikeCnt())
                 .createAt(savedPost.getCreatedAt())
                 .modifiedAt(savedPost.getModifiedAt())
                 .build();
