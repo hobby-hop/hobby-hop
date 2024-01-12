@@ -1,36 +1,44 @@
 package com.hobbyhop.global.response;
 
+import java.util.List;
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.ErrorResponse;
 
 
 @Getter
+@Builder
 public class ApiResponse<T> {
 
-    private boolean success = false;
+    private boolean success;            // boolean 형은 DEFAULT 값이 FALSE 입니다.
     private HttpStatus httpStatus;
-    private Results result;
+    private List<String> errorMessages;
+    private T data;
 
-    public ApiResponse(HttpStatus httpStatus, Results result) {
-        this.httpStatus = httpStatus;
-        if (httpStatus.is2xxSuccessful()) {
-            this.success = true;
-        }
-        this.result = result;
+    public static <T> ApiResponse<?> ok(T data) {
+        return ApiResponse.builder()
+                .success(true)
+                .httpStatus(HttpStatus.OK)
+                .errorMessages(null)
+                .data(data)
+                .build();
     }
 
-    public static <T> ApiResponse<T> ok(T data) {
-        return new ApiResponse<T>(
-                HttpStatus.OK,
-                new Results(data, null)
-        );
+    public static ApiResponse<?> of(HttpStatus status, List<String> errorMessages) {
+        return ApiResponse.builder()
+                .httpStatus(status)
+                .errorMessages(errorMessages)
+                .data(null)
+                .build();
     }
 
-    public static <T> ApiResponse<T> fail(ErrorResponse errorResponse) {
-        return new ApiResponse<T>(
-                HttpStatus.valueOf(errorResponse.getStatusCode().value()),
-                new Results(null, errorResponse)
-        );
+    public static ApiResponse<?> of(HttpStatus status, String errorMessage) {
+        List<String> errorMessages = List.of(errorMessage);
+
+        return ApiResponse.builder()
+                .httpStatus(status)
+                .errorMessages(errorMessages)
+                .data(null)
+                .build();
     }
 }
