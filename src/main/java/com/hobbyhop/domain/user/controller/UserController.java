@@ -44,13 +44,13 @@ public class UserController {
         ));
     }
 
-//    @PostMapping("/logout")
-//    public ResponseEntity<ApiResponse> logout(HttpServletResponse httpServletResponse) {
-//        userService.logout(httpServletResponse);
-//        return ResponseEntity.ok(ApiResponse.ok(
-//                "로그아웃 성공"
-//        ));
-//    }
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse> logout(HttpServletResponse httpServletResponse) {
+        userService.logout(httpServletResponse);
+        return ResponseEntity.ok(ApiResponse.ok(
+                "로그아웃 성공"
+        ));
+    }
 
     @PatchMapping("/update")
     public ResponseEntity<ApiResponse> update (

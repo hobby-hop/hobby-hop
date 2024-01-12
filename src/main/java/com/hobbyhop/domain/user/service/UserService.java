@@ -42,9 +42,10 @@ public class UserService {
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow();
+        String username = user.getUsername();
 
         validatePassword(user, password);
-        response.setHeader("Authorization", jwtUtil.createToken(email));
+        response.setHeader("Authorization", jwtUtil.createToken(username));
     }
 
     public void logout(HttpServletResponse response) {
