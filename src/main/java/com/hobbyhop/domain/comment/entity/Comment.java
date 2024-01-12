@@ -2,8 +2,17 @@ package com.hobbyhop.domain.comment.entity;
 
 import com.hobbyhop.domain.BaseEntity;
 import com.hobbyhop.domain.post.entity.Post;
-import jakarta.persistence.*;
-import lombok.*;
+import com.hobbyhop.domain.user.entity.User;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
@@ -18,8 +27,8 @@ public class Comment extends BaseEntity {
     @Column(length = 100)
     private String content;
 
-    //@ManyToOne
-    //User user;
+    @ManyToOne
+    User user;
 
     @ManyToOne
     Post post;
