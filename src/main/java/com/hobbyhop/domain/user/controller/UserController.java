@@ -62,7 +62,7 @@ public class UserController {
         ));
     }
 
-    @GetMapping("/user/kakao/callback")
+    @GetMapping("/kakao/callback")
     public String kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
         String token = kakaoService.kakaoLogin(code, response);
 

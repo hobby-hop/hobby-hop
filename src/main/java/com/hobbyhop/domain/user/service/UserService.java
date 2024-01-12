@@ -47,9 +47,9 @@ public class UserService {
         response.setHeader("Authorization", jwtUtil.createToken(email));
     }
 
-//    public void logout(HttpServletResponse response) {
-//        response.setHeader("Authorization", jwtUtil.createToken(null));
-//    }
+    public void logout(HttpServletResponse response) {
+        response.setHeader("Authorization", jwtUtil.createToken(null));
+    }
 
     @Transactional
     public void updateProfile(UpdateProfileDTO updateProfileDTO, UserDetailsImpl userDetails) {

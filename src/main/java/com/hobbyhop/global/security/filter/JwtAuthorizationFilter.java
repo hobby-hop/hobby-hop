@@ -1,8 +1,7 @@
 package com.hobbyhop.global.security.filter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
 import com.hobbyhop.global.security.jwt.JwtUtil;
+import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
 import com.hobbyhop.global.security.userdetails.UserDetailsService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -15,10 +14,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @Slf4j(topic = "JWT 검증 및 인가")
 @RequiredArgsConstructor
@@ -30,9 +29,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String tokenValue = jwtUtil.getJwtFromHeader(request);
 
-        if (StringUtils.hasText(tokenValue)) {
+        if (Objects.nonNull(tokenValue)) {
             if (!jwtUtil.validateToken(tokenValue)) {
-                ObjectMapper objectMapper = new ObjectMapper();
+//                ObjectMapper objectMapper = new ObjectMapper();
 
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.setContentType("application/json");
@@ -44,8 +43,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
             Claims info = jwtUtil.getUserInfo(tokenValue);
 
-            String userName = info.getSubject();
-            setAuthentication(userName);
+            String username = info.getSubject();
+            setAuthentication(username);
         }
 
         filterChain.doFilter(request, response);
@@ -76,9 +75,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 //        filterChain.doFilter(request, response);
 //    }
 
-    public void setAuthentication(String userName) {
+    public void setAuthentication(String username) {
 
-        UserDetailsImpl userDetails = userDetailsService.getUserDetails(userName);
+        UserDetailsImpl userDetails = userDetailsService.getUserDetails(username);
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
 
         SecurityContext context = SecurityContextHolder.createEmptyContext();
