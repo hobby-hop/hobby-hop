@@ -41,7 +41,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 .on(post.user.id.eq(user.id))
                 .where(post.club.id.eq(clubId))
                 .groupBy(post.id)
-                .orderBy(post.id.asc())
+                .orderBy(post.createdAt.desc())
                 .fetchResults();
 
         List<PostResponseDTO> postPageList = query.getResults();
