@@ -7,17 +7,18 @@ import com.hobbyhop.global.request.PageRequestDTO;
 import com.hobbyhop.global.response.ApiResponse;
 import com.hobbyhop.global.response.PageResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @Log4j2
 @RequiredArgsConstructor
 @RequestMapping("/api/clubs")
+@SecurityRequirement(name = "Bearer Authentication")
 public class ClubRestController {
     private final ClubService clubService;
 
