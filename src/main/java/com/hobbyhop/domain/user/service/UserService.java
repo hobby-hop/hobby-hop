@@ -36,7 +36,6 @@ public class UserService {
                 .build();
         userRepository.save(user);
     }
-
     public void login(LoginRequestDTO loginRequestDTO, HttpServletResponse response) {
         String email = loginRequestDTO.getEmail();
         String password = loginRequestDTO.getPassword();
@@ -73,7 +72,6 @@ public class UserService {
             jwtUtil.removeRefreshToken(responseHeaderAccessToken);
             jwtUtil.removeAccessToken(responseHeaderAccessToken);
         }
-
         // response header에 token 반환하지 않도록
         httpServletResponse.setHeader(JwtUtil.AUTHORIZATION_HEADER, "logged-out");
     }
@@ -102,7 +100,6 @@ public class UserService {
             String responseHeaderAccessToken = httpServletResponse.getHeader(JwtUtil.AUTHORIZATION_HEADER);
             jwtUtil.rebaseToken(newAccessToken, responseHeaderAccessToken);
         }
-
         // 바뀐 username을 가진 토큰을 response에 반환
         httpServletResponse.setHeader(JwtUtil.AUTHORIZATION_HEADER, newAccessToken);
     }

@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
@@ -81,11 +80,8 @@ public class JwtUtil {
 
     // HttpServletRequest 에서 JWT 가져오기
     public String getJwtFromHeader(HttpServletRequest request) {
-
         String tokenWithBearer = request.getHeader(AUTHORIZATION_HEADER);
-
         if(StringUtils.hasText(tokenWithBearer) && tokenWithBearer.startsWith(BEARER_PREFIX)) {
-
             return tokenWithBearer;
         }
         return null;
@@ -93,7 +89,6 @@ public class JwtUtil {
 
     // 토큰에서 사용자 정보 가져오기
     public Claims getUserInfo(String tokenValue) {
-
         return Jwts.parserBuilder().setSigningKey(key)
                 .build().parseClaimsJws(tokenValue).getBody();
     }
@@ -146,12 +141,10 @@ public class JwtUtil {
         redisTemplate.opsForValue()
                 .set(username, newAccessToken,
                         expirationTime, TimeUnit.MILLISECONDS);
-
         // 새로 만든 AccessToken을 key로 refreshToken을 다시 DB에 저장
         redisTemplate.opsForValue().set(newAccessToken,
                 BEARER_PREFIX + refreshTokenValue,
                 expirationTime, TimeUnit.MILLISECONDS);
-
         // 만료된 token으로 저장되어있는 refreshToken은 삭제
         redisTemplate.delete(accessToken);
     }
@@ -159,7 +152,6 @@ public class JwtUtil {
     public boolean checkIsLoggedOut(String accessToken) {
         return !redisTemplate.hasKey(accessToken);
     }
-
     public String createExpiredToken(String accessToken) {
         String username = getUserInfo(accessToken.substring(7)).getSubject();
         return createToken(username,0);

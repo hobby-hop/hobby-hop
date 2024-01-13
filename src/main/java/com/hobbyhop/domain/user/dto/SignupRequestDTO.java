@@ -27,6 +27,5 @@ public class SignupRequestDTO {
 	private String confirmPassword;
 
 //	private boolean admin = false;
-//
 //	private String adminToken = "";
 }
