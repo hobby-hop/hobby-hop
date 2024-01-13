@@ -26,6 +26,7 @@ public class ApiResponse<T> {
 
     public static ApiResponse<?> of(HttpStatus status, List<String> errorMessages) {
         return ApiResponse.builder()
+                .success(false)
                 .httpStatus(status)
                 .errorMessages(errorMessages)
                 .data(null)
@@ -36,6 +37,7 @@ public class ApiResponse<T> {
         List<String> errorMessages = List.of(errorMessage);
 
         return ApiResponse.builder()
+                .success(false)
                 .httpStatus(status)
                 .errorMessages(errorMessages)
                 .data(null)

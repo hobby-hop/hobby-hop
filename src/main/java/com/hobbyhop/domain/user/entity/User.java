@@ -14,6 +14,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static com.hobbyhop.domain.user.constant.UserRoleEnum.USER;
+
 @Entity
 @Getter
 @AllArgsConstructor
@@ -35,19 +37,43 @@ public class User {
 
 //	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
-	private UserRoleEnum role = UserRoleEnum.USER;
+	private UserRoleEnum role = USER;
+
+	private Long kakaoId;
 
 	@Builder
-	public User(String username, String email, String password, UserRoleEnum role) {
+	public User(String username, String email, String password) {
 		this.username = username;
 		this.email = email;
 		this.password = password;
+		this.role = USER;
+	}
+
+	public User(String username, String password, String email, UserRoleEnum role, Long kakaoId) {
+		this.username = username;
+		this.password = password;
+		this.email = email;
 		this.role = role;
+		this.kakaoId =kakaoId;
 	}
 
 	public void updateProfile(String updateUsername, String updateEmail, String updatePassword) {
-		this.username = updateUsername;
-		this.email = updateEmail;
-		this.password = updatePassword;
+		if (updateUsername != null && !updateUsername.isEmpty()) {
+			this.username = updateUsername;
+		}
+
+		if (updateEmail != null && !updateEmail.isEmpty()) {
+			this.email = updateEmail;
+		}
+
+		if (updatePassword != null && !updatePassword.isEmpty()) {
+			this.password = updatePassword;
+		}
 	}
+
+	public User kakaoIdUpdate(Long kakaoId) {
+		this.kakaoId = kakaoId;
+		return this;
+	}
+
 }

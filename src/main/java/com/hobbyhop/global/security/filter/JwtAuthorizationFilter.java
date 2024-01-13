@@ -1,8 +1,7 @@
 package com.hobbyhop.global.security.filter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
 import com.hobbyhop.global.security.jwt.JwtUtil;
+import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
 import com.hobbyhop.global.security.userdetails.UserDetailsService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -15,48 +14,70 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @Slf4j(topic = "JWT 검증 및 인가")
 @RequiredArgsConstructor
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
-
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String accessToken = jwtUtil.getJwtFromHeader(request);
 
-        String tokenValue = jwtUtil.getJwtFromHeader(request);
+        if (Objects.nonNull(accessToken)) {
 
-        if(StringUtils.hasText(tokenValue)) {
-            if(!jwtUtil.validateToken(tokenValue)) {
-                ObjectMapper objectMapper = new ObjectMapper();
+            // 로그아웃이 되었는지 확인
+            if (jwtUtil.checkIsLoggedOut(accessToken)) {
+                accessToken = jwtUtil.createExpiredToken(accessToken);
+            }
 
-                response.setStatus(400);
+            String accessTokenValue = accessToken.substring(7);
+
+            // accessToken이 만료되었는지 확인
+            if (jwtUtil.shouldAccessTokenBeRefreshed(accessToken.substring(7))) {
+                String refreshTokenValue = jwtUtil.getRefreshtokenByAccessToken(accessToken).substring(7);
+                // refreshtoken이 유효한지 확인
+                if (jwtUtil.validateToken(refreshTokenValue)) {
+                    // accessToken 재발급
+                    String newAccessToken = jwtUtil.createAccessTokenByRefreshToken(refreshTokenValue);
+                    response.setHeader(JwtUtil.AUTHORIZATION_HEADER, newAccessToken);
+
+                    // DB 토큰도 새로고침
+                    jwtUtil.regenerateToken(newAccessToken, accessToken, refreshTokenValue);
+
+                    // 재발급된 토큰으로 검증 진행하도록 대입
+                    accessTokenValue = newAccessToken.substring(7);
+                }
+                // refreshToken이 유효하지 않다면 accessToken 재발급 없이 만료된 상태로 진행
+            }
+
+            if (!jwtUtil.validateToken(accessTokenValue)) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
-                response.sendError(400, "유효한 토큰이 아닙니다.");
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "유효한 토큰이 아닙니다.");
 
                 return;
             }
 
-            Claims info = jwtUtil.getUserInfo(tokenValue);
+            Claims info = jwtUtil.getUserInfo(accessTokenValue);
 
-            String userName = info.getSubject();
-            setAuthentication(userName);
+            String username = info.getSubject();
+            setAuthentication(username);
         }
 
         filterChain.doFilter(request, response);
     }
 
-    public void setAuthentication(String userName) {
+    public void setAuthentication(String username) {
 
-        UserDetailsImpl userDetails = userDetailsService.getUserDetails(userName);
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        UserDetailsImpl userDetails = userDetailsService.getUserDetails(username);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
 
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         context.setAuthentication(authentication);
