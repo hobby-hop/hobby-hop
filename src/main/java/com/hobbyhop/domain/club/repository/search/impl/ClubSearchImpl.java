@@ -24,17 +24,21 @@ public class ClubSearchImpl extends QuerydslRepositorySupport implements ClubSea
 
         JPQLQuery<Club> query = from(club);
         // 제목 검색
-        query.where(club.title.contains(keyword));
+        if (keyword != null) {
+            query.where(club.title.contains(keyword));
+        }
 
         this.getQuerydsl().applyPagination(pageable, query);
 
+        //
         JPQLQuery<ClubResponseDTO> dtoQuery = query.select(Projections.bean(ClubResponseDTO.class,
+                club.id,
                 club.title,
                 club.content,
-                club.category,
                 club.createdAt,
-                club.modifiedAt
-                ));
+                club.modifiedAt,
+                club.category.id.as("categoryId")
+        ));
         List<ClubResponseDTO> list = dtoQuery.fetch();
         Long count = dtoQuery.fetchCount();
 
