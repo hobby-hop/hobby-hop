@@ -67,8 +67,8 @@ public class WebSecurityConfig {
 //						.requestMatchers("/api/users/**").permitAll()
 //						.requestMatchers("/api/**").permitAll()
 //						.requestMatchers("/api/clubs/emailcheck/**").permitAll() // 그룹 이메일 초대 허용
-                                .requestMatchers("/v2/api-docs", "/swagger-resourcees/**",
-                                        "/swagger-ui.html", "/webjars/**", "/swagger/**").permitAll() // 스웨거 허용
+                                .requestMatchers("/v3/api-docs/**", "/swagger-resourcees/**",
+                                        "/swagger-ui/**", "/webjars/**", "/swagger/**").permitAll() // 스웨거 허용
                                 .anyRequest().authenticated()
         );
 

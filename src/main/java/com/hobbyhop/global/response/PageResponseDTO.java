@@ -42,6 +42,6 @@ public class PageResponseDTO<E> {
 
         this.end = end > last ? last: end;
         this.prev = this.start > 1;
-        this.next = total > this.end * this.size;
+        this.next = total < this.end * this.size;
     }
 }

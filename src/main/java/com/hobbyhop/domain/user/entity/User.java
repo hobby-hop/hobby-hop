@@ -20,7 +20,7 @@ import static com.hobbyhop.domain.user.constant.UserRoleEnum.USER;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "user")
+@Table(name = "users")
 public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
