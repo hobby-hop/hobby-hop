@@ -26,7 +26,8 @@ public class Post extends BaseEntity {
     private Long id;
     private String postTitle;
     private String postContent;
-    private String imageUrl;
+    private String originImageUrl;
+    private String savedImageUrl;
 
     @Column(nullable = false)
     private Long likeCnt;
@@ -54,8 +55,9 @@ public class Post extends BaseEntity {
         this.postContent = postContent;
     }
 
-    public void changeImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void changeImageUrl(String originImageUrl, String savedImageUrl) {
+        this.originImageUrl = originImageUrl;
+        this.savedImageUrl = savedImageUrl;
     }
 
     public void updateLikeCnt(Boolean updated) {
