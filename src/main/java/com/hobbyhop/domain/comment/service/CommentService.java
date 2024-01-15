@@ -11,6 +11,8 @@ public interface CommentService {
 
     CommentResponseDTO postComment(CommentRequestDTO request, Long postId, User user);
 
+    CommentResponseDTO postComment(CommentRequestDTO request, Long postId, Long commentId, User user);
+
     void patchComment(CommentRequestDTO requestDto, Long commentId, User user);
 
     void deleteComment(Long commentId, User user);

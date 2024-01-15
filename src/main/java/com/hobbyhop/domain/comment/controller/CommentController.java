@@ -20,13 +20,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/groups/{groupId}/posts/{postId}/comments")
+@RequestMapping("/api/clubs/{clubId}/posts/{postId}/comments")
 public class CommentController {
     private final CommentService commentService;
 
     @PostMapping
     public ApiResponse<?> postComment(@RequestBody CommentRequestDTO request, @PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails){
         return ApiResponse.ok(commentService.postComment(request, postId, userDetails.getUser()));
+    }
+
+    @PostMapping("/{commentId}")
+    public ApiResponse<?> postComment(@RequestBody CommentRequestDTO request, @PathVariable Long postId, @PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return ApiResponse.ok(commentService.postComment(request, postId, commentId, userDetails.getUser()));
     }
 
     @GetMapping

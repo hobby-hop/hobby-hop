@@ -9,6 +9,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,6 +35,10 @@ public class Comment extends BaseEntity {
 
     @ManyToOne
     Post post;
+
+    // 댓글 하나에 여러 개의 리플이 붙음
+    @OneToMany
+    private List<Comment> reply = new ArrayList<>();
 
     public void changeContent(String content) {
         this.content = content;

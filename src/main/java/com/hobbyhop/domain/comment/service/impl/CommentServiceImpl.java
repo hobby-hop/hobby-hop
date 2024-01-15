@@ -29,19 +29,27 @@ public class CommentServiceImpl implements CommentService {
     public CommentResponseDTO postComment(CommentRequestDTO request, Long postId, User user) {
         Post post = postService.findPost(postId);
 
-        Comment comment = Comment.builder()
-                .content(request.getContent())
-                .post(post)
-                .user(user)
-                .build();
+        Comment comment = buildComment(request, post, user);
+
         commentRepository.save(comment);
 
-        return CommentResponseDTO.builder()
-                .content(comment.getContent())
-                .writer(comment.getUser().getUsername())
-                .like(commentUserService.countLike(comment))
-                .createdAt(comment.getCreatedAt())
-                .build();
+        return buildCommentResponseDTO(comment);
+    }
+
+    @Override
+    public CommentResponseDTO postComment(CommentRequestDTO request, Long postId, Long commentId, User user) {
+        Post post = postService.findPost(postId);
+        // 저장 되어 있는 상위 댓글 가져 오기
+        Comment comment = findById(commentId);
+
+        Comment reply = buildComment(request, post, user);
+
+        commentRepository.save(comment);
+
+        // 상위 댓글에 리플 추가
+        comment.getReply().add(reply);
+
+        return buildCommentResponseDTO(reply);
     }
 
     @Override
@@ -54,7 +62,9 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void deleteComment(Long commentId, User user) {
         Comment comment = findById(commentId);
-        commentRepository.delete(comment);
+        // 본인과 하위 리플의 아이디 값을 저장할 리스트 생성
+        comment.getReply().add(comment);
+        commentRepository.deleteAllInBatch(comment.getReply());
     }
 
     @Override
@@ -70,5 +80,22 @@ public class CommentServiceImpl implements CommentService {
 
     private Comment findById(Long commentId) {
         return commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
+    }
+
+    private Comment buildComment(CommentRequestDTO request, Post post, User user){
+        return Comment.builder()
+                .content(request.getContent())
+                .post(post)
+                .user(user)
+                .build();
+    }
+
+    private CommentResponseDTO buildCommentResponseDTO(Comment comment){
+        return CommentResponseDTO.builder()
+                .content(comment.getContent())
+                .writer(comment.getUser().getUsername())
+                .like(commentUserService.countLike(comment))
+                .createdAt(comment.getCreatedAt())
+                .build();
     }
 }
