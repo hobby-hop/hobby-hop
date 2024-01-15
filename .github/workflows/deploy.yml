@@ -13,16 +13,17 @@ env:
 
 jobs:
   build-docker-image:
-    if: github.event.pull_request.merged == true # PR이 머지가 됬을 때(승인)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
-          java-version: 17
+          distribution: 'adopt'
+          java-version: '17'
+
       - name: Set yml file
         uses: microsoft/variable-substitution@v1
         with:
@@ -37,14 +38,12 @@ jobs:
           cloud.aws.s3.credentials.secretKey: ${{ secrets.ACCESS_KEY_SECRET }}
           cloud.aws.region.static: ${{ REGION }}
 
-
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
-        shell: bash
 
       - name: Build with Gradle
         run: ./gradlew build
-        shell: bash
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
@@ -62,6 +61,7 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: ${{ secrets.DOCKERHUB_TAG }}
+
   deploy:
     needs: build-docker-image
     name: Deploy
@@ -70,4 +70,4 @@ jobs:
       - name: Docker run
         run: |
           sudo docker stop hobby-hop-app && docker rm hobby-hop-app && docker rmi ${{ secrets.DOCKERHUB_TAG }}
-          sudo docker run -d -p 80:8080 ${{ secrets.PROD_ENV }} --name hobby-hop-app ${{ secrets.DOCKERHUB_TAG }}
+          sudo docker run -d -p 80:8080 --name hobby-hop-app ${{ secrets.DOCKERHUB_TAG }}
