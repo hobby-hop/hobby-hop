@@ -13,8 +13,6 @@ import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.global.exception.comment.CommentNotFoundException;
 import com.hobbyhop.global.request.SortStandardRequest;
 import jakarta.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

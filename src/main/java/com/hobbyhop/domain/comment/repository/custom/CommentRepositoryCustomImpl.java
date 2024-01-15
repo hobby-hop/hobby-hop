@@ -5,7 +5,6 @@ import static com.hobbyhop.domain.commentuser.entity.QCommentUser.commentUser;
 import static com.hobbyhop.domain.user.entity.QUser.user;
 
 import com.hobbyhop.domain.comment.dto.*;
-import com.hobbyhop.domain.comment.entity.Comment;
 import com.hobbyhop.global.request.SortStandardRequest;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
