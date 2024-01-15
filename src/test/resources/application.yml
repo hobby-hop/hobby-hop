@@ -16,3 +16,17 @@ spring:
 jwt:
   secret:
     key: i4uIOycoOy5mOybkCDrlYzqsIAg7KKL7JWY64ukIOynhOynnCws
+
+cloud:
+  aws:
+    credentials:
+      accessKey: testkeytestkeytestkeytestkeytestkey
+      secretKey: testkeytestkeytestkeytestkeytestkeytestkey
+    region:
+      static: ap-northeast-2
+      stack:
+        auto: false
+
+    application:
+      bucket:
+        name: hobbyimage
