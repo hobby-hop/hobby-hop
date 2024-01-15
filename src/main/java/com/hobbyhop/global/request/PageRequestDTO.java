@@ -17,7 +17,6 @@ public class PageRequestDTO {
     private int page = 1;
     @Builder.Default
     private int size = 10;
-    private String category;
     private String keyword;
     @Builder.Default
     private boolean isDesc = true;

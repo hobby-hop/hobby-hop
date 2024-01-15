@@ -33,6 +33,9 @@ public enum ErrorCode {
     NOT_FOUND_CLUB_EXCEPTION(401, "해당 클럽을 찾을 수 없습니다."),
     ALREADY_USER_OF_CLUB_EXCEPTION(401, "이미 클럽에 유저가 있습니다."),
 
+    // ClubMember
+    NOT_FOUND_CLUB_MEMBER_EXCEPTION(404, "해당 멤버를 찾을 수 없습니다."),
+
     // Comment
     NOT_FOUND_COMMENT_EXCEPTION(401, "해당 댓글을 찾을 수 없습니다."),
 
