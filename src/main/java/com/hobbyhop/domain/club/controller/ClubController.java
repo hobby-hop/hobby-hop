@@ -29,37 +29,32 @@ public class ClubController {
     @Operation(summary = "새로운 모임 생성")
     @PostMapping
     public ApiResponse<?> makeClub(@RequestBody ClubRequestDTO clubRequestDTO, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        ClubResponseDTO clubResponseDTO = clubService.makeClub(clubRequestDTO, userDetails.getUser());
-        return ApiResponse.ok(clubResponseDTO);
+        return ApiResponse.ok(clubService.makeClub(clubRequestDTO, userDetails.getUser()));
     }
 
     // TODO : implement 검색, 카테고리별 정렬
     @Operation(summary = "모든 모임 리스트 조회")
     @GetMapping
     public ApiResponse<?> getClubList(PageRequestDTO pageRequestDTO) {
-        PageResponseDTO<ClubResponseDTO> list = clubService.getAllClubs(pageRequestDTO);
-        return ApiResponse.ok(list);
+        return ApiResponse.ok(clubService.getAllClubs(pageRequestDTO));
     }
 
     @Operation(summary = "모임 조회")
     @GetMapping("/{clubId}")
     public ApiResponse<?> getClub(@PathVariable("clubId") Long clubId) {
-        ClubResponseDTO clubResponseDTO = clubService.getClub(clubId);
-        return ApiResponse.ok(clubResponseDTO);
+        return ApiResponse.ok(clubService.getClub(clubId));
     }
 
     @Operation(summary = "내가 가입한 모임 조회")
     @GetMapping("/my")
     public ApiResponse<?> getMyClubs(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        List<ClubResponseDTO> myClubs = clubService.getMyClubs(userDetails.getUser());
-        return ApiResponse.ok(myClubs);
+        return ApiResponse.ok(clubService.getMyClubs(userDetails.getUser()));
     }
 
     @Operation(summary = "모임 정보 수정")
     @PatchMapping("/{clubId}")
     public ApiResponse<?> modifyClub(@PathVariable("clubId") Long clubId, @RequestBody ClubRequestDTO clubRequestDTO, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        ClubResponseDTO clubResponseDTO = clubService.modifyClub(clubId, clubRequestDTO, userDetails.getUser());
-        return ApiResponse.ok(clubResponseDTO);
+        return ApiResponse.ok(clubService.modifyClub(clubId, clubRequestDTO, userDetails.getUser()));
     }
 
     @Operation(summary = "모임 삭제")

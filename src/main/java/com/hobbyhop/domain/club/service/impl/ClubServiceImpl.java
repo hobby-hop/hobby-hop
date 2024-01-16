@@ -139,16 +139,14 @@ public class ClubServiceImpl implements ClubService {
     @Override
     public List<ClubResponseDTO> getMyClubs(User user) {
         List<ClubMember> list = clubMemberRepository.findByUser_Id(user.getId());
-        List<ClubResponseDTO> myClubs = list.stream().map(clubMember ->
+
+        return list.stream().map(clubMember ->
            ClubResponseDTO.fromEntity(clubMember.getClub())
         ).collect(Collectors.toList());
-
-        return myClubs;
     }
 
     @Override
     public Club findClub(Long clubId) {
-        Club club = clubRepository.findById(clubId).orElseThrow(ClubNotFoundException::new);
-        return club;
+        return clubRepository.findById(clubId).orElseThrow(ClubNotFoundException::new);
     }
 }
