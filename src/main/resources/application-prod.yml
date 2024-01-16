@@ -25,14 +25,11 @@ jwt:
 
 cloud:
   aws:
+    s3:
+      bucket: hobbyhopbucket
     credentials:
       accessKey: ${{ secret.ACCESS_KEY_ID }}
       secretKey: ${{ secret.ACCESS_KEY_SECRET }}
     region:
       static: ${{ REGION }}
-      stack:
-        auto: false
-
-    application:
-      bucket:
-        name: hobbyhopbucket
+      auto: false
