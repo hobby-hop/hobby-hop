@@ -58,7 +58,6 @@ public class ClubMemberServiceImpl implements ClubMemberService {
 
     @Override
     public ClubMember findByClubAndUser(Long clubId, Long userId) {
-        ClubMember clubMember =  clubMemberRepository.findByClub_IdAndUser_Id(clubId, userId).orElseThrow(ClubMemberNotFoundException::new);
-        return clubMember;
+        return clubMemberRepository.findByClub_IdAndUser_Id(clubId, userId).orElseThrow(ClubMemberNotFoundException::new);
     }
 }

@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,7 +42,7 @@ public class ClubServiceImpl implements ClubService {
         return PageResponseDTO.<ClubResponseDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
                 .dtoList(result.toList())
-                .total((int)result.getTotalElements())
+                .total(Long.valueOf(result.getTotalElements()).intValue())
                 .build();
     }
 
@@ -139,16 +138,14 @@ public class ClubServiceImpl implements ClubService {
     @Override
     public List<ClubResponseDTO> getMyClubs(User user) {
         List<ClubMember> list = clubMemberRepository.findByUser_Id(user.getId());
-        List<ClubResponseDTO> myClubs = list.stream().map(clubMember ->
+
+        return list.stream().map(clubMember ->
            ClubResponseDTO.fromEntity(clubMember.getClub())
         ).collect(Collectors.toList());
-
-        return myClubs;
     }
 
     @Override
     public Club findClub(Long clubId) {
-        Club club = clubRepository.findById(clubId).orElseThrow(ClubNotFoundException::new);
-        return club;
+        return clubRepository.findById(clubId).orElseThrow(ClubNotFoundException::new);
     }
 }
