@@ -3,19 +3,14 @@ package com.hobbyhop.domain.comment.entity;
 import com.hobbyhop.domain.BaseEntity;
 import com.hobbyhop.domain.post.entity.Post;
 import com.hobbyhop.domain.user.entity.User;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.List;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -36,9 +31,13 @@ public class Comment extends BaseEntity {
     @ManyToOne
     Post post;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    private Comment parent;
+
     // 댓글 하나에 여러 개의 리플이 붙음
-    @OneToMany
-    private List<Comment> reply = new ArrayList<>();
+    @OneToMany(mappedBy = "parent", orphanRemoval = true)
+    private List<Comment> reply;
 
     public void changeContent(String content) {
         this.content = content;
