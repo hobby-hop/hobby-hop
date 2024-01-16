@@ -43,7 +43,7 @@ public class ClubServiceImpl implements ClubService {
         return PageResponseDTO.<ClubResponseDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
                 .dtoList(result.toList())
-                .total((int)result.getTotalElements())
+                .total(Long.valueOf(result.getTotalElements()).intValue())
                 .build();
     }
 
