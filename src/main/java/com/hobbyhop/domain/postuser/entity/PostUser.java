@@ -1,6 +1,7 @@
-package com.hobbyhop.domain.postlike.entity;
+package com.hobbyhop.domain.postuser.entity;
 
 import com.hobbyhop.domain.post.entity.Post;
+import com.hobbyhop.domain.postuser.pk.PostUserPK;
 import com.hobbyhop.domain.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
@@ -17,18 +18,18 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostLike{
+public class PostUser {
 
     @EmbeddedId
-    private PostLikeKey postLikeKey;
+    private PostUserPK postUserPK;
 
     @Column(nullable = false)
     private Boolean isLiked;
 
-    public static PostLike PostLikeBuilder(User user, Post post) {
+    public static PostUser PostLikeBuilder(User user, Post post) {
 
-        return PostLike.builder()
-                .postLikeKey(PostLikeKey.builder()
+        return PostUser.builder()
+                .postUserPK(PostUserPK.builder()
                         .user(user)
                         .post(post)
                         .build())

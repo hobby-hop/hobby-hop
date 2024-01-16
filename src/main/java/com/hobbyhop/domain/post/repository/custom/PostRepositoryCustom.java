@@ -1,4 +1,4 @@
-package com.hobbyhop.domain.post.repository;
+package com.hobbyhop.domain.post.repository.custom;
 
 import com.hobbyhop.domain.post.dto.PostPageResponseDTO;
 import org.springframework.data.domain.Pageable;

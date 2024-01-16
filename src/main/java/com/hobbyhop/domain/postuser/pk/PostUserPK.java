@@ -1,4 +1,4 @@
-package com.hobbyhop.domain.postlike.entity;
+package com.hobbyhop.domain.postuser.pk;
 
 import com.hobbyhop.domain.post.entity.Post;
 import com.hobbyhop.domain.user.entity.User;
@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostLikeKey implements Serializable {
+public class PostUserPK implements Serializable {
 
     @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
