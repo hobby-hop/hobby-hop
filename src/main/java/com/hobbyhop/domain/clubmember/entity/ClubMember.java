@@ -1,6 +1,7 @@
 package com.hobbyhop.domain.clubmember.entity;
 
 import com.hobbyhop.domain.club.entity.Club;
+import com.hobbyhop.domain.clubmember.enums.MemberRole;
 import jakarta.persistence.*;
 import com.hobbyhop.domain.user.entity.User;
 import lombok.AllArgsConstructor;
@@ -25,4 +26,7 @@ public class ClubMember {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Enumerated(EnumType.STRING)
+    private MemberRole memberRole;
 }
