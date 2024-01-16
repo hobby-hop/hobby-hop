@@ -11,7 +11,6 @@ import static com.hobbyhop.domain.user.constant.UserRoleEnum.USER;
 
 @Entity
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "users")
 public class User {
@@ -28,9 +27,8 @@ public class User {
     @Column(length = 100, nullable = false)
     private String password;
 
-    //	@Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private UserRoleEnum role = USER;
+    private UserRoleEnum role;
 
     private Long kakaoId;
 
