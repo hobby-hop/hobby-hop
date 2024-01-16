@@ -8,6 +8,7 @@ import com.hobbyhop.domain.user.service.KakaoService;
 import com.hobbyhop.domain.user.service.UserService;
 import com.hobbyhop.global.response.ApiResponse;
 import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -52,6 +53,7 @@ public class UserController {
     }
 
     @PatchMapping("/update")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<ApiResponse> update(
             @RequestBody UpdateProfileDTO updateProfileDTO,
             @AuthenticationPrincipal UserDetailsImpl userDetails,

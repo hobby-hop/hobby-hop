@@ -35,6 +35,11 @@ public enum ErrorCode {
 
     // ClubMember
     NOT_FOUND_CLUB_MEMBER_EXCEPTION(404, "해당 멤버를 찾을 수 없습니다."),
+    NO_PERMISSION_EXCEPTION(403, "수행할 권한이 없습니다."),
+    CLUB_MEMBER_ALREADY_JOINED_EXCEPTION(409, "이미 가입된 유저입니다."),
+
+    // JoinReqeust
+    NO_SUCH_REQUEST_EXCEPTION(404, "존재하지 않는 요청입니다."),
 
     // Comment
     NOT_FOUND_COMMENT_EXCEPTION(401, "해당 댓글을 찾을 수 없습니다."),

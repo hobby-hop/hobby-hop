@@ -1,0 +1,38 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${USER_NAME}
+    password: ${PASSWORD}
+    url: ${DB_URL}
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+
+logging:
+  level:
+    org.springframework: info
+    com.hobbyhop: debug
+    org.springframework.security: debug
+
+jwt:
+  secret:
+    key: 7Iqk7YyM66W07YOA7L2U65Sp7YG065+9U3ByaW5n6rCV7J2Y7Yqc7YSw7LWc7JuQ67mI7J6F64uI64ukLg==
+
+cloud:
+  aws:
+    credentials:
+      accessKey: ${{ secret.ACCESS_KEY_ID }}
+      secretKey: ${{ secret.ACCESS_KEY_SECRET }}
+    region:
+      static: ${{ REGION }}
+      stack:
+        auto: false
+
+    application:
+      bucket:
+        name: hobbyhopbucket

@@ -6,59 +6,68 @@ on:
 
 env:
   S3_BUCKET_NAME: hobbyhopbucket
-  RESOURCE_PATH: ./src/main/resources/application.yml
+  RESOURCE_PATH: ./src/main/resources/application-prod.yml
   CODE_DEPLOY_APPLICATION_NAME: hobby_hop_ci_cd
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: dev
   REGION: ap-northeast-2
 
 jobs:
-  build:
+  build-docker-image:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
-          java-version: 17
+          distribution: 'adopt'
+          java-version: '17'
+
       - name: Set yml file
         uses: microsoft/variable-substitution@v1
         with:
           files: ${{ env.RESOURCE_PATH}}
         env:
-          spring.datasource.url: ${{ secrets.RDS_HOST}}
-          spring.datasource.username: ${{ secrets.RDS_USERNAME}}
-          spring.datasource.password: ${{ secrets.RDS_PASSWORD}}
-          jwt.secret.key: ${{ secrets.JWT_SECRET_KEY}}
-
+          spring.datasource.url: ${{ secrets.RDS_HOST }}
+          spring.datasource.username: ${{ secrets.RDS_USERNAME }}
+          spring.datasource.password: ${{ secrets.RDS_PASSWORD }}
+          jwt.secret.key: ${{ secrets.JWT_SECRET_KEY }}
+          cloud.aws.s3.bucket: ${{ env.S3_BUCKET_NAME }}
+          cloud.aws.s3.credentials.accessKey: ${{ secrets.ACCESS_KEY_ID }}
+          cloud.aws.s3.credentials.secretKey: ${{ secrets.ACCESS_KEY_SECRET }}
+          cloud.aws.region.static: ${{ env.REGION }}
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
-        shell: bash
 
       - name: Build with Gradle
         run: ./gradlew build
-        shell: bash
 
-      # 추가
-      - name: Make zip file #1
-        run: zip -qq -r ./$GITHUB_SHA.zip .
-        shell: bash
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
 
-      - name: Configure AWS credentials #2
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
         with:
-          aws-access-key-id: ${{ secrets.ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.ACCESS_KEY_SECRET }}
-          aws-region: ${{ env.REGION }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Upload to S3 #3
-        run: aws s3 cp --region ${{ env.REGION }} ./$GITHUB_SHA.zip s3://${{ env.S3_BUCKET_NAME }}/$GITHUB_SHA.zip
+      - name: Build and push to DockerHub
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: ${{ secrets.DOCKERHUB_TAG }}
 
-      - name: Code Deploy #4
-        run: aws deploy create-deployment --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }}
-          --deployment-config-name CodeDeployDefault.OneAtATime
-          --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }}
-          --s3-location bucket=${{ env.S3_BUCKET_NAME }},bundleType=zip,key=$GITHUB_SHA.zip
+  deploy:
+    needs: build-docker-image
+    name: Deploy
+    runs-on: [ self-hosted, label-development ]
+    steps:
+      - name: Docker run
+        run: |
+          sudo docker stop hobbyhopapp && docker rm hobbyhopapp && docker rmi ${{ secrets.DOCKERHUB_TAG }}
+          sudo docker run -d -p 80:8080 --name hobbyhopapp ${{ secrets.DOCKERHUB_TAG }}

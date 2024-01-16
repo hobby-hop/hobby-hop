@@ -17,6 +17,7 @@ public class ClubMemberResponseDTO {
 
     public static ClubMemberResponseDTO fromEntity(ClubMember clubMember) {
         return ClubMemberResponseDTO.builder()
+                .id(clubMember.getId())
                 .userId(clubMember.getUser().getId())
                 .clubId(clubMember.getClub().getId())
                 .build();
