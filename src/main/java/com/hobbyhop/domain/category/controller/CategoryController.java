@@ -18,9 +18,8 @@ public class CategoryController {
 
     @PostMapping
     public ApiResponse<?> makeCategory(@RequestBody CategoryRequestDTO categoryRequestDTO) {
-        CategoryResponseDTO categoryResponseDTO = categoryService.makeCategory(categoryRequestDTO);
 
-        return ApiResponse.ok(categoryResponseDTO);
+        return ApiResponse.ok(categoryService.makeCategory(categoryRequestDTO));
     }
 
     @DeleteMapping("/{categoryId}")
