@@ -8,12 +8,18 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
+import java.sql.Timestamp;
 
 @Entity
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@SQLDelete(sql = "UPDATE club_member SET deleted_at = NOW() where id=?")
+@Where(clause = "deleted_at is NULL")
 public class ClubMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,4 +35,7 @@ public class ClubMember {
 
     @Enumerated(EnumType.STRING)
     private MemberRole memberRole;
+
+    @Column(name="deleted_at")
+    private Timestamp deletedAt;
 }
