@@ -133,11 +133,11 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public void makePostLike(UserDetailsImpl userDetails, Long clubId, Long postId){
+    public void makePostUser(UserDetailsImpl userDetails, Long clubId, Long postId){
 
         User user = userDetails.getUser();
         Post post = findAndCheckPostAndClub(clubId, postId);
 
-        postUserService.postLike(user, post);
+        postUserService.postUser(user, post);
     }
 }

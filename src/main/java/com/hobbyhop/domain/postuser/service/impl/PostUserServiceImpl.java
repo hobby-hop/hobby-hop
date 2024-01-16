@@ -14,17 +14,17 @@ public class PostUserServiceImpl implements PostUserService {
 
     private final PostUserRepository postUserRepository;
 
-    public void postLike(User user, Post post) {
+    public void postUser(User user, Post post) {
 
-        PostUser postUser = postUserRepository.findByPostLikeKey_UserAndPostLikeKey_Post(user, post)
-                .orElseGet(() -> savePostLike(user, post));
+        PostUser postUser = postUserRepository.findByPostUserPK_UserAndPostUserPK_Post(user, post)
+                .orElseGet(() -> savePostUser(user, post));
 
         Boolean update = postUser.updateLike();
         post.updateLikeCnt(update);
     }
 
-    public PostUser savePostLike(User user, Post post) {
+    public PostUser savePostUser(User user, Post post) {
 
-        return postUserRepository.save(PostUser.PostLikeBuilder(user, post));
+        return postUserRepository.save(PostUser.PostUserBuilder(user, post));
     }
 }

@@ -5,5 +5,5 @@ import com.hobbyhop.domain.user.entity.User;
 
 public interface PostUserService {
 
-    void postLike(User user, Post post);
+    void postUser(User user, Post post);
 }

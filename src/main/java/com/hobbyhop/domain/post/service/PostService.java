@@ -30,5 +30,5 @@ public interface PostService {
 
     void deletePost(UserDetailsImpl userDetails, Long clubId, Long postId);
 
-    void makePostLike(UserDetailsImpl userDetails, Long clubId, Long postId);
+    void makePostUser(UserDetailsImpl userDetails, Long clubId, Long postId);
 }

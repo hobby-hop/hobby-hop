@@ -9,5 +9,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PostUserRepository extends JpaRepository<PostUser, PostUserPK> {
 
-    Optional<PostUser> findByPostLikeKey_UserAndPostLikeKey_Post(User user, Post post);
+    Optional<PostUser> findByPostUserPK_UserAndPostUserPK_Post(User user, Post post);
 }
