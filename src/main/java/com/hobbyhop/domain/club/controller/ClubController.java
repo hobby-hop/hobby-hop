@@ -3,7 +3,6 @@ package com.hobbyhop.domain.club.controller;
 import com.hobbyhop.domain.club.dto.ClubRequestDTO;
 import com.hobbyhop.domain.club.dto.ClubResponseDTO;
 import com.hobbyhop.domain.club.service.ClubService;
-import com.hobbyhop.domain.clubmember.dto.ClubMemberResponseDTO;
 import com.hobbyhop.domain.clubmember.service.ClubMemberService;
 import com.hobbyhop.global.request.PageRequestDTO;
 import com.hobbyhop.global.response.ApiResponse;
@@ -24,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/clubs")
 @SecurityRequirement(name = "Bearer Authentication")
-public class ClubRestController {
+public class ClubController {
     private final ClubService clubService;
     private final ClubMemberService clubMemberService;
 
