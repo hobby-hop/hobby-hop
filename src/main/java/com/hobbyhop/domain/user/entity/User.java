@@ -54,11 +54,9 @@ public class User {
         if (updateUsername != null && !updateUsername.isEmpty()) {
             this.username = updateUsername;
         }
-
         if (updateEmail != null && !updateEmail.isEmpty()) {
             this.email = updateEmail;
         }
-
         if (updatePassword != null && !updatePassword.isEmpty()) {
             this.password = updatePassword;
         }

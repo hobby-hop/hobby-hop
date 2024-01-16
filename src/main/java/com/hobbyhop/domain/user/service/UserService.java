@@ -32,7 +32,6 @@ public class UserService {
                 .username(signupRequestDTO.getUsername())
                 .password(passwordEncoder.encode(signupRequestDTO.getPassword()))
                 .email(signupRequestDTO.getEmail())
-//                .role(signupRequestDTO.getRole())
                 .build();
         userRepository.save(user);
     }
