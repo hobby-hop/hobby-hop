@@ -35,7 +35,7 @@ public class CommentServiceImpl implements CommentService {
 
         commentRepository.save(comment);
 
-        return buildCommentResponseDTO(comment);
+        return CommentResponseDTO.buildDTO(comment, getLike(comment));
     }
 
     @Override
@@ -51,7 +51,7 @@ public class CommentServiceImpl implements CommentService {
         // 상위 댓글에 리플 추가
         comment.getReply().add(reply);
 
-        return buildCommentResponseDTO(reply);
+        return CommentResponseDTO.buildDTO(comment, getLike(comment));
     }
 
     @Override
@@ -94,12 +94,7 @@ public class CommentServiceImpl implements CommentService {
                 .build();
     }
 
-    private CommentResponseDTO buildCommentResponseDTO(Comment comment){
-        return CommentResponseDTO.builder()
-                .content(comment.getContent())
-                .writer(comment.getUser().getUsername())
-                .like(commentUserService.countLike(comment))
-                .createdAt(comment.getCreatedAt())
-                .build();
+    private int getLike(Comment comment){
+        return commentUserService.countLike(comment);
     }
 }
