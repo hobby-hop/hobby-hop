@@ -1,4 +1,4 @@
-package com.hobbyhop.common.config;
+package com.hobbyhop.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hobbyhop.global.response.ApiResponse;
