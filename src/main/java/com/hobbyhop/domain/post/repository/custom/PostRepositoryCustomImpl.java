@@ -1,7 +1,7 @@
-package com.hobbyhop.domain.post.repository;
+package com.hobbyhop.domain.post.repository.custom;
 
 import static com.hobbyhop.domain.post.entity.QPost.post;
-import static com.hobbyhop.domain.postlike.entity.QPostLike.postLike;
+import static com.hobbyhop.domain.postuser.entity.QPostUser.postUser;
 import static com.hobbyhop.domain.user.entity.QUser.user;
 
 import com.hobbyhop.domain.post.dto.PostPageResponseDTO;
@@ -9,7 +9,6 @@ import com.hobbyhop.domain.post.dto.PostResponseDTO;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.sql.Timestamp;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -36,8 +35,8 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                         )
                 )
                 .from(post)
-                .leftJoin(postLike)
-                .on(post.id.eq(postLike.postLikeKey.post.id))
+                .leftJoin(postUser)
+                .on(post.id.eq(postUser.postUserPK.post.id))
                 .join(user)
                 .on(post.user.id.eq(user.id))
                 .where(post.club.id.eq(clubId))
