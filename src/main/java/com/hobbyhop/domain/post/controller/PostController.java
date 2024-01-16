@@ -74,7 +74,7 @@ public class PostController {
     public ApiResponse<?> likePost(@PathVariable Long clubId,
             @PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        postService.makePostLike(userDetails, clubId, postId);
+        postService.makePostUser(userDetails, clubId, postId);
         return ApiResponse.ok("좋아요 성공");
     }
 

@@ -26,7 +26,7 @@ public class PostUser {
     @Column(nullable = false)
     private Boolean isLiked;
 
-    public static PostUser PostLikeBuilder(User user, Post post) {
+    public static PostUser PostUserBuilder(User user, Post post) {
 
         return PostUser.builder()
                 .postUserPK(PostUserPK.builder()
