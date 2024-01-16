@@ -23,15 +23,15 @@ public class JoinRequestController {
     @Operation(summary = "가입 신청")
     @PostMapping
     public ApiResponse<?> sendRequest(@PathVariable("clubId") Long clubId,@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        JoinResponseDTO joinResponseDTO = joinRequestService.sendRequest(clubId, userDetails.getUser());
-        return ApiResponse.ok(joinResponseDTO);
+
+        return ApiResponse.ok(joinRequestService.sendRequest(clubId, userDetails.getUser()));
     }
 
     @Operation(summary = "가입 신청 조회")
     @GetMapping
     public ApiResponse<?> getRequests(@PathVariable("clubId") Long clubId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        List<JoinResponseDTO> list = joinRequestService.getRequestByClub(clubId, userDetails.getUser());
-        return ApiResponse.ok(list);
+
+        return ApiResponse.ok(joinRequestService.getRequestByClub(clubId, userDetails.getUser()));
     }
 
     @Operation(summary = "가입 신청에 대한 처리")
