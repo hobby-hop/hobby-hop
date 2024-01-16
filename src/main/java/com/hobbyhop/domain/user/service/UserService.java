@@ -1,12 +1,12 @@
 package com.hobbyhop.domain.user.service;
 
-import com.hobbyhop.domain.user.dto.UpdateProfileDTO;
-import com.hobbyhop.global.security.jwt.JwtUtil;
-import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
 import com.hobbyhop.domain.user.dto.LoginRequestDTO;
 import com.hobbyhop.domain.user.dto.SignupRequestDTO;
+import com.hobbyhop.domain.user.dto.UpdateProfileDTO;
 import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.domain.user.repository.UserRepository;
+import com.hobbyhop.global.security.jwt.JwtUtil;
+import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,6 @@ public class UserService {
                 .username(signupRequestDTO.getUsername())
                 .password(passwordEncoder.encode(signupRequestDTO.getPassword()))
                 .email(signupRequestDTO.getEmail())
-//                .role(signupRequestDTO.getRole())
                 .build();
         userRepository.save(user);
     }
@@ -73,7 +72,6 @@ public class UserService {
             jwtUtil.removeRefreshToken(responseHeaderAccessToken);
             jwtUtil.removeAccessToken(responseHeaderAccessToken);
         }
-
         // response header에 token 반환하지 않도록
         httpServletResponse.setHeader(JwtUtil.AUTHORIZATION_HEADER, "logged-out");
     }
@@ -86,9 +84,10 @@ public class UserService {
 
         validatePassword(user, updateProfileDTO.getOldPassword());
         editComparison(updateProfileDTO);
+        String newPassword = passwordEncoder.encode(updateProfileDTO.getNewPassword());
 
         // Call the updateProfile method in the User entity
-        user.updateProfile(updateProfileDTO.getUsername(), updateProfileDTO.getEmail(), updateProfileDTO.getConfirmPassword());
+        user.updateProfile(updateProfileDTO.getUsername(), updateProfileDTO.getEmail(), newPassword);
 
         // token의 subject를 username으로 발급했기 때문에
         // token을 바뀐 username으로 재발급
@@ -102,7 +101,6 @@ public class UserService {
             String responseHeaderAccessToken = httpServletResponse.getHeader(JwtUtil.AUTHORIZATION_HEADER);
             jwtUtil.rebaseToken(newAccessToken, responseHeaderAccessToken);
         }
-
         // 바뀐 username을 가진 토큰을 response에 반환
         httpServletResponse.setHeader(JwtUtil.AUTHORIZATION_HEADER, newAccessToken);
     }
@@ -127,16 +125,16 @@ public class UserService {
         }
     }
 
-    private void validateExistingUser (SignupRequestDTO signupRequestDTO) {
-        if(userRepository.findByUsername((signupRequestDTO.getUsername())).isPresent()){
+    private void validateExistingUser(SignupRequestDTO signupRequestDTO) {
+        if (userRepository.findByUsername((signupRequestDTO.getUsername())).isPresent()) {
             throw new IllegalArgumentException("이미 존재하는 유저입니다.");
         }
 
-        if(userRepository.findByEmail((signupRequestDTO.getEmail())).isPresent()){
+        if (userRepository.findByEmail((signupRequestDTO.getEmail())).isPresent()) {
             throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
         }
 
-        if (! signupRequestDTO.getConfirmPassword().equals(signupRequestDTO.getPassword())) {
+        if (!signupRequestDTO.getConfirmPassword().equals(signupRequestDTO.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
     }
