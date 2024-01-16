@@ -40,7 +40,7 @@ public class ClubSearchImpl extends QuerydslRepositorySupport implements ClubSea
                 club.category.id.as("categoryId")
         ));
         List<ClubResponseDTO> list = dtoQuery.fetch();
-        Long count = dtoQuery.fetchCount();
+        long count = dtoQuery.fetchCount();
 
         return new PageImpl<>(list, pageable, count);
     }
