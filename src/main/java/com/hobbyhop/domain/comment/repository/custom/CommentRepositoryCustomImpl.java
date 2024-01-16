@@ -1,16 +1,22 @@
 package com.hobbyhop.domain.comment.repository.custom;
 
-import static com.hobbyhop.domain.comment.entity.QComment.comment;
-import static com.hobbyhop.domain.commentuser.entity.QCommentUser.commentUser;
-import static com.hobbyhop.domain.user.entity.QUser.user;
-
-import com.hobbyhop.domain.comment.dto.*;
+import com.hobbyhop.domain.comment.dto.CommentListResponseDTO;
+import com.hobbyhop.domain.comment.dto.CommentResponseDTO;
+import com.hobbyhop.domain.comment.dto.CommentVO;
 import com.hobbyhop.global.request.SortStandardRequest;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+
+import static com.hobbyhop.domain.comment.entity.QComment.comment;
+import static com.hobbyhop.domain.commentuser.entity.QCommentUser.commentUser;
+import static com.hobbyhop.domain.user.entity.QUser.user;
 
 @RequiredArgsConstructor
 public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
@@ -19,14 +25,16 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
 
     @Override
     public CommentListResponseDTO findAllByPostId(Pageable pageable, SortStandardRequest standard, Long postId) {
-        List<CommentResponseDTO> query = jpaQueryFactory
+        List<CommentVO> query = jpaQueryFactory
                 .select(
                         Projections.constructor(
-                                CommentResponseDTO.class,
+                                CommentVO.class,
                                 comment.content,
                                 user.username,
                                 commentUser.count().intValue(),
-                                comment.createdAt
+                                comment.createdAt,
+                                comment.id,
+                                comment.parent.id
                         )
                 )
                 .from(comment)
@@ -39,38 +47,84 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
                 .orderBy(comment.id.asc())
                 .fetch();
 
-        switch (standard.getSortStandard()){
-            case 1:
-                if (standard.isDesc()) {
-                    query.sort(Comparator.comparing(CommentResponseDTO::getLike));
-                } else {
-                    query.sort(Comparator.comparing(CommentResponseDTO::getLike).reversed());
-                }
-                break;
-                // 대댓글 적용 후 추가 예정
-//            case 2:
-//                break;
-            default:
-                if (standard.isDesc()) {
-                    query.sort(Comparator.comparing(CommentResponseDTO::getCreatedAt));
-                } else {
-                    query.sort(Comparator.comparing(CommentResponseDTO::getCreatedAt).reversed());
-                }
-                break;
-        }
+        List<CommentResponseDTO> content = VOtoDTO(query);
+
+        sort(standard, content);
 
         List<CommentResponseDTO> paging = new ArrayList<>();
 
-        for(int i = (pageable.getPageNumber()-1) * pageable.getPageSize(); i < Long.valueOf(pageable.getOffset()).intValue(); i++){
-            paging.add(query.get(i));
+        for (int i = (pageable.getPageNumber() - 1) * pageable.getPageSize(); i < Long.valueOf(pageable.getOffset()).intValue() && i < content.size(); i++) {
+            paging.add(content.get(i));
         }
 
         //Page<CommentResponseDTO> data = new PageImpl<>(paging, pageable, query.size());
 
         return CommentListResponseDTO.builder()
                 .page(pageable.getPageNumber())
-                .totalCount(query.size())
+                .totalCount(content.size())
                 .data(paging)
                 .build();
+    }
+
+    private List<CommentResponseDTO> VOtoDTO(List<CommentVO> query) {
+        List<CommentResponseDTO> content = new ArrayList<>();
+
+        for(CommentVO c: query){
+            if(c.getParent() == null){
+                content.add(CommentResponseDTO.builder()
+                        .content(c.getContent())
+                        .writer(c.getWriter())
+                        .like(c.getLike())
+                        .createdAt(c.getCreatedAt())
+                        .reply(addVOtoDTO(query, c.getId()))
+                        .build());
+            }
+        }
+        return content;
+    }
+
+    private List<CommentResponseDTO> addVOtoDTO(List<CommentVO> vo, Long id){
+        List<CommentResponseDTO> dto = new ArrayList<>();
+        for(CommentVO c: vo){
+            if(Objects.equals(c.getParent(), id)){
+                dto.add(CommentResponseDTO.builder()
+                        .content(c.getContent())
+                        .writer(c.getWriter())
+                        .like(c.getLike())
+                        .createdAt(c.getCreatedAt())
+                        .reply(addVOtoDTO(vo, c.getId()))
+                        .build());
+            }
+        }
+        return dto;
+    }
+
+    private void sort(SortStandardRequest standard, List<CommentResponseDTO> content){
+        for (CommentResponseDTO c : content) {
+            if (c.getReply().size() > 3)
+                sort(standard, c.getReply());
+            if (c.getReply().size() < 2)
+                return;
+        }
+
+        switch (standard.getSortStandard()) {
+            case 1:
+                if (standard.isDesc()) {
+                    content.sort(Comparator.comparing(CommentResponseDTO::getLike));
+                } else {
+                    content.sort(Comparator.comparing(CommentResponseDTO::getLike).reversed());
+                }
+                break;
+            // 대댓글 적용 후 추가 예정
+//            case 2:
+//                break;
+            default:
+                if (standard.isDesc()) {
+                    content.sort(Comparator.comparing(CommentResponseDTO::getCreatedAt));
+                } else {
+                    content.sort(Comparator.comparing(CommentResponseDTO::getCreatedAt).reversed());
+                }
+                break;
+        }
     }
 }

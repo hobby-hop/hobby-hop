@@ -17,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 @Service
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
@@ -29,7 +31,7 @@ public class CommentServiceImpl implements CommentService {
     public CommentResponseDTO postComment(CommentRequestDTO request, Long postId, User user) {
         Post post = postService.findPost(postId);
 
-        Comment comment = buildComment(request, post, user);
+        Comment comment = buildComment(request, post, user, null);
 
         commentRepository.save(comment);
 
@@ -42,7 +44,7 @@ public class CommentServiceImpl implements CommentService {
         // 저장 되어 있는 상위 댓글 가져 오기
         Comment comment = findById(commentId);
 
-        Comment reply = buildComment(request, post, user);
+        Comment reply = buildComment(request, post, user, comment);
 
         commentRepository.save(comment);
 
@@ -82,11 +84,13 @@ public class CommentServiceImpl implements CommentService {
         return commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
     }
 
-    private Comment buildComment(CommentRequestDTO request, Post post, User user){
+    private Comment buildComment(CommentRequestDTO request, Post post, User user, Comment comment){
         return Comment.builder()
                 .content(request.getContent())
                 .post(post)
                 .user(user)
+                .parent(comment)
+                .reply(new ArrayList<>())
                 .build();
     }
 
