@@ -1,4 +1,4 @@
-package com.hobbyhop.common.config;
+package com.hobbyhop.global.config;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
