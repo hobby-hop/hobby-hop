@@ -12,6 +12,7 @@ import com.hobbyhop.domain.joinrequest.repository.JoinRequestRepository;
 import com.hobbyhop.domain.joinrequest.service.JoinRequestService;
 import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.global.exception.clubmember.ClubMemberRoleException;
+import com.hobbyhop.global.exception.joinrequest.NoSuchRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,16 +52,14 @@ public class JoinRequestServiceImpl implements JoinRequestService {
             throw new ClubMemberRoleException();
         }
 
-        List<JoinResponseDTO> list = joinRequestRepository.findByClub_IdAndStatus(clubId, JoinRequestStatus.PENDING).stream()
+        return joinRequestRepository.findByClub_IdAndStatus(clubId, JoinRequestStatus.PENDING).stream()
                 .map(joinRequest -> JoinResponseDTO.fromEntity(joinRequest)).collect(Collectors.toList());
-
-        return list;
     }
 
     @Override
     @Transactional
     public void processRequest(Long requestId, JoinRequestStatus status) {
-        JoinRequest joinRequest = joinRequestRepository.findById(requestId).orElseThrow();
+        JoinRequest joinRequest = joinRequestRepository.findById(requestId).orElseThrow(NoSuchRequestException::new);
         joinRequest.changeStatus(status);
 
         joinRequestRepository.save(joinRequest);
@@ -69,6 +68,4 @@ public class JoinRequestServiceImpl implements JoinRequestService {
             clubMemberService.joinClub(joinRequest.getClub().getId(), joinRequest.getUser());
         }
     }
-
-
 }
