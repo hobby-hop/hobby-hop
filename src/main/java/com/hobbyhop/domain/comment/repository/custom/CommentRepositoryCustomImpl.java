@@ -115,9 +115,13 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
                     content.sort(Comparator.comparing(CommentResponseDTO::getLike).reversed());
                 }
                 break;
-            // 대댓글 적용 후 추가 예정
-//            case 2:
-//                break;
+            case 2:
+                if (standard.isDesc()) {
+                    content.sort(Comparator.comparingInt(c -> c.getReply().size()));
+                } else {
+                    content.sort((c1, c2) -> Integer.compare(c2.getReply().size(), c1.getReply().size()));
+                }
+                break;
             default:
                 if (standard.isDesc()) {
                     content.sort(Comparator.comparing(CommentResponseDTO::getCreatedAt));
