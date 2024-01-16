@@ -1,6 +1,7 @@
 package com.hobbyhop.global.security.jwt;
 
 import com.hobbyhop.global.exception.jwt.ExpiredJwtTokenException;
+import com.hobbyhop.global.exception.jwt.InvalidJwtException;
 import com.hobbyhop.global.exception.jwt.InvalidJwtSignatureException;
 import com.hobbyhop.global.exception.jwt.UnsupportedJwtTokenException;
 import io.jsonwebtoken.*;
@@ -68,7 +69,7 @@ public class JwtUtil {
         } catch (UnsupportedJwtException e) {
             throw new UnsupportedJwtTokenException();
         } catch (IllegalArgumentException e) {
-            throw new UnsupportedJwtTokenException();
+            throw new InvalidJwtException();
         }
     }
 
@@ -100,17 +101,13 @@ public class JwtUtil {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessTokenValue);
             return false;
         } catch (SecurityException | MalformedJwtException e) {
-            log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
-            return false;
+            throw new InvalidJwtSignatureException();
         } catch (ExpiredJwtException e) {
-            log.error("Expired JWT token, 만료된 JWT token 입니다.");
-            return true;
+            throw new ExpiredJwtTokenException();
         } catch (UnsupportedJwtException e) {
-            log.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
-            return false;
+            throw new UnsupportedJwtTokenException();
         } catch (IllegalArgumentException e) {
-            log.error("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
-            return false;
+            throw new InvalidJwtException();
         }
     }
 
