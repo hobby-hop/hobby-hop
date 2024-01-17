@@ -11,6 +11,7 @@ import com.hobbyhop.domain.clubmember.service.ClubMemberService;
 import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.global.exception.clubmember.ClubMemberAlreadyJoined;
 import com.hobbyhop.global.exception.clubmember.ClubMemberNotFoundException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,9 +33,9 @@ public class ClubMemberServiceImpl implements ClubMemberService {
         Club club = clubService.findClub(clubId);
 
         // 클럽에 이미 가입되어있는지 확인
-        clubMemberRepository.findByClub_IdAndUser_Id(clubId, user.getId()).ifPresent(existingClubMember -> {
+        if(clubMemberRepository.existsByClubMemberByClub_Id(clubId, user.getId()))
             throw new ClubMemberAlreadyJoined();
-        });
+
 
         // 가입시키기
         ClubMember clubMember = ClubMember.builder()
@@ -59,5 +60,15 @@ public class ClubMemberServiceImpl implements ClubMemberService {
     @Override
     public ClubMember findByClubAndUser(Long clubId, Long userId) {
         return clubMemberRepository.findByClub_IdAndUser_Id(clubId, userId).orElseThrow(ClubMemberNotFoundException::new);
+    }
+
+    @Override
+    public List<ClubMember> findByUserId(Long userId){
+        return clubMemberRepository.findByUser_Id(userId);
+    }
+
+    @Override
+    public void removeClubMemberByClub_Id(Long clubId){
+        clubMemberRepository.deleteClubMemberByClub_Id(clubId);
     }
 }
