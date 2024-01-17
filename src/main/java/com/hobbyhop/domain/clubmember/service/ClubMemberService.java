@@ -14,8 +14,4 @@ public interface ClubMemberService {
     void removeMember(Long clubId, User user);
 
     ClubMember findByClubAndUser(Long clubId, Long userId);
-
-    List<ClubMember> findByUserId(Long userId);
-
-    void removeClubMemberByClub_Id(Long clubId);
 }

@@ -9,9 +9,10 @@ import com.hobbyhop.domain.club.repository.ClubRepository;
 import com.hobbyhop.domain.club.service.ClubService;
 import com.hobbyhop.domain.clubmember.entity.ClubMember;
 import com.hobbyhop.domain.clubmember.enums.MemberRole;
-import com.hobbyhop.domain.clubmember.service.ClubMemberService;
+import com.hobbyhop.domain.clubmember.repository.ClubMemberRepository;
 import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.global.exception.club.ClubNotFoundException;
+import com.hobbyhop.global.exception.clubmember.ClubMemberNotFoundException;
 import com.hobbyhop.global.exception.clubmember.ClubMemberRoleException;
 import com.hobbyhop.global.request.PageRequestDTO;
 import com.hobbyhop.global.response.PageResponseDTO;
@@ -29,13 +30,13 @@ import java.util.stream.Collectors;
 @Log4j2
 @Transactional(readOnly = true)
 public class ClubServiceImpl implements ClubService {
+    private final ClubMemberRepository clubMemberRepository;
     private final ClubRepository clubRepository;
-    private final ClubMemberService clubMemberService;
     private final CategoryService categoryService;
 
     @Override
     public PageResponseDTO<ClubResponseDTO> getAllClubs(PageRequestDTO pageRequestDTO) {
-        Page<ClubResponseDTO> result = clubRepository.list(pageRequestDTO.getPageable("id"), pageRequestDTO.getKeyword());
+        Page<ClubResponseDTO> result = clubRepository.findAll(pageRequestDTO.getPageable("id"), pageRequestDTO.getKeyword());
 
         return PageResponseDTO.<ClubResponseDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
@@ -46,7 +47,7 @@ public class ClubServiceImpl implements ClubService {
 
     @Override
     public ClubResponseDTO getClub(Long clubId) {
-        Club club = findClub(clubId);
+        Club club = clubRepository.findById(clubId).orElseThrow(ClubNotFoundException::new);
 
         return ClubResponseDTO.fromEntity(club);
     }
@@ -62,10 +63,16 @@ public class ClubServiceImpl implements ClubService {
                 .category(category)
                 .build();
 
-        clubRepository.save(club);
-        clubMemberService.joinClub(club.getId(), user);
+        ClubMember clubMember = ClubMember.builder()
+                .club(club)
+                .user(user)
+                .memberRole(MemberRole.ADMIN)
+                .build();
 
-        return ClubResponseDTO.fromEntity(club);
+        Club savedClub = clubRepository.save(club);
+        clubMemberRepository.save(clubMember);
+
+        return ClubResponseDTO.fromEntity(savedClub);
     }
 
     @Override
@@ -77,10 +84,10 @@ public class ClubServiceImpl implements ClubService {
         // 3. ADMIN 권한이 없음.
 
         // 예외 케이스 1번
-        Club club = findClub(clubId);
+        Club club = clubRepository.findById(clubId).orElseThrow(ClubNotFoundException::new);
 
         // 예외 케이스 2번
-        ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
+        ClubMember clubMember = clubMemberRepository.findByClub_IdAndUser_Id(clubId, user.getId()).orElseThrow(ClubMemberNotFoundException::new);
 
         // 예외 케이스 3번
         if(!clubMember.getMemberRole().equals(MemberRole.ADMIN)) {
@@ -88,7 +95,7 @@ public class ClubServiceImpl implements ClubService {
         }
 
         // 멤버 목록 전부 지우기
-        clubMemberService.removeClubMemberByClub_Id(clubId);
+        clubMemberRepository.deleteClubMemberByClub_Id(clubId);
 
         //클럽 지우기
         clubRepository.delete(club);
@@ -98,11 +105,11 @@ public class ClubServiceImpl implements ClubService {
     @Transactional
     public ClubResponseDTO modifyClub(Long clubId, ClubRequestDTO clubRequestDTO, User user) {
         // 클럽이 존재하는지
-        Club club = findClub(clubId);
+        Club club = clubRepository.findById(clubId).orElseThrow(ClubNotFoundException::new);
 
 
         // 클럽에 가입되어있는지
-        ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
+        ClubMember clubMember = clubMemberRepository.findByClub_IdAndUser_Id(clubId, user.getId()).orElseThrow(ClubMemberNotFoundException::new);
 
         // 예외 케이스 3번
         if(clubMember.getMemberRole() != MemberRole.ADMIN) {
@@ -129,10 +136,10 @@ public class ClubServiceImpl implements ClubService {
 
     @Override
     public List<ClubResponseDTO> getMyClubs(User user) {
-        List<ClubMember> list = clubMemberService.findByUserId(user.getId());
+        List<ClubMember> list = clubMemberRepository.findByUser_Id(user.getId());
 
         return list.stream().map(clubMember ->
-           ClubResponseDTO.fromEntity(clubMember.getClub())
+                ClubResponseDTO.fromEntity(clubMember.getClub())
         ).collect(Collectors.toList());
     }
 

@@ -33,7 +33,7 @@ public class ClubMemberServiceImpl implements ClubMemberService {
         Club club = clubService.findClub(clubId);
 
         // 클럽에 이미 가입되어있는지 확인
-        if(clubMemberRepository.existsByClubMemberByClub_Id(clubId, user.getId()))
+        if(clubMemberRepository.existsByClub_IdAndUser_Id(clubId, user.getId()))
             throw new ClubMemberAlreadyJoined();
 
 
@@ -60,15 +60,5 @@ public class ClubMemberServiceImpl implements ClubMemberService {
     @Override
     public ClubMember findByClubAndUser(Long clubId, Long userId) {
         return clubMemberRepository.findByClub_IdAndUser_Id(clubId, userId).orElseThrow(ClubMemberNotFoundException::new);
-    }
-
-    @Override
-    public List<ClubMember> findByUserId(Long userId){
-        return clubMemberRepository.findByUser_Id(userId);
-    }
-
-    @Override
-    public void removeClubMemberByClub_Id(Long clubId){
-        clubMemberRepository.deleteClubMemberByClub_Id(clubId);
     }
 }
