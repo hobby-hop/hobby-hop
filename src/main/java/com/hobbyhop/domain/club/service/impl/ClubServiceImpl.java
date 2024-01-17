@@ -1,7 +1,7 @@
 package com.hobbyhop.domain.club.service.impl;
 
 import com.hobbyhop.domain.category.entity.Category;
-import com.hobbyhop.domain.category.repository.CategoryRepository;
+import com.hobbyhop.domain.category.service.CategoryService;
 import com.hobbyhop.domain.club.dto.ClubRequestDTO;
 import com.hobbyhop.domain.club.dto.ClubResponseDTO;
 import com.hobbyhop.domain.club.entity.Club;
@@ -11,7 +11,6 @@ import com.hobbyhop.domain.clubmember.entity.ClubMember;
 import com.hobbyhop.domain.clubmember.enums.MemberRole;
 import com.hobbyhop.domain.clubmember.repository.ClubMemberRepository;
 import com.hobbyhop.domain.user.entity.User;
-import com.hobbyhop.global.exception.category.CategoryNotFoundException;
 import com.hobbyhop.global.exception.club.ClubNotFoundException;
 import com.hobbyhop.global.exception.clubmember.ClubMemberNotFoundException;
 import com.hobbyhop.global.exception.clubmember.ClubMemberRoleException;
@@ -33,11 +32,11 @@ import java.util.stream.Collectors;
 public class ClubServiceImpl implements ClubService {
     private final ClubMemberRepository clubMemberRepository;
     private final ClubRepository clubRepository;
-    private final CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
 
     @Override
     public PageResponseDTO<ClubResponseDTO> getAllClubs(PageRequestDTO pageRequestDTO) {
-        Page<ClubResponseDTO> result = clubRepository.list(pageRequestDTO.getPageable("id"), pageRequestDTO.getKeyword());
+        Page<ClubResponseDTO> result = clubRepository.findAll(pageRequestDTO.getPageable("id"), pageRequestDTO.getKeyword());
 
         return PageResponseDTO.<ClubResponseDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
@@ -56,7 +55,7 @@ public class ClubServiceImpl implements ClubService {
     @Override
     @Transactional
     public ClubResponseDTO makeClub(ClubRequestDTO clubRequestDTO, User user) {
-        Category category = categoryRepository.findById(clubRequestDTO.getCategoryId()).orElseThrow(CategoryNotFoundException::new);
+        Category category = categoryService.findCategory(clubRequestDTO.getCategoryId());
 
         Club club = Club.builder()
                 .title(clubRequestDTO.getTitle())
@@ -126,7 +125,7 @@ public class ClubServiceImpl implements ClubService {
         }
 
         if(clubRequestDTO.getCategoryId() != null) {
-            Category category = categoryRepository.findById(clubRequestDTO.getCategoryId()).orElseThrow(CategoryNotFoundException::new);
+            Category category = categoryService.findCategory(clubRequestDTO.getCategoryId());
             club.changeCategory(category);
         }
 
@@ -140,7 +139,7 @@ public class ClubServiceImpl implements ClubService {
         List<ClubMember> list = clubMemberRepository.findByUser_Id(user.getId());
 
         return list.stream().map(clubMember ->
-           ClubResponseDTO.fromEntity(clubMember.getClub())
+                ClubResponseDTO.fromEntity(clubMember.getClub())
         ).collect(Collectors.toList());
     }
 

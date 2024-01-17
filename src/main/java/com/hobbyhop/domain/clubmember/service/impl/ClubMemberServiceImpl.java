@@ -27,14 +27,14 @@ public class ClubMemberServiceImpl implements ClubMemberService {
 
     @Override
     @Transactional
-    public ClubMemberResponseDTO joinClub(Long clubId, User user) {
+    public void joinClub(Long clubId, User user) {
         //클럽이 있는지 확인
         Club club = clubService.findClub(clubId);
 
         // 클럽에 이미 가입되어있는지 확인
-        clubMemberRepository.findByClub_IdAndUser_Id(clubId, user.getId()).ifPresent(existingClubMember -> {
+        if(clubMemberRepository.existsByClub_IdAndUser_Id(clubId, user.getId()))
             throw new ClubMemberAlreadyJoined();
-        });
+
 
         // 가입시키기
         ClubMember clubMember = ClubMember.builder()
@@ -45,7 +45,7 @@ public class ClubMemberServiceImpl implements ClubMemberService {
 
         ClubMember savedClubMember = clubMemberRepository.save(clubMember);
 
-        return ClubMemberResponseDTO.fromEntity(savedClubMember);
+        ClubMemberResponseDTO.fromEntity(savedClubMember);
     }
 
 
