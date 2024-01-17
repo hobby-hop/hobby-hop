@@ -31,13 +31,8 @@ jobs:
           spring.datasource.url: ${{ secrets.RDS_HOST }}
           spring.datasource.username: ${{ secrets.RDS_USERNAME }}
           spring.datasource.password: ${{ secrets.RDS_PASSWORD }}
-          jwt.secret.key: ${{ secrets.JWT_SECRET_KEY }}
-          cloud.aws.s3.bucket: ${{ env.S3_BUCKET_NAME }}
-          cloud.aws.s3.credentials.accessKey: ${{ secrets.ACCESS_KEY_ID }}
-          cloud.aws.s3.credentials.secretKey: ${{ secrets.ACCESS_KEY_SECRET }}
-          cloud.aws.region.static: ${{ env.REGION }}
-
-
+          jwt.secret.key: ${{ secrets.JWT_SECRET_KEY }}      
+          
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
