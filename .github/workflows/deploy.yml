@@ -49,5 +49,4 @@ jobs:
       - name: Docker run
         run: |
           sudo docker stop hobbyhopapp && docker rm hobbyhopapp && docker rmi ${{ secrets.DOCKERHUB_TAG }}
-          sudo docker pull junhyeok123/hobby-hop:latest
-          sudo docker run -d -p 80:8080 -e "PROD_ENV=${{ secrets.PROD_ENV }}" --name hobbyhopapp ${{ secrets.DOCKERHUB_TAG }}
+          sudo docker run -d -p 80:8080 ${{ secrets.PROD_ENV }} --name hobbyhopapp ${{ secrets.DOCKERHUB_TAG }}
