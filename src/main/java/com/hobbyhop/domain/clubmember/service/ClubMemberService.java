@@ -2,7 +2,6 @@ package com.hobbyhop.domain.clubmember.service;
 
 import com.hobbyhop.domain.clubmember.entity.ClubMember;
 import com.hobbyhop.domain.user.entity.User;
-import java.util.List;
 
 
 public interface ClubMemberService {

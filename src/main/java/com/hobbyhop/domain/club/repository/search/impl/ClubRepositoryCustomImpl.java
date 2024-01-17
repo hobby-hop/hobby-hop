@@ -3,11 +3,8 @@ package com.hobbyhop.domain.club.repository.search.impl;
 import static com.hobbyhop.domain.club.entity.QClub.club;
 
 import com.hobbyhop.domain.club.dto.ClubResponseDTO;
-import com.hobbyhop.domain.club.entity.Club;
-import com.hobbyhop.domain.club.entity.QClub;
 import com.hobbyhop.domain.club.repository.search.ClubRepositoryCustom;
 import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
