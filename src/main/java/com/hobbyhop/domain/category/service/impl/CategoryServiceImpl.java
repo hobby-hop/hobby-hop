@@ -6,7 +6,6 @@ import com.hobbyhop.domain.category.entity.Category;
 import com.hobbyhop.domain.category.repository.CategoryRepository;
 import com.hobbyhop.domain.category.service.CategoryService;
 import com.hobbyhop.global.exception.category.CategoryNotFoundException;
-import com.hobbyhop.global.exception.post.PostNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
