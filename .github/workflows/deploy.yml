@@ -7,7 +7,6 @@ on:
 env:
   S3_BUCKET_NAME: hobbyhopbucket
   RESOURCE_PATH: ./src/main/resources/application-prod.yml
-  CODE_DEPLOY_APPLICATION_NAME: hobby_hop_ci_cd
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: dev
   REGION: ap-northeast-2
 
