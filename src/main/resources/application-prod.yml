@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: ${{ secrets.RDS_USERNAME }}
-    password: ${{ secrets.RDS_PASSWORD }}
-    url: ${{ secrets.RDS_HOST }}
+    username: ${RDS_USERNAME}
+    password: ${RDS_PASSWORD}
+    url: ${RDS_HOST}
 
   jpa:
     hibernate:
@@ -21,15 +21,15 @@ logging:
 
 jwt:
   secret:
-    key: ${{ secrets.JWT_SECRET_KEY }}
+    key: ${JWT_SECRET_KEY}
 
 cloud:
   aws:
     s3:
-      bucket: ${{ secrets.S3_BUCKET_NAME }}
+      bucket: ${S3_BUCKET_NAME}
     credentials:
-      accessKey: ${{ secrets.ACCESS_KEY_ID }}
-      secretKey: ${{ secrets.ACCESS_KEY_SECRET }}
+      accessKey: ${ACCESS_KEY_ID}
+      secretKey: ${ACCESS_KEY_SECRET}
     region:
-      static: ${{ secrets.REGION }}
+      static: ${REGION}
       auto: false
