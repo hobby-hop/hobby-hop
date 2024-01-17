@@ -28,8 +28,8 @@ cloud:
     s3:
       bucket: hobbyhopbucket
     credentials:
-      accessKey: ${ACCESS_KEY_ID}
-      secretKey: ${ACCESS_KEY_SECRET}
+      accessKey: ${{ secrets.ACCESS_KEY_ID }}
+      secretKey: ${{ secrets.ACCESS_KEY_SECRET }}
     region:
-      static: ${REGION}
+      static: ${{ env.REGION }}
       auto: false
