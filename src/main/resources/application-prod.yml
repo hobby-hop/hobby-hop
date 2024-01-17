@@ -26,7 +26,7 @@ jwt:
 cloud:
   aws:
     s3:
-      bucket: hobbyhopbucket
+      bucket: ${S3_BUCKET_NAME}
     credentials:
       accessKey: ${ACCESS_KEY_ID}
       secretKey: ${ACCESS_KEY_SECRET}
