@@ -38,6 +38,7 @@ jobs:
           cloud.aws.s3.credentials.secretKey: ${{ secrets.ACCESS_KEY_SECRET }}
           cloud.aws.region.static: ${{ env.REGION }}
 
+
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
