@@ -13,12 +13,6 @@ spring:
         format_sql: true
     show-sql: true
 
-logging:
-  level:
-    org.springframework: info
-    com.hobbyhop: debug
-    org.springframework.security: debug
-
 jwt:
   secret:
     key: ${JWT_SECRET_KEY}
