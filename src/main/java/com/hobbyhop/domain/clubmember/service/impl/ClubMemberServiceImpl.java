@@ -28,7 +28,7 @@ public class ClubMemberServiceImpl implements ClubMemberService {
 
     @Override
     @Transactional
-    public ClubMemberResponseDTO joinClub(Long clubId, User user) {
+    public void joinClub(Long clubId, User user) {
         //클럽이 있는지 확인
         Club club = clubService.findClub(clubId);
 
@@ -46,7 +46,7 @@ public class ClubMemberServiceImpl implements ClubMemberService {
 
         ClubMember savedClubMember = clubMemberRepository.save(clubMember);
 
-        return ClubMemberResponseDTO.fromEntity(savedClubMember);
+        ClubMemberResponseDTO.fromEntity(savedClubMember);
     }
 
 
