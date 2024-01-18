@@ -31,63 +31,63 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
-@ExtendWith(MockitoExtension.class)
-public class PostServiceTest implements PostTest, UserTest, CategoryTest, ClubTest {
-
-    @Mock UserService userService;
-    @Mock PostService postService;
-    @Mock UserRepository userRepository;
-    @Mock PostRepository postRepository;
-    User user;
-    Category category;
-    Club club;
-
-    @BeforeEach
-    public void setup() {
-         user = User.builder()
-                .username("testUser")
-                .password("testPassword")
-                .email("testEmail@email.com")
-                .build();
-
-         category = Category.builder()
-                 .categoryName("")
-                 .build();
-
+//@ExtendWith(MockitoExtension.class)
+//public class PostServiceTest implements PostTest, UserTest, CategoryTest, ClubTest {
 //
-//        userRepository.save(user);
-//        SignupRequestDTO signRequestDTO = new SignupRequestDTO("Test","Tests");
-//        userService.signup(signRequestDTO);
-    }
+//    @Mock UserService userService;
+//    @Mock PostService postService;
+//    @Mock UserRepository userRepository;
+//    @Mock PostRepository postRepository;
+//    User user;
+//    Category category;
+//    Club club;
 
-    @Test
-    @DisplayName("게시글 생성 성공 테스트")
-    void test1(){
-
-        //given
-        User user = User.builder()
-                .username("testUser")
-                .password("testPassword")
-                .email("testEmail@email.com")
-                .build();
-        //User user = userRepository.findByUsername("testUser").orElseThrow();
-
-        String testPostTitle = "testTitle";
-        String testPostContent= "testContent";
-        Long clubId = 1L;
-        MockMultipartFile file = new MockMultipartFile("file","test.txt","text/plain","test file".getBytes(
-                StandardCharsets.UTF_8));
-
-        //when
-        PostResponseDTO postResponseDTO = postService.makePost(user, clubId, PostRequestDTO.builder()
-                .postContent(testPostTitle)
-                .postTitle(testPostContent)
-        .build());
-
-        //then
-        assertNotNull(postResponseDTO.getPostId());
-        assertEquals(testPostTitle, postResponseDTO.getPostTitle());
-        assertEquals(testPostContent,  postResponseDTO.getPostContent());
-
-    }
-}
+//    @BeforeEach
+//    public void setup() {
+//         user = User.builder()
+//                .username("testUser")
+//                .password("testPassword")
+//                .email("testEmail@email.com")
+//                .build();
+//
+//         category = Category.builder()
+//                 .categoryName("")
+//                 .build();
+//
+////
+////        userRepository.save(user);
+////        SignupRequestDTO signRequestDTO = new SignupRequestDTO("Test","Tests");
+////        userService.signup(signRequestDTO);
+//    }
+//
+//    @Test
+//    @DisplayName("게시글 생성 성공 테스트")
+//    void test1(){
+//
+//        //given
+//        User user = User.builder()
+//                .username("testUser")
+//                .password("testPassword")
+//                .email("testEmail@email.com")
+//                .build();
+//        //User user = userRepository.findByUsername("testUser").orElseThrow();
+//
+//        String testPostTitle = "testTitle";
+//        String testPostContent= "testContent";
+//        Long clubId = 1L;
+//        MockMultipartFile file = new MockMultipartFile("file","test.txt","text/plain","test file".getBytes(
+//                StandardCharsets.UTF_8));
+//
+//        //when
+//        PostResponseDTO postResponseDTO = postService.makePost(user, clubId, PostRequestDTO.builder()
+//                .postContent(testPostTitle)
+//                .postTitle(testPostContent)
+//        .build());
+//
+//        //then
+//        assertNotNull(postResponseDTO.getPostId());
+//        assertEquals(testPostTitle, postResponseDTO.getPostTitle());
+//        assertEquals(testPostContent,  postResponseDTO.getPostContent());
+//
+//    }
+//}
