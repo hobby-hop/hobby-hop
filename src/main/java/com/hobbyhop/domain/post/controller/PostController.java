@@ -36,10 +36,18 @@ public class PostController {
     @PostMapping
     public ApiResponse<?> makePost(@PathVariable Long clubId,
             @RequestBody @Valid PostRequestDTO postRequestDTO,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        return ApiResponse.ok(postService.makePost(userDetails, clubId, postRequestDTO));
+    }
+
+    @PostMapping("/{postId}")
+    public ApiResponse<?> imageUploadPost(@PathVariable Long clubId, @PathVariable Long postId,
             @RequestParam("file") MultipartFile file,
             @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
 
-        return ApiResponse.ok(postService.makePost(userDetails, clubId, file, postRequestDTO));
+        postService.imageUploadPost(userDetails, clubId, postId, file);
+        return ApiResponse.ok("이미지 업로드 성공");
     }
 
     @GetMapping("/{postId}")

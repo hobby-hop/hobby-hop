@@ -20,8 +20,9 @@ public interface PostService {
 
     Post findPost(Long postId);
 
-    PostResponseDTO makePost(UserDetailsImpl userDetails, Long clubId, MultipartFile file, PostRequestDTO postRequestDTO)
-            throws IOException;
+    PostResponseDTO makePost(UserDetailsImpl userDetails, Long clubId, PostRequestDTO postRequestDTO);
+
+    void imageUploadPost(UserDetailsImpl userDetails, Long clubId, Long postId, MultipartFile file) throws IOException;
 
     PostResponseDTO getPostById(Long clubId, Long postId);
 
@@ -34,4 +35,6 @@ public interface PostService {
     void deletePost(UserDetailsImpl userDetails, Long clubId, Long postId);
 
     void makePostUser(UserDetailsImpl userDetails, Long clubId, Long postId);
+
+
 }

@@ -28,6 +28,7 @@ public enum ErrorCode {
     USERNAME_UNCHANGED_EXCEPTION(401, "username 이 수정 전과 같습니다."),
     EMAIL_UNCHANGED_EXCEPTION(401, "email 이 수정 전과 같습니다."),
     MISMATCHED_NEWPASSWORD_EXCEPTION(401, "새 비밀번호가 일치하지 않습니다."),
+    MISMATCHED_EMAIL_EXCEPTION(401, "이메일이 일치하지 않습니다."),
 
     // 이메일 인증
     MISMATCHED_AUTH_CODE_EXCEPTION(401, "인증번호가 일치하지 않습니다."),
