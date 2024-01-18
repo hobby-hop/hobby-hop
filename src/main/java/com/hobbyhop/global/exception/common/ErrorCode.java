@@ -20,10 +20,14 @@ public enum ErrorCode {
     FAILED_AUTHENTICATION_EXCEPTION(401, "인증에 실패하였습니다."),
     ALREADY_EXIST_USER_NAME_EXCEPTION(409, "이미 존재하는 이름입니다."),
     ALREADY_EXIST_EMAIL_EXCEPTION(409, "이미 존재하는 이메일입니다."),
+    ALREADY_EXIST_USERNAME_EXCEPTION(409, "이미 존재하는 유저입니다."),
     UNAUTHORIZED_MODIFY_EXCEPTION(401, "수정할 권한이 없습니다."),
     NO_AUTHORIZATION_EXCEPTION(400, "접근 권한이 없습니다"),
     MISMATCHED_PASSWORD_EXCEPTION(401, "비밀번호가 일치하지 않습니다."),
     FAILED_LOGIN_EXCEPTION(401, "닉네임 또는 패스워드를 확인해주세요."),
+    USERNAME_UNCHANGED_EXCEPTION(401, "username 이 수정 전과 같습니다."),
+    EMAIL_UNCHANGED_EXCEPTION(401, "email 이 수정 전과 같습니다."),
+    MISMATCHED_NEWPASSWORD_EXCEPTION(401, "새 비밀번호가 일치하지 않습니다."),
 
     // 이메일 인증
     MISMATCHED_AUTH_CODE_EXCEPTION(401, "인증번호가 일치하지 않습니다."),
@@ -35,6 +39,11 @@ public enum ErrorCode {
 
     // ClubMember
     NOT_FOUND_CLUB_MEMBER_EXCEPTION(404, "해당 멤버를 찾을 수 없습니다."),
+    NO_PERMISSION_EXCEPTION(403, "수행할 권한이 없습니다."),
+    CLUB_MEMBER_ALREADY_JOINED_EXCEPTION(409, "이미 가입된 유저입니다."),
+
+    // JoinReqeust
+    NO_SUCH_REQUEST_EXCEPTION(404, "존재하지 않는 요청입니다."),
 
     // Comment
     NOT_FOUND_COMMENT_EXCEPTION(401, "해당 댓글을 찾을 수 없습니다."),

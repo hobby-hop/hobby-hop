@@ -9,15 +9,13 @@ import com.hobbyhop.domain.post.entity.Post;
 import com.hobbyhop.domain.post.repository.PostRepository;
 import com.hobbyhop.domain.post.s3.S3Service;
 import com.hobbyhop.domain.post.service.PostService;
-import com.hobbyhop.domain.postlike.service.PostLikeService;
+import com.hobbyhop.domain.postuser.service.PostUserService;
 import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.global.exception.post.PostNotCorrespondUser;
 import com.hobbyhop.global.exception.post.PostNotFoundException;
 import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
 import java.io.IOException;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,7 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class PostServiceImpl implements PostService {
 
     private final ClubService clubService;
-    private final PostLikeService postLikeService;
+    private final PostUserService postUserService;
     private final PostRepository postRepository;
     private final S3Service s3Service;
 
@@ -94,9 +92,13 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public PostResponseDTO modifyPost(UserDetailsImpl userDetails, Long clubId, Long postId, PostRequestDTO postRequestDTO){
+    public PostResponseDTO modifyPost(UserDetailsImpl userDetails, Long clubId, Long postId, MultipartFile file, PostRequestDTO postRequestDTO)
+            throws IOException {
 
         Post post = findAndCheckPostAndClub(clubId, postId);
+
+        String originFilename = s3Service.saveFile(file);
+        String savedFilename = UUID.randomUUID() + "_" + originFilename;
 
         if(!userDetails.getUser().getId().equals(post.getUser().getId())){
             throw new PostNotCorrespondUser();
@@ -110,9 +112,9 @@ public class PostServiceImpl implements PostService {
             post.changeContent(postRequestDTO.getPostContent());
         }
 
-        if(postRequestDTO.getOriginImageUrl() != null) {
-            post.changeImageUrl(postRequestDTO.getOriginImageUrl(),
-                    postRequestDTO.getSavedImageUrl());
+        if(originFilename != null) {
+            post.changeImageUrl(originFilename,
+                    savedFilename);
         }
 
         Post modifiedPost = postRepository.save(post);
@@ -135,11 +137,11 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public void makePostLike(UserDetailsImpl userDetails, Long clubId, Long postId){
+    public void makePostUser(UserDetailsImpl userDetails, Long clubId, Long postId){
 
         User user = userDetails.getUser();
         Post post = findAndCheckPostAndClub(clubId, postId);
 
-        postLikeService.postLike(user, post);
+        postUserService.postUser(user, post);
     }
 }

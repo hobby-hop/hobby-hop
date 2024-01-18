@@ -17,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 @Service
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
@@ -29,11 +31,11 @@ public class CommentServiceImpl implements CommentService {
     public CommentResponseDTO postComment(CommentRequestDTO request, Long postId, User user) {
         Post post = postService.findPost(postId);
 
-        Comment comment = buildComment(request, post, user);
+        Comment comment = buildComment(request, post, user, null);
 
         commentRepository.save(comment);
 
-        return buildCommentResponseDTO(comment);
+        return CommentResponseDTO.buildDTO(comment, getLike(comment));
     }
 
     @Override
@@ -42,14 +44,14 @@ public class CommentServiceImpl implements CommentService {
         // 저장 되어 있는 상위 댓글 가져 오기
         Comment comment = findById(commentId);
 
-        Comment reply = buildComment(request, post, user);
+        Comment reply = buildComment(request, post, user, comment);
 
         commentRepository.save(comment);
 
         // 상위 댓글에 리플 추가
         comment.getReply().add(reply);
 
-        return buildCommentResponseDTO(reply);
+        return CommentResponseDTO.buildDTO(comment, getLike(comment));
     }
 
     @Override
@@ -82,20 +84,17 @@ public class CommentServiceImpl implements CommentService {
         return commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
     }
 
-    private Comment buildComment(CommentRequestDTO request, Post post, User user){
+    private Comment buildComment(CommentRequestDTO request, Post post, User user, Comment comment){
         return Comment.builder()
                 .content(request.getContent())
                 .post(post)
                 .user(user)
+                .parent(comment)
+                .reply(new ArrayList<>())
                 .build();
     }
 
-    private CommentResponseDTO buildCommentResponseDTO(Comment comment){
-        return CommentResponseDTO.builder()
-                .content(comment.getContent())
-                .writer(comment.getUser().getUsername())
-                .like(commentUserService.countLike(comment))
-                .createdAt(comment.getCreatedAt())
-                .build();
+    private int getLike(Comment comment){
+        return commentUserService.countLike(comment);
     }
 }

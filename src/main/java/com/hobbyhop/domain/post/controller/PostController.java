@@ -5,6 +5,7 @@ import com.hobbyhop.domain.post.s3.S3Service;
 import com.hobbyhop.domain.post.service.PostService;
 import com.hobbyhop.global.response.ApiResponse;
 import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import java.io.IOException;
@@ -26,6 +27,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RestController
 @RequestMapping("/api/clubs/{clubId}/posts")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Bearer Authentication")
 public class PostController {
 
     private final PostService postService;
@@ -54,10 +56,10 @@ public class PostController {
 
     @PatchMapping("/{postId}")
     public ApiResponse<?> modifyPost(@PathVariable Long clubId, @PathVariable Long postId,
-            @RequestBody @Valid PostRequestDTO postRequestDTO,
-            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+            @RequestBody @Valid PostRequestDTO postRequestDTO, @RequestParam("file") MultipartFile file,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
 
-        return ApiResponse.ok(postService.modifyPost(userDetails, clubId, postId, postRequestDTO));
+        return ApiResponse.ok(postService.modifyPost(userDetails, clubId, postId, file,postRequestDTO));
     }
 
     @DeleteMapping("/{postId}")
@@ -72,7 +74,7 @@ public class PostController {
     public ApiResponse<?> likePost(@PathVariable Long clubId,
             @PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        postService.makePostLike(userDetails, clubId, postId);
+        postService.makePostUser(userDetails, clubId, postId);
         return ApiResponse.ok("좋아요 성공");
     }
 

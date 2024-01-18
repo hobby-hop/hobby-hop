@@ -1,38 +1,29 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: ${USER_NAME}
-    password: ${PASSWORD}
-    url: ${DB_URL}
+    username: ${RDS_USERNAME}
+    password: ${RDS_PASSWORD}
+    url: ${RDS_HOST}
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
     show-sql: true
 
-logging:
-  level:
-    org.springframework: info
-    com.hobbyhop: debug
-    org.springframework.security: debug
-
 jwt:
   secret:
-    key: 7Iqk7YyM66W07YOA7L2U65Sp7YG065+9U3ByaW5n6rCV7J2Y7Yqc7YSw7LWc7JuQ67mI7J6F64uI64ukLg==
+    key: ${JWT_SECRET_KEY}
 
 cloud:
   aws:
+    s3:
+      bucket: ${S3_BUCKET_NAME}
     credentials:
-      accessKey: ${{ secret.ACCESS_KEY_ID }}
-      secretKey: ${{ secret.ACCESS_KEY_SECRET }}
+      accessKey: ${ACCESS_KEY_ID}
+      secretKey: ${ACCESS_KEY_SECRET}
     region:
-      static: ${{ REGION }}
-      stack:
-        auto: false
-
-    application:
-      bucket:
-        name: hobbyhopbucket
+      static: ${REGION}
+      auto: false

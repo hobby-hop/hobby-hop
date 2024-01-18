@@ -17,7 +17,4 @@ public class PostRequestDTO {
 
     @NotBlank
     private String postContent;
-
-    private String originImageUrl;
-    private String savedImageUrl;
 }

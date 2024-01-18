@@ -1,5 +1,9 @@
 package com.hobbyhop.global.security.jwt;
 
+import com.hobbyhop.global.exception.jwt.ExpiredJwtTokenException;
+import com.hobbyhop.global.exception.jwt.InvalidJwtException;
+import com.hobbyhop.global.exception.jwt.InvalidJwtSignatureException;
+import com.hobbyhop.global.exception.jwt.UnsupportedJwtTokenException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -54,38 +58,25 @@ public class JwtUtil {
         return createToken(username, REFRESH_TOKEN_TIME);
     }
 
-    // 이거 getJwtFromHeader 랑 똑같군요!
-    public String resolveToken(HttpServletRequest httpServletRequest) {
-        String bearerToken = httpServletRequest.getHeader(AUTHORIZATION_HEADER);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
-            return bearerToken.substring(7);
-        }
-        return null;
-    }
-
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (SecurityException | MalformedJwtException e) {
-            log.error("Invalid JWT signature, 유효하지 않은 JWT 서명입니다.");
+            throw new InvalidJwtSignatureException();
         } catch (ExpiredJwtException e) {
-            log.error("Expired JWT token, 만료된 JWT token 입니다.");
+            throw new ExpiredJwtTokenException();
         } catch (UnsupportedJwtException e) {
-            log.error("Unsupported JWT token, 지원되지 않는 JWT 토큰입니다.");
+            throw new UnsupportedJwtTokenException();
         } catch (IllegalArgumentException e) {
-            log.error("JWT claims is empty, 잘못된 JWT 토큰입니다.");
+            throw new InvalidJwtException();
         }
-        return false;
     }
 
     // HttpServletRequest 에서 JWT 가져오기
     public String getJwtFromHeader(HttpServletRequest request) {
-
         String tokenWithBearer = request.getHeader(AUTHORIZATION_HEADER);
-
-        if(StringUtils.hasText(tokenWithBearer) && tokenWithBearer.startsWith(BEARER_PREFIX)) {
-
+        if (StringUtils.hasText(tokenWithBearer) && tokenWithBearer.startsWith(BEARER_PREFIX)) {
             return tokenWithBearer;
         }
         return null;
@@ -93,7 +84,6 @@ public class JwtUtil {
 
     // 토큰에서 사용자 정보 가져오기
     public Claims getUserInfo(String tokenValue) {
-
         return Jwts.parserBuilder().setSigningKey(key)
                 .build().parseClaimsJws(tokenValue).getBody();
     }
@@ -111,17 +101,13 @@ public class JwtUtil {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessTokenValue);
             return false;
         } catch (SecurityException | MalformedJwtException e) {
-            log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
-            return false;
+            throw new InvalidJwtSignatureException();
         } catch (ExpiredJwtException e) {
-            log.error("Expired JWT token, 만료된 JWT token 입니다.");
-            return true;
+            throw new ExpiredJwtTokenException();
         } catch (UnsupportedJwtException e) {
-            log.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
-            return false;
+            throw new UnsupportedJwtTokenException();
         } catch (IllegalArgumentException e) {
-            log.error("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
-            return false;
+            throw new InvalidJwtException();
         }
     }
 
@@ -146,12 +132,10 @@ public class JwtUtil {
         redisTemplate.opsForValue()
                 .set(username, newAccessToken,
                         expirationTime, TimeUnit.MILLISECONDS);
-
         // 새로 만든 AccessToken을 key로 refreshToken을 다시 DB에 저장
         redisTemplate.opsForValue().set(newAccessToken,
                 BEARER_PREFIX + refreshTokenValue,
                 expirationTime, TimeUnit.MILLISECONDS);
-
         // 만료된 token으로 저장되어있는 refreshToken은 삭제
         redisTemplate.delete(accessToken);
     }
@@ -162,7 +146,7 @@ public class JwtUtil {
 
     public String createExpiredToken(String accessToken) {
         String username = getUserInfo(accessToken.substring(7)).getSubject();
-        return createToken(username,0);
+        return createToken(username, 0);
     }
 
     public void removeRefreshToken(String accessToken) {
@@ -185,7 +169,7 @@ public class JwtUtil {
         String newUsername = getUserInfo(newAccessToken.substring(7)).getSubject();
         String oldUsername = getUserInfo(oldAccessToken.substring(7)).getSubject();
         String oldRefreshToken = redisTemplate.opsForValue().get(oldAccessToken);
-        Long expirationTime =getUserInfo(oldRefreshToken.substring(7)).getExpiration().getTime();
+        Long expirationTime = getUserInfo(oldRefreshToken.substring(7)).getExpiration().getTime();
         String newRefreshToken = createToken(newUsername, expirationTime);
 
         // 이전 username으로 발급된 토큰을 DB에서 삭제
@@ -200,6 +184,7 @@ public class JwtUtil {
 
     /**
      * createToken 메서드
+     *
      * @param username
      * @param tokenTime
      * @return

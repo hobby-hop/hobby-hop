@@ -37,7 +37,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             }
 
             String accessTokenValue = accessToken.substring(7);
-
             // accessToken이 만료되었는지 확인
             if (jwtUtil.shouldAccessTokenBeRefreshed(accessToken.substring(7))) {
                 String refreshTokenValue = jwtUtil.getRefreshtokenByAccessToken(accessToken).substring(7);
@@ -46,10 +45,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     // accessToken 재발급
                     String newAccessToken = jwtUtil.createAccessTokenByRefreshToken(refreshTokenValue);
                     response.setHeader(JwtUtil.AUTHORIZATION_HEADER, newAccessToken);
-
                     // DB 토큰도 새로고침
                     jwtUtil.regenerateToken(newAccessToken, accessToken, refreshTokenValue);
-
                     // 재발급된 토큰으로 검증 진행하도록 대입
                     accessTokenValue = newAccessToken.substring(7);
                 }
@@ -61,21 +58,16 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "유효한 토큰이 아닙니다.");
-
                 return;
             }
-
             Claims info = jwtUtil.getUserInfo(accessTokenValue);
-
             String username = info.getSubject();
             setAuthentication(username);
         }
-
         filterChain.doFilter(request, response);
     }
 
     public void setAuthentication(String username) {
-
         UserDetailsImpl userDetails = userDetailsService.getUserDetails(username);
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
 

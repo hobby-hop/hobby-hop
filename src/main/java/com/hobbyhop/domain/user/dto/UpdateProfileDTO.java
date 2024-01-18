@@ -31,5 +31,6 @@ public class UpdateProfileDTO {
     @Pattern(regexp = "[a-zA-Z0-9]+$", message = "새 비밀번호는 알파벳 대소문자, 숫자의 조합으로 입력해야 합니다.")
     @Size(min = 8, max = 15, message = "새 비밀번호는 8자리 이상, 15자리 이하로 입력해야 합니다.")
     private String confirmPassword;
+
 //    private String introduce; 이거 넣을지 말지 팀원들이랑 상의하기
 }

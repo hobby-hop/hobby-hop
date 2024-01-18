@@ -1,7 +1,6 @@
 package com.hobbyhop.domain.user.repository;
 
 import java.util.Optional;
-
 import com.hobbyhop.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
