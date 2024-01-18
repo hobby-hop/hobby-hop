@@ -3,6 +3,7 @@ package com.hobbyhop.domain.post.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+
 import com.hobbyhop.domain.category.entity.Category;
 import com.hobbyhop.domain.club.entity.Club;
 import com.hobbyhop.domain.post.dto.PostRequestDTO;
