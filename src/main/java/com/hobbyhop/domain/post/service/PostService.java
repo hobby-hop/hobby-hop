@@ -5,6 +5,7 @@ import com.hobbyhop.domain.post.dto.PostRequestDTO;
 import com.hobbyhop.domain.post.dto.PostResponseDTO;
 import com.hobbyhop.domain.post.entity.Post;
 import com.hobbyhop.domain.post.repository.PostRepository;
+import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
 import java.io.IOException;
 import java.util.List;
@@ -20,21 +21,21 @@ public interface PostService {
 
     Post findPost(Long postId);
 
-    PostResponseDTO makePost(UserDetailsImpl userDetails, Long clubId, PostRequestDTO postRequestDTO);
+    PostResponseDTO makePost(User user, Long clubId, PostRequestDTO postRequestDTO);
 
-    void imageUploadPost(UserDetailsImpl userDetails, Long clubId, Long postId, MultipartFile file) throws IOException;
+    void imageUploadPost(User user, Long clubId, Long postId, MultipartFile file) throws IOException;
 
     PostResponseDTO getPostById(Long clubId, Long postId);
 
     PostPageResponseDTO getAllPost(Pageable pageable, Long clubId);
 
-    PostResponseDTO modifyPost(UserDetailsImpl userDetails, Long clubId, Long postId,
+    PostResponseDTO modifyPost(User user, Long clubId, Long postId,
             MultipartFile file, PostRequestDTO postRequestDTO)
             throws IOException;
 
-    void deletePost(UserDetailsImpl userDetails, Long clubId, Long postId);
+    void deletePost(User user, Long clubId, Long postId);
 
-    void makePostUser(UserDetailsImpl userDetails, Long clubId, Long postId);
+    void makePostUser(User user, Long clubId, Long postId);
 
 
 }

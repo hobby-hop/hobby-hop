@@ -39,7 +39,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public PostResponseDTO makePost(UserDetailsImpl userDetails, Long clubId, PostRequestDTO postRequestDTO) {
+    public PostResponseDTO makePost(User user, Long clubId, PostRequestDTO postRequestDTO) {
 
         Club club = clubService.findClub(clubId);
 
@@ -47,7 +47,7 @@ public class PostServiceImpl implements PostService {
                 .postTitle(postRequestDTO.getPostTitle())
                 .postContent(postRequestDTO.getPostContent())
                 .club(club)
-                .user(userDetails.getUser())
+                .user(user)
                 .likeCnt(0L)
                 .build();
 
@@ -58,11 +58,14 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public void imageUploadPost(UserDetailsImpl userDetails, Long clubId, Long postId, MultipartFile file)
+    public void imageUploadPost(User user, Long clubId, Long postId, MultipartFile file)
             throws IOException {
 
-        Club club = clubService.findClub(clubId);
-        Post post = findPost(postId);
+        Post post = findAndCheckPostAndClub(clubId, postId);
+
+        if(!post.getUser().getId().equals(user.getId())){
+            throw new PostNotCorrespondUser();
+        }
 
         String originFilename = s3Service.saveFile(file);
         String savedFilename = UUID.randomUUID() + "_" + originFilename;
@@ -100,7 +103,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public PostResponseDTO modifyPost(UserDetailsImpl userDetails, Long clubId, Long postId, MultipartFile file, PostRequestDTO postRequestDTO)
+    public PostResponseDTO modifyPost(User user, Long clubId, Long postId, MultipartFile file, PostRequestDTO postRequestDTO)
             throws IOException {
 
         Post post = findAndCheckPostAndClub(clubId, postId);
@@ -108,7 +111,7 @@ public class PostServiceImpl implements PostService {
         String originFilename = s3Service.saveFile(file);
         String savedFilename = UUID.randomUUID() + "_" + originFilename;
 
-        if(!userDetails.getUser().getId().equals(post.getUser().getId())){
+        if(!user.getId().equals(post.getUser().getId())){
             throw new PostNotCorrespondUser();
         }
 
@@ -132,11 +135,11 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public void deletePost(UserDetailsImpl userDetails, Long clubId, Long postId){
+    public void deletePost(User user, Long clubId, Long postId){
 
         Post post = findAndCheckPostAndClub(clubId, postId);
 
-        if(!userDetails.getUser().getId().equals(post.getUser().getId())){
+        if(!user.getId().equals(post.getUser().getId())){
             throw new PostNotCorrespondUser();
         }
 
@@ -145,9 +148,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public void makePostUser(UserDetailsImpl userDetails, Long clubId, Long postId){
+    public void makePostUser(User user, Long clubId, Long postId){
 
-        User user = userDetails.getUser();
         Post post = findAndCheckPostAndClub(clubId, postId);
 
         postUserService.postUser(user, post);
