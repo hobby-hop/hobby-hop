@@ -38,7 +38,7 @@ public class PostController {
             @RequestBody @Valid PostRequestDTO postRequestDTO,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        return ApiResponse.ok(postService.makePost(userDetails, clubId, postRequestDTO));
+        return ApiResponse.ok(postService.makePost(userDetails.getUser(), clubId, postRequestDTO));
     }
 
     @PostMapping("/{postId}")
@@ -46,7 +46,7 @@ public class PostController {
             @RequestParam("file") MultipartFile file,
             @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
 
-        postService.imageUploadPost(userDetails, clubId, postId, file);
+        postService.imageUploadPost(userDetails.getUser(), clubId, postId, file);
         return ApiResponse.ok("이미지 업로드 성공");
     }
 
@@ -67,14 +67,14 @@ public class PostController {
             @RequestBody @Valid PostRequestDTO postRequestDTO, @RequestParam("file") MultipartFile file,
             @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
 
-        return ApiResponse.ok(postService.modifyPost(userDetails, clubId, postId, file,postRequestDTO));
+        return ApiResponse.ok(postService.modifyPost(userDetails.getUser(), clubId, postId, file,postRequestDTO));
     }
 
     @DeleteMapping("/{postId}")
     public ApiResponse<?> deletePost(@PathVariable Long clubId, @PathVariable Long postId,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        postService.deletePost(userDetails, clubId, postId);
+        postService.deletePost(userDetails.getUser(), clubId, postId);
         return ApiResponse.ok("삭제 성공");
     }
 
@@ -82,7 +82,7 @@ public class PostController {
     public ApiResponse<?> likePost(@PathVariable Long clubId,
             @PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        postService.makePostUser(userDetails, clubId, postId);
+        postService.makePostUser(userDetails.getUser(), clubId, postId);
         return ApiResponse.ok("좋아요 성공");
     }
 
