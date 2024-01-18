@@ -32,4 +32,5 @@ public interface ClubService {
     // 내가 속한 모임 조회.
     List<ClubResponseDTO> getMyClubs(User user);
 
+    void removeMember(Long clubId, User user);
 }

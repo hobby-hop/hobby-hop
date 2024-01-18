@@ -9,11 +9,9 @@ import com.hobbyhop.domain.club.repository.ClubRepository;
 import com.hobbyhop.domain.club.service.ClubService;
 import com.hobbyhop.domain.clubmember.entity.ClubMember;
 import com.hobbyhop.domain.clubmember.enums.MemberRole;
-import com.hobbyhop.domain.clubmember.pk.ClubMemberPK;
-import com.hobbyhop.domain.clubmember.repository.ClubMemberRepository;
+import com.hobbyhop.domain.clubmember.service.ClubMemberService;
 import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.global.exception.club.ClubNotFoundException;
-import com.hobbyhop.global.exception.clubmember.ClubMemberNotFoundException;
 import com.hobbyhop.global.exception.clubmember.ClubMemberRoleException;
 import com.hobbyhop.global.request.PageRequestDTO;
 import com.hobbyhop.global.response.PageResponseDTO;
@@ -31,8 +29,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class ClubServiceImpl implements ClubService {
 
-    private final ClubMemberRepository clubMemberRepository;
     private final ClubRepository clubRepository;
+    private final ClubMemberService clubMemberService;
     private final CategoryService categoryService;
 
     @Override
@@ -49,7 +47,7 @@ public class ClubServiceImpl implements ClubService {
 
     @Override
     public ClubResponseDTO getClub(Long clubId) {
-        Club club = clubRepository.findById(clubId).orElseThrow(ClubNotFoundException::new);
+        Club club = findClub(clubId);
 
         return ClubResponseDTO.fromEntity(club);
     }
@@ -60,11 +58,8 @@ public class ClubServiceImpl implements ClubService {
         Category category = categoryService.findCategory(clubRequestDTO.getCategoryId());
         Club club = Club.builder().title(clubRequestDTO.getTitle())
                 .content(clubRequestDTO.getContent()).category(category).build();
-        ClubMember clubMember = ClubMember.builder().clubMemberPK(
-                        ClubMemberPK.builder().club(club).user(user).build()).memberRole(MemberRole.ADMIN)
-                .build();
         Club savedClub = clubRepository.save(club);
-        clubMemberRepository.save(clubMember);
+        clubMemberService.joinClub(club, user);
         return ClubResponseDTO.fromEntity(savedClub);
     }
 
@@ -77,11 +72,10 @@ public class ClubServiceImpl implements ClubService {
         // 3. ADMIN 권한이 없음.
 
         // 예외 케이스 1번
-        Club club = clubRepository.findById(clubId).orElseThrow(ClubNotFoundException::new);
+        Club club = findClub(clubId);
 
         // 예외 케이스 2번
-        ClubMember clubMember = clubMemberRepository.findByClubMemberPK_Club_IdAndClubMemberPK_User_Id(
-                clubId, user.getId()).orElseThrow(ClubMemberNotFoundException::new);
+        ClubMember clubMember = clubMemberService.findByClubAndUser(club, user);
 
         // 예외 케이스 3번
         if (!clubMember.getMemberRole().equals(MemberRole.ADMIN)) {
@@ -89,7 +83,7 @@ public class ClubServiceImpl implements ClubService {
         }
 
         // 멤버 목록 전부 지우기
-        clubMemberRepository.deleteClubMemberByClubMemberPK_Club_Id(clubId);
+        clubMemberService.removeMember(club, user);
 
         //클럽 지우기
         clubRepository.delete(club);
@@ -99,11 +93,10 @@ public class ClubServiceImpl implements ClubService {
     @Transactional
     public ClubResponseDTO modifyClub(Long clubId, ClubRequestDTO clubRequestDTO, User user) {
         // 클럽이 존재하는지
-        Club club = clubRepository.findById(clubId).orElseThrow(ClubNotFoundException::new);
+        Club club = findClub(clubId);
 
         // 클럽에 가입되어있는지
-        ClubMember clubMember = clubMemberRepository.findByClubMemberPK_Club_IdAndClubMemberPK_User_Id(
-                clubId, user.getId()).orElseThrow(ClubMemberNotFoundException::new);
+        ClubMember clubMember = clubMemberService.findByClubAndUser(club, user);
 
         // 예외 케이스 3번
         if (clubMember.getMemberRole() != MemberRole.ADMIN) {
@@ -130,9 +123,15 @@ public class ClubServiceImpl implements ClubService {
 
     @Override
     public List<ClubResponseDTO> getMyClubs(User user) {
-        List<ClubMember> list = clubMemberRepository.findByClubMemberPK_User_Id(user.getId());
+        List<ClubMember> list = clubMemberService.findByUserId(user);
         return list.stream().map(clubMember -> ClubResponseDTO.fromEntity(
                 clubMember.getClubMemberPK().getClub())).collect(Collectors.toList());
+    }
+
+    @Override
+    public void removeMember(Long clubId, User user){
+        Club club = findClub(clubId);
+        clubMemberService.removeMember(club, user);
     }
 
     @Override

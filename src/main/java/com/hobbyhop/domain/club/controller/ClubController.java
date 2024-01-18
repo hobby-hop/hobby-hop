@@ -2,7 +2,6 @@ package com.hobbyhop.domain.club.controller;
 
 import com.hobbyhop.domain.club.dto.ClubRequestDTO;
 import com.hobbyhop.domain.club.service.ClubService;
-import com.hobbyhop.domain.clubmember.service.ClubMemberService;
 import com.hobbyhop.global.request.PageRequestDTO;
 import com.hobbyhop.global.response.ApiResponse;
 import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 @SecurityRequirement(name = "Bearer Authentication")
 public class ClubController {
     private final ClubService clubService;
-    private final ClubMemberService clubMemberService;
 
     @Operation(summary = "새로운 모임 생성")
     @PostMapping
@@ -63,7 +61,7 @@ public class ClubController {
     @Operation(summary = "모임 탈퇴")
     @DeleteMapping("/{clubId}/clubmembers")
     public ApiResponse<?> leaveClub(@PathVariable("clubId") Long clubId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        clubMemberService.removeMember(clubId, userDetails.getUser());
+        clubService.removeMember(clubId, userDetails.getUser());
         return ApiResponse.ok("탈퇴 완료");
     }
 }
