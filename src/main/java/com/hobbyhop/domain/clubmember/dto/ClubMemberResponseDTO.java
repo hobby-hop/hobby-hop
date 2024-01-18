@@ -11,16 +11,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ClubMemberResponseDTO {
-    private Long id;
+
     private Long userId;
     private Long clubId;
 
     public static ClubMemberResponseDTO fromEntity(ClubMember clubMember) {
         return ClubMemberResponseDTO.builder()
-                .id(clubMember.getId())
-                .userId(clubMember.getUser().getId())
-                .clubId(clubMember.getClub().getId())
-                .build();
-
+                .userId(clubMember.getClubMemberPK().getUser().getId())
+                .clubId(clubMember.getClubMemberPK().getClub().getId()).build();
     }
 }

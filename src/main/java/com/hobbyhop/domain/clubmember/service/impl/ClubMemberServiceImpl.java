@@ -6,6 +6,7 @@ import com.hobbyhop.domain.club.service.ClubService;
 import com.hobbyhop.domain.clubmember.dto.ClubMemberResponseDTO;
 import com.hobbyhop.domain.clubmember.entity.ClubMember;
 import com.hobbyhop.domain.clubmember.enums.MemberRole;
+import com.hobbyhop.domain.clubmember.pk.ClubMemberPK;
 import com.hobbyhop.domain.clubmember.repository.ClubMemberRepository;
 import com.hobbyhop.domain.clubmember.service.ClubMemberService;
 import com.hobbyhop.domain.user.entity.User;
@@ -14,7 +15,6 @@ import com.hobbyhop.global.exception.clubmember.ClubMemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 
 
 @Service
@@ -32,32 +32,33 @@ public class ClubMemberServiceImpl implements ClubMemberService {
         Club club = clubService.findClub(clubId);
 
         // 클럽에 이미 가입되어있는지 확인
-        if(clubMemberRepository.existsByClub_IdAndUser_Id(clubId, user.getId()))
+        if (clubMemberRepository.existsByClubMemberPK_Club_IdAndClubMemberPK_User_Id(clubId,
+                user.getId())) {
             throw new ClubMemberAlreadyJoined();
-
+        }
 
         // 가입시키기
         ClubMember clubMember = ClubMember.builder()
-                .club(club)
-                .user(user)
-                .memberRole(MemberRole.MEMBER)
-                .build();
-
+                .clubMemberPK(ClubMemberPK.builder()
+                        .club(club)
+                        .user(user)
+                        .build())
+                .memberRole(MemberRole.MEMBER).build();
         ClubMember savedClubMember = clubMemberRepository.save(clubMember);
-
         ClubMemberResponseDTO.fromEntity(savedClubMember);
     }
-
 
     @Override
     @Transactional
     public void removeMember(Long clubId, User user) {
-        ClubMember clubMember = clubMemberRepository.findByClub_IdAndUser_Id(clubId, user.getId()).orElseThrow(ClubMemberNotFoundException::new);
+        ClubMember clubMember = clubMemberRepository.findByClubMemberPK_Club_IdAndClubMemberPK_User_Id(
+                clubId, user.getId()).orElseThrow(ClubMemberNotFoundException::new);
         clubMemberRepository.delete(clubMember);
     }
 
     @Override
     public ClubMember findByClubAndUser(Long clubId, Long userId) {
-        return clubMemberRepository.findByClub_IdAndUser_Id(clubId, userId).orElseThrow(ClubMemberNotFoundException::new);
+        return clubMemberRepository.findByClubMemberPK_Club_IdAndClubMemberPK_User_Id(clubId,
+                userId).orElseThrow(ClubMemberNotFoundException::new);
     }
 }

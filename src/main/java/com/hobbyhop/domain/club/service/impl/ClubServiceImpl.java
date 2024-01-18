@@ -9,6 +9,7 @@ import com.hobbyhop.domain.club.repository.ClubRepository;
 import com.hobbyhop.domain.club.service.ClubService;
 import com.hobbyhop.domain.clubmember.entity.ClubMember;
 import com.hobbyhop.domain.clubmember.enums.MemberRole;
+import com.hobbyhop.domain.clubmember.pk.ClubMemberPK;
 import com.hobbyhop.domain.clubmember.repository.ClubMemberRepository;
 import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.global.exception.club.ClubNotFoundException;
@@ -16,27 +17,28 @@ import com.hobbyhop.global.exception.clubmember.ClubMemberNotFoundException;
 import com.hobbyhop.global.exception.clubmember.ClubMemberRoleException;
 import com.hobbyhop.global.request.PageRequestDTO;
 import com.hobbyhop.global.response.PageResponseDTO;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 @Log4j2
 @Transactional(readOnly = true)
 public class ClubServiceImpl implements ClubService {
+
     private final ClubMemberRepository clubMemberRepository;
     private final ClubRepository clubRepository;
     private final CategoryService categoryService;
 
     @Override
     public PageResponseDTO<ClubResponseDTO> getAllClubs(PageRequestDTO pageRequestDTO) {
-        Page<ClubResponseDTO> result = clubRepository.findAll(pageRequestDTO.getPageable("id"), pageRequestDTO.getKeyword());
+        Page<ClubResponseDTO> result = clubRepository.findAll(pageRequestDTO.getPageable("id"),
+                pageRequestDTO.getKeyword());
 
         return PageResponseDTO.<ClubResponseDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
@@ -56,22 +58,13 @@ public class ClubServiceImpl implements ClubService {
     @Transactional
     public ClubResponseDTO makeClub(ClubRequestDTO clubRequestDTO, User user) {
         Category category = categoryService.findCategory(clubRequestDTO.getCategoryId());
-
-        Club club = Club.builder()
-                .title(clubRequestDTO.getTitle())
-                .content(clubRequestDTO.getContent())
-                .category(category)
+        Club club = Club.builder().title(clubRequestDTO.getTitle())
+                .content(clubRequestDTO.getContent()).category(category).build();
+        ClubMember clubMember = ClubMember.builder().clubMemberPK(
+                        ClubMemberPK.builder().club(club).user(user).build()).memberRole(MemberRole.ADMIN)
                 .build();
-
-        ClubMember clubMember = ClubMember.builder()
-                .club(club)
-                .user(user)
-                .memberRole(MemberRole.ADMIN)
-                .build();
-
         Club savedClub = clubRepository.save(club);
         clubMemberRepository.save(clubMember);
-
         return ClubResponseDTO.fromEntity(savedClub);
     }
 
@@ -87,15 +80,16 @@ public class ClubServiceImpl implements ClubService {
         Club club = clubRepository.findById(clubId).orElseThrow(ClubNotFoundException::new);
 
         // 예외 케이스 2번
-        ClubMember clubMember = clubMemberRepository.findByClub_IdAndUser_Id(clubId, user.getId()).orElseThrow(ClubMemberNotFoundException::new);
+        ClubMember clubMember = clubMemberRepository.findByClubMemberPK_Club_IdAndClubMemberPK_User_Id(
+                clubId, user.getId()).orElseThrow(ClubMemberNotFoundException::new);
 
         // 예외 케이스 3번
-        if(!clubMember.getMemberRole().equals(MemberRole.ADMIN)) {
+        if (!clubMember.getMemberRole().equals(MemberRole.ADMIN)) {
             throw new ClubMemberRoleException();
         }
 
         // 멤버 목록 전부 지우기
-        clubMemberRepository.deleteClubMemberByClub_Id(clubId);
+        clubMemberRepository.deleteClubMemberByClubMemberPK_Club_Id(clubId);
 
         //클럽 지우기
         clubRepository.delete(club);
@@ -107,24 +101,24 @@ public class ClubServiceImpl implements ClubService {
         // 클럽이 존재하는지
         Club club = clubRepository.findById(clubId).orElseThrow(ClubNotFoundException::new);
 
-
         // 클럽에 가입되어있는지
-        ClubMember clubMember = clubMemberRepository.findByClub_IdAndUser_Id(clubId, user.getId()).orElseThrow(ClubMemberNotFoundException::new);
+        ClubMember clubMember = clubMemberRepository.findByClubMemberPK_Club_IdAndClubMemberPK_User_Id(
+                clubId, user.getId()).orElseThrow(ClubMemberNotFoundException::new);
 
         // 예외 케이스 3번
-        if(clubMember.getMemberRole() != MemberRole.ADMIN) {
+        if (clubMember.getMemberRole() != MemberRole.ADMIN) {
             throw new ClubMemberRoleException();
         }
 
-        if(clubRequestDTO.getTitle() != null) {
+        if (clubRequestDTO.getTitle() != null) {
             club.changeTitle(clubRequestDTO.getTitle());
         }
 
-        if(clubRequestDTO.getContent() != null) {
+        if (clubRequestDTO.getContent() != null) {
             club.changeContent(clubRequestDTO.getContent());
         }
 
-        if(clubRequestDTO.getCategoryId() != null) {
+        if (clubRequestDTO.getCategoryId() != null) {
             Category category = categoryService.findCategory(clubRequestDTO.getCategoryId());
             club.changeCategory(category);
         }
@@ -136,11 +130,9 @@ public class ClubServiceImpl implements ClubService {
 
     @Override
     public List<ClubResponseDTO> getMyClubs(User user) {
-        List<ClubMember> list = clubMemberRepository.findByUser_Id(user.getId());
-
-        return list.stream().map(clubMember ->
-                ClubResponseDTO.fromEntity(clubMember.getClub())
-        ).collect(Collectors.toList());
+        List<ClubMember> list = clubMemberRepository.findByClubMemberPK_User_Id(user.getId());
+        return list.stream().map(clubMember -> ClubResponseDTO.fromEntity(
+                clubMember.getClubMemberPK().getClub())).collect(Collectors.toList());
     }
 
     @Override
