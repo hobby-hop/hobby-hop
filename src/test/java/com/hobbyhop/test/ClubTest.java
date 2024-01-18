@@ -17,6 +17,7 @@ public interface ClubTest extends CategoryTest{
                     .id(TEST_CLUB_ID)
                     .title(TEST_CLUB_TITLE)
                     .content(TEST_CLUB_CONTENT)
+                    .category(TEST_CATEGORY)
                     .build();
 
     Club TEST_OTHER_CLUB =
@@ -24,5 +25,6 @@ public interface ClubTest extends CategoryTest{
                     .id(TEST_OTHER_CLUB_ID)
                     .title(TEST_OTHER_CLUB_TITLE)
                     .content(TEST_OTHER_CLUB_CONTENT)
+                    .category(TEST_OTHER_CATEGORY)
                     .build();
 }
