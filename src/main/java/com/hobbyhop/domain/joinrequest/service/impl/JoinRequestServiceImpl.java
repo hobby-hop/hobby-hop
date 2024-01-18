@@ -46,7 +46,9 @@ public class JoinRequestServiceImpl implements JoinRequestService {
 
     @Override
     public List<JoinResponseDTO> getRequestByClub(Long clubId, User user) {
-        ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
+        Club club = clubService.findClub(clubId);
+
+        ClubMember clubMember = clubMemberService.findByClubAndUser(club, user);
 
         if(!clubMember.getMemberRole().equals(MemberRole.ADMIN)) {
             throw new ClubMemberRoleException();
@@ -65,7 +67,7 @@ public class JoinRequestServiceImpl implements JoinRequestService {
         joinRequestRepository.save(joinRequest);
 
         if(status.equals(JoinRequestStatus.APPROVED)) {
-            clubMemberService.joinClub(joinRequest.getClub().getId(), joinRequest.getUser());
+            clubMemberService.joinClub(joinRequest.getClub(), joinRequest.getUser());
         }
     }
 }
