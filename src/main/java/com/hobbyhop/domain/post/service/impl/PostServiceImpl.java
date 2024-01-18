@@ -92,9 +92,13 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public PostResponseDTO modifyPost(UserDetailsImpl userDetails, Long clubId, Long postId, PostRequestDTO postRequestDTO){
+    public PostResponseDTO modifyPost(UserDetailsImpl userDetails, Long clubId, Long postId, MultipartFile file, PostRequestDTO postRequestDTO)
+            throws IOException {
 
         Post post = findAndCheckPostAndClub(clubId, postId);
+
+        String originFilename = s3Service.saveFile(file);
+        String savedFilename = UUID.randomUUID() + "_" + originFilename;
 
         if(!userDetails.getUser().getId().equals(post.getUser().getId())){
             throw new PostNotCorrespondUser();
@@ -108,9 +112,9 @@ public class PostServiceImpl implements PostService {
             post.changeContent(postRequestDTO.getPostContent());
         }
 
-        if(postRequestDTO.getOriginImageUrl() != null) {
-            post.changeImageUrl(postRequestDTO.getOriginImageUrl(),
-                    postRequestDTO.getSavedImageUrl());
+        if(originFilename != null) {
+            post.changeImageUrl(originFilename,
+                    savedFilename);
         }
 
         Post modifiedPost = postRepository.save(post);

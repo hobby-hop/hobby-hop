@@ -12,6 +12,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 
@@ -26,7 +27,9 @@ public interface PostService {
 
     PostPageResponseDTO getAllPost(Pageable pageable, Long clubId);
 
-    PostResponseDTO modifyPost(UserDetailsImpl userDetails, Long clubId, Long postId, PostRequestDTO postRequestDTO);
+    PostResponseDTO modifyPost(UserDetailsImpl userDetails, Long clubId, Long postId,
+            MultipartFile file, PostRequestDTO postRequestDTO)
+            throws IOException;
 
     void deletePost(UserDetailsImpl userDetails, Long clubId, Long postId);
 

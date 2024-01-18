@@ -56,10 +56,10 @@ public class PostController {
 
     @PatchMapping("/{postId}")
     public ApiResponse<?> modifyPost(@PathVariable Long clubId, @PathVariable Long postId,
-            @RequestBody @Valid PostRequestDTO postRequestDTO,
-            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+            @RequestBody @Valid PostRequestDTO postRequestDTO, @RequestParam("file") MultipartFile file,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
 
-        return ApiResponse.ok(postService.modifyPost(userDetails, clubId, postId, postRequestDTO));
+        return ApiResponse.ok(postService.modifyPost(userDetails, clubId, postId, file,postRequestDTO));
     }
 
     @DeleteMapping("/{postId}")
