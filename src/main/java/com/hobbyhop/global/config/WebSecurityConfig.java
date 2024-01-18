@@ -89,11 +89,12 @@ public class WebSecurityConfig {
     }
 
 
-    private CorsConfigurationSource corsConfigurationSource() {
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.addAllowedOriginPattern("*");
         // 로컬 테스트, 프론트 배포 주소
-        corsConfiguration.setAllowedOriginPatterns(Arrays.asList("http://127.0.0.1:5500", "https://thriving-sopapillas-b7b0e6.netlify.app/"));
+        corsConfiguration.setAllowedOriginPatterns(Arrays.asList("http://127.0.0.1:5500", "https://hobbyhop.site"));
         corsConfiguration.setAllowedMethods(Collections.singletonList("*"));
         corsConfiguration.setAllowedHeaders(Collections.singletonList("*"));
 
