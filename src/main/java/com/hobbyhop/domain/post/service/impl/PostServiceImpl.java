@@ -39,20 +39,13 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public PostResponseDTO makePost(UserDetailsImpl userDetails, Long clubId, MultipartFile file, PostRequestDTO postRequestDTO)
-            throws IOException {
+    public PostResponseDTO makePost(UserDetailsImpl userDetails, Long clubId, PostRequestDTO postRequestDTO) {
 
         Club club = clubService.findClub(clubId);
-
-        String originFilename = s3Service.saveFile(file);
-        String savedFilename = UUID.randomUUID() + "_" + originFilename;
-
 
         Post post = Post.builder()
                 .postTitle(postRequestDTO.getPostTitle())
                 .postContent(postRequestDTO.getPostContent())
-                .originImageUrl(originFilename)
-                .savedImageUrl(savedFilename)
                 .club(club)
                 .user(userDetails.getUser())
                 .likeCnt(0L)
@@ -62,6 +55,21 @@ public class PostServiceImpl implements PostService {
 
         return PostResponseDTO.fromEntity(post);
     }
+
+    @Override
+    @Transactional
+    public void imageUploadPost(UserDetailsImpl userDetails, Long clubId, Long postId, MultipartFile file)
+            throws IOException {
+
+        Club club = clubService.findClub(clubId);
+        Post post = findPost(postId);
+
+        String originFilename = s3Service.saveFile(file);
+        String savedFilename = UUID.randomUUID() + "_" + originFilename;
+
+        post.changeImageUrl(originFilename, savedFilename);
+    }
+
 
     @Override
     public PostResponseDTO getPostById(Long clubId, Long postId) {
