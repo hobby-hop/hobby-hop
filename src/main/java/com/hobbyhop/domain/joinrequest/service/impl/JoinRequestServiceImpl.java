@@ -55,7 +55,7 @@ public class JoinRequestServiceImpl implements JoinRequestService {
         }
 
         return joinRequestRepository.findByClub_IdAndStatus(clubId, JoinRequestStatus.PENDING).stream()
-                .map(joinRequest -> JoinResponseDTO.fromEntity(joinRequest)).collect(Collectors.toList());
+                .map(JoinResponseDTO::fromEntity).collect(Collectors.toList());
     }
 
     @Override
