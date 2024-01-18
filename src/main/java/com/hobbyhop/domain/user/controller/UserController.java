@@ -25,7 +25,7 @@ public class UserController {
     private final KakaoService kakaoService;
 
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponse> signup(
+    public ResponseEntity<?> signup(
             @Valid
             @RequestBody SignupRequestDTO signupRequestDTO) {
         userService.signup(signupRequestDTO);
@@ -35,7 +35,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse> login(
+    public ResponseEntity<?> login(
             @RequestBody LoginRequestDTO loginRequestDTO,
             HttpServletResponse response) {
         userService.login(loginRequestDTO, response);
@@ -45,7 +45,7 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<ApiResponse> logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ResponseEntity<?> logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         userService.logout(httpServletRequest, httpServletResponse);
         return ResponseEntity.ok(ApiResponse.ok(
                 "로그아웃 성공"
@@ -54,7 +54,7 @@ public class UserController {
 
     @PatchMapping("/update")
     @SecurityRequirement(name = "Bearer Authentication")
-    public ResponseEntity<ApiResponse> update(
+    public ResponseEntity<?> update(
             @RequestBody UpdateProfileDTO updateProfileDTO,
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             HttpServletResponse httpServletResponse,
@@ -66,7 +66,7 @@ public class UserController {
     }
 
     @GetMapping("/login/kakao/callback")
-    public ResponseEntity<ApiResponse> kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+    public ResponseEntity<?> kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
         kakaoService.kakaoLogin(code, response);
         return ResponseEntity.ok(ApiResponse.ok(
                 "카카오 로그인 성공"
