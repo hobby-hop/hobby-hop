@@ -182,17 +182,4 @@ class PostServiceImplTest implements PostTest, UserTest, CategoryTest, ClubTest 
         //then
         verify(postRepository, times(1)).deleteById(TEST_POST_ID);
     }
-
-
 }
-//    PostResponseDTO getPostById(Long clubId, Long postId);
-//
-//    PostPageResponseDTO getAllPost(Pageable pageable, Long clubId);
-//
-//    PostResponseDTO modifyPost(User user, Long clubId, Long postId,
-//            MultipartFile file, PostRequestDTO postRequestDTO)
-//            throws IOException;
-//
-//    void deletePost(User user, Long clubId, Long postId);
-//
-//    void makePostUser(User user, Long clubId, Long postId);
