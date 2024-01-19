@@ -26,10 +26,10 @@ public class ClubRepositoryCustomImpl implements ClubRepositoryCustom {
                                 ClubResponseDTO.class,
                                 club.id,
                                 club.title,
+                                club.category.categoryName,
                                 club.content,
                                 club.createdAt,
                                 club.modifiedAt,
-                                club.category.categoryName,
                                 club.category.id.as("categoryId")))
                 .from(club)
                 .fetch();
