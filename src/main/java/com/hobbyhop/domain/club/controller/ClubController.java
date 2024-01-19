@@ -2,15 +2,17 @@ package com.hobbyhop.domain.club.controller;
 
 import com.hobbyhop.domain.club.dto.ClubRequestDTO;
 import com.hobbyhop.domain.club.service.ClubService;
-import com.hobbyhop.domain.clubmember.service.ClubMemberService;
 import com.hobbyhop.global.request.PageRequestDTO;
 import com.hobbyhop.global.response.ApiResponse;
 import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,11 +22,10 @@ import org.springframework.web.bind.annotation.*;
 @SecurityRequirement(name = "Bearer Authentication")
 public class ClubController {
     private final ClubService clubService;
-    private final ClubMemberService clubMemberService;
 
     @Operation(summary = "새로운 모임 생성")
     @PostMapping
-    public ApiResponse<?> makeClub(@RequestBody ClubRequestDTO clubRequestDTO, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ApiResponse<?> makeClub(@Valid @RequestBody ClubRequestDTO clubRequestDTO, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ApiResponse.ok(clubService.makeClub(clubRequestDTO, userDetails.getUser()));
     }
 
@@ -49,7 +50,7 @@ public class ClubController {
 
     @Operation(summary = "모임 정보 수정")
     @PatchMapping("/{clubId}")
-    public ApiResponse<?> modifyClub(@PathVariable("clubId") Long clubId, @RequestBody ClubRequestDTO clubRequestDTO, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ApiResponse<?> modifyClub(@PathVariable("clubId") Long clubId, @Valid @RequestBody ClubRequestDTO clubRequestDTO, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ApiResponse.ok(clubService.modifyClub(clubId, clubRequestDTO, userDetails.getUser()));
     }
 
@@ -63,7 +64,7 @@ public class ClubController {
     @Operation(summary = "모임 탈퇴")
     @DeleteMapping("/{clubId}/clubmembers")
     public ApiResponse<?> leaveClub(@PathVariable("clubId") Long clubId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        clubMemberService.removeMember(clubId, userDetails.getUser());
+        clubService.removeMember(clubId, userDetails.getUser());
         return ApiResponse.ok("탈퇴 완료");
     }
 }

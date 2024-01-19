@@ -35,7 +35,7 @@ public enum ErrorCode {
     NOT_FOUND_AUTH_CODE_EXCEPTION(401, "없는 인증 번호입니다."),
 
     // Club
-    NOT_FOUND_CLUB_EXCEPTION(401, "해당 클럽을 찾을 수 없습니다."),
+    NOT_FOUND_CLUB_EXCEPTION(404, "해당 클럽을 찾을 수 없습니다."),
     ALREADY_USER_OF_CLUB_EXCEPTION(401, "이미 클럽에 유저가 있습니다."),
 
     // ClubMember
@@ -53,7 +53,7 @@ public enum ErrorCode {
     NOT_FOUND_POST_EXCEPTION(401, "해당 게시글을 찾을 수 없습니다."),
 
     // Category
-    NOT_FOUND_CATEGORY_EXCEPTION(401, "해당 카테고리를 찾을 수 없습니다."),
+    NOT_FOUND_CATEGORY_EXCEPTION(404, "해당 카테고리를 찾을 수 없습니다."),
     NOT_CORRESPOND_USER_EXCEPTION(401, "해당 유저와 일치하는 게시글이 없습니다."),
     ;
 
