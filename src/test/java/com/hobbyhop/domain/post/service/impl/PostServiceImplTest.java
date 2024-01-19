@@ -1,12 +1,18 @@
 package com.hobbyhop.domain.post.service.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.hobbyhop.domain.category.entity.Category;
 import com.hobbyhop.domain.club.entity.Club;
 import com.hobbyhop.domain.club.service.impl.ClubServiceImpl;
 import com.hobbyhop.domain.post.dto.PostRequestDTO;
 import com.hobbyhop.domain.post.dto.PostResponseDTO;
+import com.hobbyhop.domain.post.entity.Post;
 import com.hobbyhop.domain.post.repository.PostRepository;
 import com.hobbyhop.domain.post.s3.S3Service;
 import com.hobbyhop.domain.user.repository.UserRepository;
@@ -14,6 +20,7 @@ import com.hobbyhop.test.CategoryTest;
 import com.hobbyhop.test.ClubTest;
 import com.hobbyhop.test.PostTest;
 import com.hobbyhop.test.UserTest;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,6 +45,7 @@ class PostServiceImplTest implements PostTest, UserTest, CategoryTest, ClubTest 
     private S3Service s3Service;
     private Category category;
     private Club club;
+    private Post post;
 
 
     @BeforeEach
@@ -55,11 +63,20 @@ class PostServiceImplTest implements PostTest, UserTest, CategoryTest, ClubTest 
                 .title(TEST_CLUB_TITLE)
                 .content(TEST_CLUB_CONTENT)
                 .build();
+
+        post = Post.builder()
+                .id(TEST_POST_ID)
+                .postTitle(TEST_POST_TITLE)
+                .postContent(TEST_POST_CONTENT)
+                .user(TEST_USER)
+                .club(club)
+                .build();
     }
 
     @Test
     @DisplayName("게시글 생성 성공 테스트")
-    void makePostTest() {
+        //@Log4j2
+    void 게시글생성테스트() {
 
         //given
         String testPostTitle = "testTitle";
@@ -77,8 +94,64 @@ class PostServiceImplTest implements PostTest, UserTest, CategoryTest, ClubTest 
         assertThat(testPostTitle).isEqualTo(postResponseDTO.getPostTitle());
 
         assertThat(postServiceImpl.makePost(TEST_USER, clubId, PostRequestDTO.builder()
-                .postContent(testPostTitle)
-                .postTitle(testPostContent)
+                .postContent(testPostContent)
+                .postTitle(testPostTitle)
                 .build())).isEqualTo(postResponseDTO);
     }
+
+    @Test
+    @DisplayName("이미지 업로드 성공 테스트")
+    void 이미지업로드테스트() {
+
+        //given
+        String originalImageUrl = "testUrl";
+        String savedImageUrl = "testSavedUrl";
+
+        //when
+        TEST_POST.changeImageUrl(originalImageUrl, savedImageUrl);
+
+        //then
+        assertThat(TEST_POST.getOriginImageUrl()).isEqualTo(originalImageUrl);
+        assertThat(TEST_POST.getSavedImageUrl()).isEqualTo(savedImageUrl);
+    }
+
+    @Test
+    @DisplayName("게시글 단건 조회 성공 테스트")
+    void 게시글단건조회테스트() {
+
+        //given
+        Long clubId = 1L;
+        Long postId = 1L;
+
+        String postTitle = "test";
+        String postContent = "test";
+
+
+//        postServiceImpl.makePost(TEST_USER, clubId,
+//                PostRequestDTO.builder()
+//                        .postTitle(postTitle)
+//                        .postContent(postContent)
+//                        .build());
+//
+        when(postRepository.findById(any())).thenReturn(Optional.ofNullable(post));
+        postRepository.save(TEST_POST);
+        //postServiceImpl.makePost(TEST_USER,clubId,postRequestDTO);
+
+        //when
+        PostResponseDTO postResponseDTO = postServiceImpl.getPostById(clubId,postId);
+
+        //then
+        assertThat(postResponseDTO.getPostId()).isEqualTo(postId);
+    }
 }
+//    PostResponseDTO getPostById(Long clubId, Long postId);
+//
+//    PostPageResponseDTO getAllPost(Pageable pageable, Long clubId);
+//
+//    PostResponseDTO modifyPost(User user, Long clubId, Long postId,
+//            MultipartFile file, PostRequestDTO postRequestDTO)
+//            throws IOException;
+//
+//    void deletePost(User user, Long clubId, Long postId);
+//
+//    void makePostUser(User user, Long clubId, Long postId);
