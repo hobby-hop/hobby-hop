@@ -75,7 +75,6 @@ class PostServiceImplTest implements PostTest, UserTest, CategoryTest, ClubTest 
 
     @Test
     @DisplayName("게시글 생성 성공 테스트")
-        //@Log4j2
     void 게시글생성테스트() {
 
         //given
@@ -120,28 +119,14 @@ class PostServiceImplTest implements PostTest, UserTest, CategoryTest, ClubTest 
     void 게시글단건조회테스트() {
 
         //given
-        Long clubId = 1L;
-        Long postId = 1L;
-
-        String postTitle = "test";
-        String postContent = "test";
-
-
-//        postServiceImpl.makePost(TEST_USER, clubId,
-//                PostRequestDTO.builder()
-//                        .postTitle(postTitle)
-//                        .postContent(postContent)
-//                        .build());
-//
+        when(clubServiceImpl.findClub(any())).thenReturn(club);
         when(postRepository.findById(any())).thenReturn(Optional.ofNullable(post));
-        postRepository.save(TEST_POST);
-        //postServiceImpl.makePost(TEST_USER,clubId,postRequestDTO);
 
         //when
-        PostResponseDTO postResponseDTO = postServiceImpl.getPostById(clubId,postId);
+        PostResponseDTO postResponseDTO = postServiceImpl.getPostById(TEST_CLUB_ID,TEST_POST_ID);
 
         //then
-        assertThat(postResponseDTO.getPostId()).isEqualTo(postId);
+        assertThat(postResponseDTO.getPostId()).isEqualTo(TEST_POST_ID);
     }
 }
 //    PostResponseDTO getPostById(Long clubId, Long postId);
