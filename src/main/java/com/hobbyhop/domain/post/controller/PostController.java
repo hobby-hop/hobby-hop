@@ -86,8 +86,6 @@ public class PostController {
         return ApiResponse.ok("좋아요 성공");
     }
 
-
-
     @PostMapping(value = "/imageUpload")
     public ApiResponse<?> imageUpload(@RequestParam("file") MultipartFile file) throws IOException {
 

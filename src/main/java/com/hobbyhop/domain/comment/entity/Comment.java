@@ -4,6 +4,7 @@ import com.hobbyhop.domain.BaseEntity;
 import com.hobbyhop.domain.post.entity.Post;
 import com.hobbyhop.domain.user.entity.User;
 import jakarta.persistence.*;
+import java.sql.Timestamp;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,6 +22,7 @@ import org.hibernate.annotations.Where;
 @AllArgsConstructor
 @NoArgsConstructor
 @SQLDelete(sql = "UPDATE comment SET deleted_at = NOW() where id=?")
+@Where(clause = "deleted_at is NULL")
 public class Comment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,6 +36,9 @@ public class Comment extends BaseEntity {
 
     @ManyToOne
     Post post;
+
+    @Column(name="deleted_at")
+    private Timestamp deletedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
