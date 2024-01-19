@@ -26,8 +26,8 @@ public class ClubRepositoryCustomImpl implements ClubRepositoryCustom {
                                 ClubResponseDTO.class,
                                 club.id,
                                 club.title,
-                                club.category.categoryName,
                                 club.content,
+                                club.category.categoryName,
                                 club.createdAt,
                                 club.modifiedAt,
                                 club.category.id.as("categoryId")))
