@@ -34,7 +34,6 @@ public class User {
 
     private Long kakaoId;
 
-    @Builder
     public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
