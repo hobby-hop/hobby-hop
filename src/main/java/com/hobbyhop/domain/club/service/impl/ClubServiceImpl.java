@@ -11,8 +11,11 @@ import com.hobbyhop.domain.clubmember.entity.ClubMember;
 import com.hobbyhop.domain.clubmember.enums.MemberRole;
 import com.hobbyhop.domain.clubmember.service.ClubMemberService;
 import com.hobbyhop.domain.user.entity.User;
+import com.hobbyhop.global.exception.club.AlreadyExistClubTitle;
 import com.hobbyhop.global.exception.club.ClubNotFoundException;
 import com.hobbyhop.global.exception.clubmember.ClubMemberRoleException;
+import com.hobbyhop.global.exception.common.ErrorCode;
+import com.hobbyhop.global.exception.user.AlreadyExistUsername;
 import com.hobbyhop.global.request.PageRequestDTO;
 import com.hobbyhop.global.response.PageResponseDTO;
 import java.util.List;
@@ -55,6 +58,7 @@ public class ClubServiceImpl implements ClubService {
     @Override
     @Transactional
     public ClubResponseDTO makeClub(ClubRequestDTO clubRequestDTO, User user) {
+        validateClubTitle(clubRequestDTO.getTitle());
         Category category = categoryService.findCategory(clubRequestDTO.getCategoryId());
         Club club = Club.builder().title(clubRequestDTO.getTitle())
                 .content(clubRequestDTO.getContent()).category(category).build();
@@ -66,26 +70,16 @@ public class ClubServiceImpl implements ClubService {
     @Override
     @Transactional
     public void removeClubById(Long clubId, User user) {
-        // 예외 케이스
-        // 1. 클럽이 존재하지 않음.
-        // 2. 유저가 가입되어있지 않은 클럽임
-        // 3. ADMIN 권한이 없음.
-
-        // 예외 케이스 1번
         Club club = findClub(clubId);
 
-        // 예외 케이스 2번
         ClubMember clubMember = clubMemberService.findByClubAndUser(club, user);
 
-        // 예외 케이스 3번
         if (!clubMember.getMemberRole().equals(MemberRole.ADMIN)) {
             throw new ClubMemberRoleException();
         }
 
-        // 멤버 목록 전부 지우기
         clubMemberService.removeMember(club, user);
 
-        //클럽 지우기
         clubRepository.delete(club);
     }
 
@@ -103,11 +97,11 @@ public class ClubServiceImpl implements ClubService {
             throw new ClubMemberRoleException();
         }
 
-        if (clubRequestDTO.getTitle() != null) {
+        if (clubRequestDTO.getTitle() != null && clubRequestDTO.getTitle().length() > 1) {
             club.changeTitle(clubRequestDTO.getTitle());
         }
 
-        if (clubRequestDTO.getContent() != null) {
+        if (clubRequestDTO.getContent() != null && clubRequestDTO.getContent().length() > 1) {
             club.changeContent(clubRequestDTO.getContent());
         }
 
@@ -137,5 +131,11 @@ public class ClubServiceImpl implements ClubService {
     @Override
     public Club findClub(Long clubId) {
         return clubRepository.findById(clubId).orElseThrow(ClubNotFoundException::new);
+    }
+
+    private void validateClubTitle(String clubTitle) {
+        clubRepository.findByTitle(clubTitle).ifPresent(existingClub -> {
+            throw new AlreadyExistClubTitle();
+        });
     }
 }
