@@ -4,7 +4,6 @@ import com.hobbyhop.domain.comment.entity.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 
 import java.sql.Timestamp;
 import java.util.List;
