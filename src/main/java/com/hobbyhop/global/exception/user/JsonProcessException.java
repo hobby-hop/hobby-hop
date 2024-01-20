@@ -5,6 +5,6 @@ import com.hobbyhop.global.exception.common.ErrorCode;
 
 public class JsonProcessException extends BusinessException {
     public JsonProcessException() {
-        super(ErrorCode.EMAIL_UNCHANGED_EXCEPTION);
+        super(ErrorCode.JSON_PROCESSING_EXCEPTION);
     }
 }
