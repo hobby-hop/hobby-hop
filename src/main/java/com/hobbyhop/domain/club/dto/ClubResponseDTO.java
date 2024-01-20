@@ -16,6 +16,7 @@ public class ClubResponseDTO {
     private Long id;
     private String title;
     private String content;
+    private String categoryName;
     private Timestamp createdAt;
     private Timestamp modifiedAt;
     private Long categoryId;
@@ -25,6 +26,7 @@ public class ClubResponseDTO {
                 .id(club.getId())
                 .title(club.getTitle())
                 .content(club.getContent())
+                .categoryName(club.getCategory().getCategoryName())
                 .categoryId(club.getCategory().getId())
                 .createdAt(club.getCreatedAt())
                 .modifiedAt(club.getModifiedAt())

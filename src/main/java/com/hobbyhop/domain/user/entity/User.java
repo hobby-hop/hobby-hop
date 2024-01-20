@@ -12,6 +12,8 @@ import static com.hobbyhop.domain.user.constant.UserRoleEnum.USER;
 @Entity
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "users")
 public class User {
     @Id

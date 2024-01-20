@@ -24,6 +24,7 @@ public interface UserTest {
 
     User TEST_USER =
             User.builder()
+                    .id(TEST_USER_ID)
                     .username(TEST_USER_NAME)
                     .password(TEST_USER_PASSWORD)
                     .email(TEST_USER_EMAIL)
@@ -31,6 +32,7 @@ public interface UserTest {
 
     User TEST_OTHER_USER =
             User.builder()
+                    .id(TEST_USER_ID)
                     .username(TEST_OTHER_USER_NAME)
                     .password(TEST_OTHER_USER_PASSWORD)
                     .email(TEST_OTHER_USER_EMAIL)
