@@ -1,12 +1,12 @@
 package com.hobbyhop.domain.comment.dto;
 
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.Getter;
 
 @Data
 @Getter
 public class CommentRequestDTO {
-    @Pattern(regexp = "^{200}$")
+    @Size(max = 200)
     String content;
 }

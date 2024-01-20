@@ -34,22 +34,6 @@ public class User {
 
     private Long kakaoId;
 
-    @Builder
-    public User(String username, String email, String password) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.role = USER;
-    }
-
-    public User(String username, String password, String email, UserRoleEnum role, Long kakaoId) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.role = role;
-        this.kakaoId = kakaoId;
-    }
-
     public void updateProfile(String updateUsername, String updateEmail, String updatePassword) {
         if (updateUsername != null && !updateUsername.isEmpty()) {
             this.username = updateUsername;
@@ -62,8 +46,7 @@ public class User {
         }
     }
 
-    public User kakaoIdUpdate(Long kakaoId) {
+    public void kakaoIdUpdate(Long kakaoId) {
         this.kakaoId = kakaoId;
-        return this;
     }
 }
