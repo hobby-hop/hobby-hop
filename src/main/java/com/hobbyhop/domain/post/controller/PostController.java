@@ -36,7 +36,7 @@ public class PostController {
 
     @Operation(summary = "게시글 작성")
     @PostMapping
-    public ApiResponse<?> makePost(@PathVariable Long clubId,
+    public ApiResponse<?> makePost(@PathVariable(name = "clubId") Long clubId,
             @RequestBody @Valid PostRequestDTO postRequestDTO,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
@@ -45,7 +45,7 @@ public class PostController {
 
     @Operation(summary = "게시글 이미지 업로드")
     @PostMapping("/{postId}")
-    public ApiResponse<?> imageUploadPost(@PathVariable Long clubId, @PathVariable Long postId,
+    public ApiResponse<?> imageUploadPost(@PathVariable(name = "clubId") Long clubId, @PathVariable(name = "postId") Long postId,
             @RequestParam("file") MultipartFile file,
             @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
 
@@ -55,21 +55,21 @@ public class PostController {
 
     @Operation(summary = "게시글 단일 조회")
     @GetMapping("/{postId}")
-    public ApiResponse<?> getPostById(@PathVariable Long clubId, @PathVariable Long postId) {
+    public ApiResponse<?> getPostById(@PathVariable(name = "clubId") Long clubId, @PathVariable(name = "postId") Long postId) {
 
         return ApiResponse.ok(postService.getPostById(clubId, postId));
     }
 
     @Operation(summary = "게시글 전체 조회")
     @GetMapping
-    public ApiResponse<?> getAllPost(final Pageable pageable, @PathVariable Long clubId) {
+    public ApiResponse<?> getAllPost(final Pageable pageable, @PathVariable(name = "clubId") Long clubId) {
 
         return ApiResponse.ok(postService.getAllPost(pageable, clubId));
     }
 
     @Operation(summary = "게시글 수정")
     @PatchMapping("/{postId}")
-    public ApiResponse<?> modifyPost(@PathVariable Long clubId, @PathVariable Long postId,
+    public ApiResponse<?> modifyPost(@PathVariable(name = "clubId") Long clubId, @PathVariable(name = "postId") Long postId,
             @RequestBody @Valid PostRequestDTO postRequestDTO, @RequestParam("file") MultipartFile file,
             @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
 
@@ -78,7 +78,7 @@ public class PostController {
 
     @Operation(summary = "게시글 삭제")
     @DeleteMapping("/{postId}")
-    public ApiResponse<?> deletePost(@PathVariable Long clubId, @PathVariable Long postId,
+    public ApiResponse<?> deletePost(@PathVariable(name = "clubId") Long clubId, @PathVariable(name = "postId") Long postId,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         postService.deletePost(userDetails.getUser(), clubId, postId);
@@ -87,8 +87,8 @@ public class PostController {
 
     @Operation(summary = "게시글 좋아요")
     @PostMapping("/{postId}/likes")
-    public ApiResponse<?> likePost(@PathVariable Long clubId,
-            @PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ApiResponse<?> likePost(@PathVariable(name = "clubId") Long clubId,
+            @PathVariable(name = "postId") Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         postService.makePostUser(userDetails.getUser(), clubId, postId);
         return ApiResponse.ok("좋아요 성공");
