@@ -7,7 +7,6 @@ import lombok.Getter;
 import java.sql.Timestamp;
 
 @Data
-@Getter
 @AllArgsConstructor
 public class CommentVO {
     String content;

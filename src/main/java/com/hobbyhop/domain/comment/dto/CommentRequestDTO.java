@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.Getter;
 
 @Data
-@Getter
 public class CommentRequestDTO {
     @Size(max = 200)
     String content;

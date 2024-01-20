@@ -76,6 +76,9 @@ public class UserService {
 
         validatePassword(user, updateProfileDTO.getOldPassword());
 
+        if(!updateProfileDTO.getOldPassword().equals(updateProfileDTO.getNewPassword()))
+            throw new MismatchedNewPasswordException();
+
         String newPassword = passwordEncoder.encode(updateProfileDTO.getNewPassword());
 
         user.updateProfile(updateProfileDTO.getUsername(), updateProfileDTO.getEmail(), newPassword);

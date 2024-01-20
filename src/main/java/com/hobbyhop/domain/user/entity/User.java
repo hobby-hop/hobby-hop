@@ -7,8 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import static com.hobbyhop.domain.user.constant.UserRoleEnum.USER;
-
 @Entity
 @Getter
 @NoArgsConstructor

@@ -1,6 +1,5 @@
 package com.hobbyhop.domain.user.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hobbyhop.domain.user.constant.UserRoleEnum;
@@ -37,12 +36,10 @@ public class KakaoService {
 
     public void kakaoLogin(String code, HttpServletResponse response){
         // 1. "인가 코드"로 "액세스 토큰" 요청
-        String accessToken = null;
-        // 2. 토큰으로 카카오 API 호출 : "액세스 토큰"으로 "카카오 사용자 정보" 가져오기
-        KakaoUserInfoDTO kakaoUserInfo = null;
-            accessToken = getToken(code);
-            kakaoUserInfo = getKakaoUserInfo(accessToken);
+        String accessToken = getToken(code);
 
+        // 2. 토큰으로 카카오 API 호출 : "액세스 토큰"으로 "카카오 사용자 정보" 가져오기
+        KakaoUserInfoDTO kakaoUserInfo = getKakaoUserInfo(accessToken);
 
         // 3. 필요시에 회원가입
         User kakaoUser = registerKakaoUserIfNeeded(kakaoUserInfo);
@@ -95,7 +92,7 @@ public class KakaoService {
         );
 
         // HTTP 응답 (JSON) -> 액세스 토큰 파싱
-        JsonNode jsonNode = null;
+        JsonNode jsonNode;
         try {
             jsonNode = new ObjectMapper().readTree(response.getBody());
         } catch (Exception e) {
@@ -129,7 +126,7 @@ public class KakaoService {
                 String.class
         );
 
-        JsonNode jsonNode = null;
+        JsonNode jsonNode;
         try {
             jsonNode = new ObjectMapper().readTree(response.getBody());
         } catch (Exception e) {
