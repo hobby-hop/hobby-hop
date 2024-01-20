@@ -1,5 +1,6 @@
 package com.hobbyhop.domain.user.service;
 
+import com.hobbyhop.domain.user.constant.UserRoleEnum;
 import com.hobbyhop.domain.user.dto.LoginRequestDTO;
 import com.hobbyhop.domain.user.dto.SignupRequestDTO;
 import com.hobbyhop.domain.user.dto.UpdateProfileDTO;
@@ -29,7 +30,9 @@ public class UserService {
                 .username(signupRequestDTO.getUsername())
                 .password(passwordEncoder.encode(signupRequestDTO.getPassword()))
                 .email(signupRequestDTO.getEmail())
+                .role(UserRoleEnum.USER)
                 .build();
+
         userRepository.save(user);
     }
 
@@ -38,7 +41,7 @@ public class UserService {
         String password = loginRequestDTO.getPassword();
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(NotFoundUser::new);
+                .orElseThrow(NotFoundUserException::new);
         String username = user.getUsername();
 
         validatePassword(user, password);
@@ -69,10 +72,13 @@ public class UserService {
     public void updateProfile(UpdateProfileDTO updateProfileDTO, UserDetailsImpl userDetails,
                               HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
         User user = userRepository.findById(userDetails.getUser().getId())
-                .orElseThrow(NotFoundUser::new);
+                .orElseThrow(NotFoundUserException::new);
 
         validatePassword(user, updateProfileDTO.getOldPassword());
-        editComparison(updateProfileDTO);
+
+        if(!updateProfileDTO.getOldPassword().equals(updateProfileDTO.getNewPassword()))
+            throw new MismatchedNewPasswordException();
+
         String newPassword = passwordEncoder.encode(updateProfileDTO.getNewPassword());
 
         user.updateProfile(updateProfileDTO.getUsername(), updateProfileDTO.getEmail(), newPassword);
@@ -90,35 +96,21 @@ public class UserService {
 
     private void validatePassword(User user, String password) {
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new MismatchedPassword();
-        }
-    }
-
-    private void editComparison(UpdateProfileDTO updateProfileDTO) {
-        if (userRepository.existsByUsername(updateProfileDTO.getUsername())) {
-            throw new UsernameUnchanged();
-        }
-
-        if (userRepository.existsByEmail(updateProfileDTO.getEmail())) {
-            throw new EmailUnchanged();
-        }
-
-        if (!updateProfileDTO.getNewPassword().equals(updateProfileDTO.getConfirmPassword())) {
-            throw new MismatchedNewPassword();
+            throw new MismatchedPasswordException();
         }
     }
 
     private void validateExistingUser(SignupRequestDTO signupRequestDTO) {
-        if (userRepository.findByUsername((signupRequestDTO.getUsername())).isPresent()) {
-            throw new AlreadyExistUsername();
+        if (userRepository.existsByUsername((signupRequestDTO.getUsername()))) {
+            throw new AlreadyExistUsernameException();
         }
 
-        if (userRepository.findByEmail((signupRequestDTO.getEmail())).isPresent()) {
-            throw new AlreadyExistEmail();
+        if (userRepository.existsByEmail((signupRequestDTO.getEmail()))) {
+            throw new AlreadyExistEmailException();
         }
 
         if (!signupRequestDTO.getConfirmPassword().equals(signupRequestDTO.getPassword())) {
-            throw new MismatchedPassword();
+            throw new MismatchedPasswordException();
         }
     }
 }
