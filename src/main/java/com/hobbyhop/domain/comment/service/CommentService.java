@@ -13,11 +13,11 @@ public interface CommentService {
 
     CommentResponseDTO postComment(CommentRequestDTO request, Long clubId, Long postId, Long commentId, User user);
 
-    void patchComment(CommentRequestDTO requestDto, Long clubId, Long commentId, User user);
+    void patchComment(CommentRequestDTO requestDto, Long clubId, Long postId, Long commentId, User user);
 
-    void deleteComment(Long clubId, Long commentId, User user);
+    void deleteComment(Long clubId, Long postId, Long commentId, User user);
 
     CommentListResponseDTO getComments(Pageable pageable, SortStandardRequest standard, Long postId);
 
-    void likeComment(Long commentId, User user);
+    void likeComment(Long clubId, Long postId, Long commentId, User user);
 }

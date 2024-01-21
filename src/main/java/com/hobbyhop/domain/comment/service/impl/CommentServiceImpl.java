@@ -56,7 +56,7 @@ public class CommentServiceImpl implements CommentService {
 
         Post post = postService.findPost(postId);
         // 저장 되어 있는 상위 댓글 가져 오기
-        Comment comment = findById(commentId);
+        Comment comment = findById(clubId, postId, commentId); 
 
         Comment reply = buildComment(request, post, user, comment);
 
@@ -70,10 +70,10 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public void patchComment(CommentRequestDTO requestDto, Long clubId, Long commentId, User user) {
+    public void patchComment(CommentRequestDTO requestDto, Long clubId, Long postId, Long commentId, User user) {
         ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
 
-        Comment comment = findById(commentId);
+        Comment comment = findById(clubId, postId, commentId); 
 
         if(!comment.getUser().getId().equals(user.getId()) && !clubMember.getMemberRole().equals(MemberRole.ADMIN))
             throw new UnAuthorizedModifyException();
@@ -82,10 +82,10 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void deleteComment(Long clubId, Long commentId, User user) {
+    public void deleteComment(Long clubId, Long postId, Long commentId, User user) {
         ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
 
-        Comment comment = findById(commentId);
+        Comment comment = findById(clubId, postId, commentId); 
 
         if(!comment.getUser().getId().equals(user.getId()) && !clubMember.getMemberRole().equals(MemberRole.ADMIN))
             throw new UnAuthorizedModifyException();
@@ -102,13 +102,13 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void likeComment(Long commentId, User user) {
-        Comment comment = findById(commentId);
+    public void likeComment(Long clubId, Long postId, Long commentId, User user) {
+        Comment comment = findById(clubId, postId, commentId); 
         commentUserService.modifyCommentUser(comment, user);
     }
 
-    private Comment findById(Long commentId) {
-        return commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
+    private Comment findById(Long clubId, Long postId, Long commentId) {
+        return commentRepository.findById(clubId, postId, commentId).orElseThrow(CommentNotFoundException::new);
     }
 
     private Comment buildComment(CommentRequestDTO request, Post post, User user, Comment comment){
