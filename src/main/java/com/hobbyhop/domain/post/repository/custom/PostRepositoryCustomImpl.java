@@ -24,6 +24,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 .select(
                         Projections.constructor(
                                 PostResponseDTO.class,
+                                post.club.id,
                                 post.id,
                                 post.postTitle,
                                 post.postContent,
