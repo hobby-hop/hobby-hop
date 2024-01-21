@@ -41,7 +41,7 @@ public class Comment extends BaseEntity {
     private Comment parent;
 
     // 댓글 하나에 여러 개의 리플이 붙음
-    @OneToMany(mappedBy = "parent", orphanRemoval = true)
+    @OneToMany(mappedBy = "parent")
     private List<Comment> reply;
 
     public void changeContent(String content) {
