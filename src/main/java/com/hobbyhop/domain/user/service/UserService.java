@@ -76,12 +76,15 @@ public class UserService {
 
         validatePassword(user, updateProfileDTO.getOldPassword());
 
-        if(!updateProfileDTO.getOldPassword().equals(updateProfileDTO.getNewPassword()))
+        if(!updateProfileDTO.getNewPassword().equals(updateProfileDTO.getConfirmPassword()))
             throw new MismatchedNewPasswordException();
 
-        String newPassword = passwordEncoder.encode(updateProfileDTO.getNewPassword());
-
-        user.updateProfile(updateProfileDTO.getUsername(), updateProfileDTO.getEmail(), newPassword);
+        if(updateProfileDTO.getNewPassword().isBlank()){
+            user.updateProfile(updateProfileDTO.getUsername(), updateProfileDTO.getEmail(), updateProfileDTO.getNewPassword());
+        }
+        else {
+            user.updateProfile(updateProfileDTO.getUsername(), updateProfileDTO.getEmail(), passwordEncoder.encode(updateProfileDTO.getNewPassword()));
+        }
 
         String requestHeaderAccessToken = httpServletRequest.getHeader(JwtUtil.AUTHORIZATION_HEADER);
         String newAccessToken = jwtUtil.createAccessToken(user.getUsername());

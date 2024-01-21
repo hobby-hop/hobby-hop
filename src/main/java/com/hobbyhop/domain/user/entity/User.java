@@ -42,13 +42,13 @@ public class User {
 
 
     public void updateProfile(String updateUsername, String updateEmail, String updatePassword) {
-        if (updateUsername != null && !updateUsername.isEmpty()) {
+        if (!updateUsername.isBlank()) {
             this.username = updateUsername;
         }
-        if (updateEmail != null && !updateEmail.isEmpty()) {
+        if (!updateEmail.isBlank()) {
             this.email = updateEmail;
         }
-        if (updatePassword != null && !updatePassword.isEmpty()) {
+        if (!updatePassword.isBlank()) {
             this.password = updatePassword;
         }
     }

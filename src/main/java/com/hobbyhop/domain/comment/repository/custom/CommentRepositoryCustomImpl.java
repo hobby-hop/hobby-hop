@@ -7,6 +7,8 @@ import com.hobbyhop.domain.comment.entity.Comment;
 import com.hobbyhop.global.request.SortStandardRequest;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -143,5 +145,17 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
                 }
                 break;
         }
+    }
+
+    @Override
+    public void deleteList(List<Comment> deletelist) {
+        List<Long> deleteId = new ArrayList<>();
+        deletelist.forEach((d) -> {
+            deleteId.add(d.getId());
+        });
+
+        Timestamp ts = Timestamp.valueOf(LocalDateTime.now());
+        jpaQueryFactory.update(comment).set(comment.deletedAt, ts)
+                .where(comment.id.in(deleteId)).execute();
     }
 }

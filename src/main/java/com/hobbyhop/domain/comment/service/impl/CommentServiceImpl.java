@@ -82,6 +82,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public void deleteComment(Long clubId, Long postId, Long commentId, User user) {
         ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
 
@@ -93,7 +94,7 @@ public class CommentServiceImpl implements CommentService {
         // 본인과 하위 리플의 아이디 값을 저장할 리스트 생성
         Map<Long, Comment> deleteList = makeDelete(comment);
 
-        commentRepository.deleteAllInBatch(deleteList.values().stream().toList());
+        commentRepository.deleteList(deleteList.values().stream().toList());
     }
 
     @Override
