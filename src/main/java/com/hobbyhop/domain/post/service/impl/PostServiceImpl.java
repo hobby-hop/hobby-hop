@@ -45,7 +45,7 @@ public class PostServiceImpl implements PostService {
 
         Club club = clubService.findClub(clubId);
 
-        clubMemberService.findByClubAndUser(club,user);
+        clubMemberService.findByClubAndUser(clubId, user.getId());
 
         Post post = Post.builder()
                 .postTitle(postRequestDTO.getPostTitle())

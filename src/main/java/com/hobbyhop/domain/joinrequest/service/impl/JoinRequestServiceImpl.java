@@ -48,7 +48,7 @@ public class JoinRequestServiceImpl implements JoinRequestService {
     public List<JoinResponseDTO> getRequestByClub(Long clubId, User user) {
         Club club = clubService.findClub(clubId);
 
-        ClubMember clubMember = clubMemberService.findByClubAndUser(club, user);
+        ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
 
         if(!clubMember.getMemberRole().equals(MemberRole.ADMIN)) {
             throw new ClubMemberRoleException();

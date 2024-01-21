@@ -1,5 +1,8 @@
 package com.hobbyhop.domain.comment.service.impl;
 
+import com.hobbyhop.domain.clubmember.entity.ClubMember;
+import com.hobbyhop.domain.clubmember.enums.MemberRole;
+import com.hobbyhop.domain.clubmember.service.ClubMemberService;
 import com.hobbyhop.domain.comment.dto.CommentListResponseDTO;
 import com.hobbyhop.domain.comment.dto.CommentRequestDTO;
 import com.hobbyhop.domain.comment.dto.CommentResponseDTO;
@@ -10,9 +13,13 @@ import com.hobbyhop.domain.commentuser.service.CommentUserService;
 import com.hobbyhop.domain.post.entity.Post;
 import com.hobbyhop.domain.post.service.PostService;
 import com.hobbyhop.domain.user.entity.User;
+import com.hobbyhop.global.exception.clubmember.ClubMemberNotFoundException;
 import com.hobbyhop.global.exception.comment.CommentNotFoundException;
+import com.hobbyhop.global.exception.common.UnAuthorizedModifyException;
 import com.hobbyhop.global.request.SortStandardRequest;
 import jakarta.transaction.Transactional;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -26,9 +33,13 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final PostService postService;
     private final CommentUserService commentUserService;
+    private final ClubMemberService clubMemberService;
 
     @Override
-    public CommentResponseDTO postComment(CommentRequestDTO request, Long postId, User user) {
+    public CommentResponseDTO postComment(CommentRequestDTO request, Long clubId, Long postId, User user) {
+        if(clubMemberService.isClubMember(clubId, user.getId()))
+            throw new ClubMemberNotFoundException();
+
         Post post = postService.findPost(postId);
 
         Comment comment = buildComment(request, post, user, null);
@@ -39,7 +50,10 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentResponseDTO postComment(CommentRequestDTO request, Long postId, Long commentId, User user) {
+    public CommentResponseDTO postComment(CommentRequestDTO request, Long clubId, Long postId, Long commentId, User user) {
+        if(clubMemberService.isClubMember(clubId, user.getId()))
+            throw new ClubMemberNotFoundException();
+
         Post post = postService.findPost(postId);
         // 저장 되어 있는 상위 댓글 가져 오기
         Comment comment = findById(commentId);
@@ -56,17 +70,30 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public void patchComment(CommentRequestDTO requestDto, Long commentId, User user) {
+    public void patchComment(CommentRequestDTO requestDto, Long clubId, Long commentId, User user) {
+        ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
+
         Comment comment = findById(commentId);
+
+        if(!comment.getUser().getId().equals(user.getId()) && !clubMember.getMemberRole().equals(MemberRole.ADMIN))
+            throw new UnAuthorizedModifyException();
+
         comment.changeContent(requestDto.getContent());
     }
 
     @Override
-    public void deleteComment(Long commentId, User user) {
+    public void deleteComment(Long clubId, Long commentId, User user) {
+        ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
+
         Comment comment = findById(commentId);
+
+        if(!comment.getUser().getId().equals(user.getId()) && !clubMember.getMemberRole().equals(MemberRole.ADMIN))
+            throw new UnAuthorizedModifyException();
+
         // 본인과 하위 리플의 아이디 값을 저장할 리스트 생성
-        comment.getReply().add(comment);
-        commentRepository.deleteAllInBatch(comment.getReply());
+        Map<Long, Comment> deleteList = makeDelete(comment);
+
+        commentRepository.deleteAllInBatch(deleteList.values().stream().toList());
     }
 
     @Override
@@ -96,5 +123,19 @@ public class CommentServiceImpl implements CommentService {
 
     private int getLike(Comment comment){
         return commentUserService.countLike(comment);
+    }
+
+    private Map<Long, Comment> makeDelete(Comment comment){
+        Map<Long, Comment> deleteList = new HashMap<>();
+
+        if (!comment.getReply().isEmpty()){
+            comment.getReply().forEach((c) -> {
+                Map<Long, Comment> temp = makeDelete(c);
+                deleteList.putAll(temp);
+            });
+        }
+        deleteList.put(comment.getId(), comment);
+
+        return deleteList;
     }
 }
