@@ -21,6 +21,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 @ExtendWith(MockitoExtension.class)
 @DisplayName("[Category]")
 public class CategoryServiceTests implements CategoryTest {
@@ -51,15 +53,23 @@ public class CategoryServiceTests implements CategoryTest {
     @DisplayName("[Create]")
     @Test
     void category_생성_성공() {
+        // Given
         given(categoryRepository.save(any())).willReturn(category);
 
+        // When & Then
         assertThat(categoryService.makeCategory(categoryRequestDTO)).isEqualTo(categoryResponseDTO);
     }
 
     @DisplayName("[Delete]")
     @Test
     void category_삭제_성공() {
+        // Given
+        given(categoryRepository.findById(TEST_CATEGORY_ID)).willReturn(Optional.of(TEST_CATEGORY));
+
+        // When
         categoryService.removeCategory(TEST_CATEGORY_ID);
-        verify(categoryRepository, times(1)).deleteById(TEST_CATEGORY_ID);
+
+        // Then
+        verify(categoryRepository, times(1)).delete(TEST_CATEGORY);
     }
 }
