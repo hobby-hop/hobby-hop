@@ -2,6 +2,7 @@ package com.hobbyhop.domain.post.service.impl;
 
 import com.hobbyhop.domain.club.entity.Club;
 import com.hobbyhop.domain.club.service.ClubService;
+import com.hobbyhop.domain.clubmember.service.ClubMemberService;
 import com.hobbyhop.domain.post.dto.PostPageResponseDTO;
 import com.hobbyhop.domain.post.dto.PostRequestDTO;
 import com.hobbyhop.domain.post.dto.PostResponseDTO;
@@ -30,6 +31,7 @@ public class PostServiceImpl implements PostService {
     private final PostUserService postUserService;
     private final PostRepository postRepository;
     private final S3Service s3Service;
+    private final ClubMemberService clubMemberService;
 
     @Override
     public Post findPost(Long postId) {
@@ -42,6 +44,8 @@ public class PostServiceImpl implements PostService {
     public PostResponseDTO makePost(User user, Long clubId, PostRequestDTO postRequestDTO) {
 
         Club club = clubService.findClub(clubId);
+
+        clubMemberService.findByClubAndUser(club,user);
 
         Post post = Post.builder()
                 .postTitle(postRequestDTO.getPostTitle())
