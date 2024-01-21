@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PostResponseDTO {
 
+    private Long clubId;
     private Long postId;
     private String postTitle;
     private String postContent;
@@ -24,6 +25,7 @@ public class PostResponseDTO {
 
     public static PostResponseDTO fromEntity(Post savedPost) {
         return PostResponseDTO.builder()
+                .clubId(savedPost.getClub().getId())
                 .postId(savedPost.getId())
                 .postTitle(savedPost.getPostTitle())
                 .postContent(savedPost.getPostContent())
