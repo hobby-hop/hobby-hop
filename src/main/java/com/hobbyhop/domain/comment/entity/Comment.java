@@ -10,11 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
-import org.hibernate.annotations.DialectOverride.Wheres;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLDeletes;
 import org.hibernate.annotations.Where;
 
 @Entity
