@@ -28,8 +28,7 @@ public class ClubMemberServiceImpl implements ClubMemberService {
     @Transactional
     public void joinClub(Club club, User user) {
         // 클럽에 이미 가입되어있는지 확인
-        if (clubMemberRepository.existsByClubMemberPK_Club_IdAndClubMemberPK_User_Id(club.getId(),
-                user.getId())) {
+        if (isClubMember(club.getId(), user.getId())) {
             throw new ClubMemberAlreadyJoined();
         }
 
@@ -47,19 +46,23 @@ public class ClubMemberServiceImpl implements ClubMemberService {
     @Override
     @Transactional
     public void removeMember(Club club, User user) {
-        ClubMember clubMember = clubMemberRepository.findByClubMemberPK_Club_IdAndClubMemberPK_User_Id(
-                club.getId(), user.getId()).orElseThrow(ClubMemberNotFoundException::new);
+        ClubMember clubMember = findByClubAndUser(club.getId(), user.getId());
         clubMemberRepository.delete(clubMember);
     }
 
     @Override
-    public ClubMember findByClubAndUser(Club club, User user) {
-        return clubMemberRepository.findByClubMemberPK_Club_IdAndClubMemberPK_User_Id(club.getId(),
-                user.getId()).orElseThrow(ClubMemberNotFoundException::new);
+    public ClubMember findByClubAndUser(Long clubId, Long userId) {
+        return clubMemberRepository.findByClubMemberPK_Club_IdAndClubMemberPK_User_Id(clubId, userId)
+                .orElseThrow(ClubMemberNotFoundException::new);
     }
 
     @Override
     public List<ClubMember> findByUserId(User user){
         return clubMemberRepository.findByClubMemberPK_User_Id(user.getId());
+    }
+
+    @Override
+    public boolean isClubMember(Long clubId, Long userId){
+        return clubMemberRepository.existsByClubMemberPK_Club_IdAndClubMemberPK_User_Id(clubId, userId);
     }
 }

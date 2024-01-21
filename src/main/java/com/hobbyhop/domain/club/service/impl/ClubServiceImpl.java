@@ -75,7 +75,7 @@ public class ClubServiceImpl implements ClubService {
         Club club = findClub(clubId);
 
         // 예외 케이스 2번
-        ClubMember clubMember = clubMemberService.findByClubAndUser(club, user);
+        ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
 
         // 예외 케이스 3번
         if (!clubMember.getMemberRole().equals(MemberRole.ADMIN)) {
@@ -96,7 +96,7 @@ public class ClubServiceImpl implements ClubService {
         Club club = findClub(clubId);
 
         // 클럽에 가입되어있는지
-        ClubMember clubMember = clubMemberService.findByClubAndUser(club, user);
+        ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
 
         // 예외 케이스 3번
         if (clubMember.getMemberRole() != MemberRole.ADMIN) {

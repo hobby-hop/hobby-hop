@@ -14,7 +14,6 @@ import com.hobbyhop.domain.postuser.service.PostUserService;
 import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.global.exception.post.PostNotCorrespondUser;
 import com.hobbyhop.global.exception.post.PostNotFoundException;
-import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
 import java.io.IOException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +44,7 @@ public class PostServiceImpl implements PostService {
 
         Club club = clubService.findClub(clubId);
 
-        clubMemberService.findByClubAndUser(club,user);
+        clubMemberService.findByClubAndUser(clubId, user.getId());
 
         Post post = Post.builder()
                 .postTitle(postRequestDTO.getPostTitle())
