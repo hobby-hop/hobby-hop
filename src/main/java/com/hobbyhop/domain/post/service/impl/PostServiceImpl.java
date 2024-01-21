@@ -18,7 +18,6 @@ import com.hobbyhop.global.exception.clubmember.ClubMemberNotFoundException;
 import com.hobbyhop.global.exception.common.UnAuthorizedModifyException;
 import com.hobbyhop.global.exception.post.PostNotCorrespondUser;
 import com.hobbyhop.global.exception.post.PostNotFoundException;
-import java.io.IOException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;

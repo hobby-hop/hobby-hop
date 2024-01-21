@@ -2,9 +2,7 @@ package com.hobbyhop.domain.post.s3;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.hobbyhop.global.exception.common.BusinessException;
 import com.hobbyhop.global.exception.s3.ImageSaveException;
-import java.io.IOException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
