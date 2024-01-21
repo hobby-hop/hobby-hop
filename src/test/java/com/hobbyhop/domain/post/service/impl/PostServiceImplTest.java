@@ -13,6 +13,8 @@ import static org.springframework.http.MediaType.IMAGE_JPEG;
 import com.hobbyhop.domain.category.entity.Category;
 import com.hobbyhop.domain.club.entity.Club;
 import com.hobbyhop.domain.club.service.impl.ClubServiceImpl;
+import com.hobbyhop.domain.clubmember.service.ClubMemberService;
+import com.hobbyhop.domain.clubmember.service.impl.ClubMemberServiceImpl;
 import com.hobbyhop.domain.post.dto.PostRequestDTO;
 import com.hobbyhop.domain.post.dto.PostResponseDTO;
 import com.hobbyhop.domain.post.entity.Post;
@@ -49,6 +51,8 @@ class PostServiceImplTest implements PostTest, UserTest, CategoryTest, ClubTest 
     private PostRepository postRepository;
     @Mock
     private ClubServiceImpl clubServiceImpl;
+    @Mock
+    private ClubMemberServiceImpl clubMemberService;
     @Mock
     private S3Service s3Service;
     private Category category;
@@ -89,6 +93,8 @@ class PostServiceImplTest implements PostTest, UserTest, CategoryTest, ClubTest 
         String testPostTitle = "testTitle";
         String testPostContent = "testContent";
         Long clubId = 1L;
+        clubMemberService.joinClub(TEST_CLUB,TEST_USER);
+
 
         //when
         PostResponseDTO postResponseDTO = postServiceImpl.makePost(TEST_USER, clubId,
