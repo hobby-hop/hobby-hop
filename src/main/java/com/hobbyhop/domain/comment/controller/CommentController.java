@@ -22,14 +22,14 @@ public class CommentController {
 
     @Operation(summary = "댓글 작성")
     @PostMapping
-    public ApiResponse<?> postComment(@RequestBody CommentRequestDTO request, @PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return ApiResponse.ok(commentService.postComment(request, postId, userDetails.getUser()));
+    public ApiResponse<?> postComment(@RequestBody CommentRequestDTO request, @PathVariable Long clubId, @PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return ApiResponse.ok(commentService.postComment(request, clubId, postId, userDetails.getUser()));
     }
 
     @Operation(summary = "대댓글 작성")
     @PostMapping("/{commentId}")
-    public ApiResponse<?> postComment(@RequestBody CommentRequestDTO request, @PathVariable Long postId, @PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return ApiResponse.ok(commentService.postComment(request, postId, commentId, userDetails.getUser()));
+    public ApiResponse<?> postComment(@RequestBody CommentRequestDTO request, @PathVariable Long clubId, @PathVariable Long postId, @PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return ApiResponse.ok(commentService.postComment(request, clubId, postId, commentId, userDetails.getUser()));
     }
 
     @Operation(summary = "댓글 조회")
@@ -42,22 +42,22 @@ public class CommentController {
 
     @Operation(summary = "댓글 수정")
     @PatchMapping("/{commentId}")
-    public ApiResponse<?> patchComment(@Valid @RequestBody CommentRequestDTO requestDto, @PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        commentService.patchComment(requestDto, commentId, userDetails.getUser());
+    public ApiResponse<?> patchComment(@Valid @RequestBody CommentRequestDTO requestDto, @PathVariable Long clubId, @PathVariable Long postId, @PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        commentService.patchComment(requestDto, clubId, postId, commentId, userDetails.getUser());
         return ApiResponse.ok("수정 성공");
     }
 
     @Operation(summary = "댓글 삭제")
     @DeleteMapping("/{commentId}")
-    public ApiResponse<?> deleteComment(@PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        commentService.deleteComment(commentId, userDetails.getUser());
+    public ApiResponse<?> deleteComment(@PathVariable Long clubId, @PathVariable Long postId, @PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        commentService.deleteComment(clubId, postId, commentId, userDetails.getUser());
         return ApiResponse.ok("삭제 성공");
     }
 
     @Operation(summary = "댓글 좋아요")
     @PostMapping("/{commentId}/likes")
-    public ApiResponse<?> likeComment(@PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        commentService.likeComment(commentId, userDetails.getUser());
+    public ApiResponse<?> likeComment(@PathVariable Long clubId, @PathVariable Long postId, @PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        commentService.likeComment(clubId, postId, commentId, userDetails.getUser());
         return ApiResponse.ok("좋아요 변경 성공");
     }
 }
