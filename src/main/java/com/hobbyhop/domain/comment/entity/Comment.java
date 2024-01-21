@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.annotations.DialectOverride.Wheres;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLDeletes;
 import org.hibernate.annotations.Where;
 
 @Entity
@@ -21,7 +22,6 @@ import org.hibernate.annotations.Where;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@SQLDelete(sql = "UPDATE comment SET deleted_at = NOW() where id=?")
 @Where(clause = "deleted_at is NULL")
 public class Comment extends BaseEntity {
     @Id
