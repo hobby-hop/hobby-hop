@@ -2,7 +2,7 @@ package com.hobbyhop.domain.post.s3;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import java.io.IOException;
+import com.hobbyhop.global.exception.s3.ImageSaveException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +21,7 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public String saveFile(MultipartFile multipartFile) throws IOException {
+    public String saveFile(MultipartFile multipartFile){
 
         String originalFilename = multipartFile.getOriginalFilename();
         String savedFilename = UUID.randomUUID() + "_" + originalFilename;
@@ -30,7 +30,11 @@ public class S3Service {
         metadata.setContentLength(multipartFile.getSize());
         metadata.setContentType(multipartFile.getContentType());
 
-        amazonS3.putObject(bucket, savedFilename, multipartFile.getInputStream(), metadata);
+        try {
+            amazonS3.putObject(bucket, savedFilename, multipartFile.getInputStream(), metadata);
+        } catch (Exception e) {
+            throw new ImageSaveException();
+        }
         return amazonS3.getUrl(bucket, savedFilename).toString();
     }
 

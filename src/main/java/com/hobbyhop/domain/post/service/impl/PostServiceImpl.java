@@ -2,6 +2,8 @@ package com.hobbyhop.domain.post.service.impl;
 
 import com.hobbyhop.domain.club.entity.Club;
 import com.hobbyhop.domain.club.service.ClubService;
+import com.hobbyhop.domain.clubmember.entity.ClubMember;
+import com.hobbyhop.domain.clubmember.enums.MemberRole;
 import com.hobbyhop.domain.clubmember.service.ClubMemberService;
 import com.hobbyhop.domain.post.dto.PostPageResponseDTO;
 import com.hobbyhop.domain.post.dto.PostRequestDTO;
@@ -12,9 +14,10 @@ import com.hobbyhop.domain.post.s3.S3Service;
 import com.hobbyhop.domain.post.service.PostService;
 import com.hobbyhop.domain.postuser.service.PostUserService;
 import com.hobbyhop.domain.user.entity.User;
+import com.hobbyhop.global.exception.clubmember.ClubMemberNotFoundException;
+import com.hobbyhop.global.exception.common.UnAuthorizedModifyException;
 import com.hobbyhop.global.exception.post.PostNotCorrespondUser;
 import com.hobbyhop.global.exception.post.PostNotFoundException;
-import java.io.IOException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -34,13 +37,14 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post findPost(Long postId) {
-
         return postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
     }
 
     @Override
     @Transactional
     public PostResponseDTO makePost(User user, Long clubId, PostRequestDTO postRequestDTO) {
+        if(clubMemberService.isClubMember(clubId, user.getId()))
+            throw new ClubMemberNotFoundException();
 
         Club club = clubService.findClub(clubId);
 
@@ -61,14 +65,16 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public void imageUploadPost(User user, Long clubId, Long postId, MultipartFile file)
-            throws IOException {
+    public void imageUploadPost(User user, Long clubId, Long postId, MultipartFile file) {
+        ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
+
+        if(!clubMember.getMemberRole().equals(MemberRole.ADMIN))
+            throw new UnAuthorizedModifyException();
 
         Post post = findAndCheckPostAndClub(clubId, postId);
 
-        if(!post.getUser().getId().equals(user.getId())){
+        if(!post.getUser().getId().equals(user.getId()))
             throw new PostNotCorrespondUser();
-        }
 
         String originFilename = s3Service.saveFile(file);
         String savedFilename = UUID.randomUUID() + "_" + originFilename;
@@ -79,14 +85,12 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostResponseDTO getPostById(Long clubId, Long postId) {
-
         Post post = findAndCheckPostAndClub(clubId, postId);
 
         return PostResponseDTO.fromEntity(post);
     }
 
     public Post findAndCheckPostAndClub(Long clubId, Long postId){
-
         Club club = clubService.findClub(clubId);
 
         Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
@@ -100,23 +104,24 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostPageResponseDTO getAllPost(Pageable pageable, Long clubId) {
-
         return postRepository.findAllByClubId(pageable, clubId);
     }
 
     @Override
     @Transactional
-    public PostResponseDTO modifyPost(User user, Long clubId, Long postId, MultipartFile file, PostRequestDTO postRequestDTO)
-            throws IOException {
+    public PostResponseDTO modifyPost(User user, Long clubId, Long postId, MultipartFile file, PostRequestDTO postRequestDTO) {
+        ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
+
+        if(!clubMember.getMemberRole().equals(MemberRole.ADMIN))
+            throw new UnAuthorizedModifyException();
 
         Post post = findAndCheckPostAndClub(clubId, postId);
 
+        if(!post.getUser().getId().equals(user.getId()))
+            throw new PostNotCorrespondUser();
+
         String originFilename = s3Service.saveFile(file);
         String savedFilename = UUID.randomUUID() + "_" + originFilename;
-
-        if(!user.getId().equals(post.getUser().getId())){
-            throw new PostNotCorrespondUser();
-        }
 
         if(postRequestDTO.getPostTitle() != null) {
             post.changeTitle(postRequestDTO.getPostTitle());
@@ -127,24 +132,24 @@ public class PostServiceImpl implements PostService {
         }
 
         if(originFilename != null) {
-            post.changeImageUrl(originFilename,
-                    savedFilename);
+            post.changeImageUrl(originFilename, savedFilename);
         }
 
-        Post modifiedPost = postRepository.save(post);
-
-        return PostResponseDTO.fromEntity(modifiedPost);
+        return PostResponseDTO.fromEntity(post);
     }
 
     @Override
     @Transactional
     public void deletePost(User user, Long clubId, Long postId){
+        ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
+
+        if(!clubMember.getMemberRole().equals(MemberRole.ADMIN))
+            throw new UnAuthorizedModifyException();
 
         Post post = findAndCheckPostAndClub(clubId, postId);
 
-        if(!user.getId().equals(post.getUser().getId())){
+        if(!post.getUser().getId().equals(user.getId()))
             throw new PostNotCorrespondUser();
-        }
 
         postRepository.deleteById(postId);
     }
@@ -152,7 +157,6 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public void makePostUser(User user, Long clubId, Long postId){
-
         Post post = findAndCheckPostAndClub(clubId, postId);
 
         postUserService.postUser(user, post);

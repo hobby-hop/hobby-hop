@@ -3,9 +3,11 @@ package com.hobbyhop.domain.comment.repository.custom;
 import com.hobbyhop.domain.comment.dto.CommentListResponseDTO;
 import com.hobbyhop.domain.comment.dto.CommentResponseDTO;
 import com.hobbyhop.domain.comment.dto.CommentVO;
+import com.hobbyhop.domain.comment.entity.Comment;
 import com.hobbyhop.global.request.SortStandardRequest;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 
@@ -16,12 +18,23 @@ import java.util.Objects;
 
 import static com.hobbyhop.domain.comment.entity.QComment.comment;
 import static com.hobbyhop.domain.commentuser.entity.QCommentUser.commentUser;
+import static com.hobbyhop.domain.post.entity.QPost.post;
 import static com.hobbyhop.domain.user.entity.QUser.user;
 
 @RequiredArgsConstructor
 public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
+
+    @Override
+    public Optional<Comment> findById(Long clubId, Long postId, Long commentId){
+        return Optional.ofNullable(jpaQueryFactory
+                .selectFrom(comment)
+                .join(post)
+                .on(comment.post.id.eq(post.id))
+                .where(comment.id.eq(commentId).and(post.id.eq(postId)).and(post.club.id.eq(clubId)))
+                .fetchOne());
+    }
 
     @Override
     public CommentListResponseDTO findAllByPostId(Pageable pageable, SortStandardRequest standard, Long postId) {
