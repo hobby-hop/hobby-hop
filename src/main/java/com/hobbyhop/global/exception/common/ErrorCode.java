@@ -49,13 +49,14 @@ public enum ErrorCode {
 
     // Post
     NOT_FOUND_POST_EXCEPTION(401, "해당 게시글을 찾을 수 없습니다."),
+    NOT_CORRESPOND_USER_EXCEPTION(401, "해당 유저와 일치하는 게시글이 없습니다."),
+
+    // 3S
+    IMAGE_SAVE_EXCEPTION(401, "이미지 저장에 실패했습니다."),
 
     // Category
     NOT_FOUND_CATEGORY_EXCEPTION(404, "해당 카테고리를 찾을 수 없습니다."),
-    ALREADY_EXIST_CATEGORY_NAME_EXCEPTION(400, "이미 존재하는 카테고리입니다."),
-    NOT_CORRESPOND_USER_EXCEPTION(401, "해당 유저와 일치하는 게시글이 없습니다."),
-
-    ;
+    ALREADY_EXIST_CATEGORY_NAME_EXCEPTION(400, "이미 존재하는 카테고리입니다.");
 
     private final int status;
 
