@@ -33,8 +33,7 @@ public class UserController {
     @Operation(summary = "회원가입")
     @PostMapping("/signup")
     public ApiResponse<?> signup(
-            @Valid
-            @RequestBody SignupRequestDTO signupRequestDTO) {
+            @Valid @RequestBody SignupRequestDTO signupRequestDTO) {
         userService.signup(signupRequestDTO);
         return ApiResponse.ok(
                 "회원가입 성공"
@@ -44,8 +43,7 @@ public class UserController {
     @Operation(summary = "로그인")
     @PostMapping("/login")
     public ApiResponse<?> login(
-            @Valid
-            @RequestBody LoginRequestDTO loginRequestDTO,
+            @Valid @RequestBody LoginRequestDTO loginRequestDTO,
             HttpServletResponse response) {
         userService.login(loginRequestDTO, response);
         return ApiResponse.ok(
@@ -55,7 +53,8 @@ public class UserController {
 
     @Operation(summary = "로그아웃")
     @PostMapping("/logout")
-    public ApiResponse<?> logout(HttpServletRequest httpServletRequest,
+    public ApiResponse<?> logout(
+            HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
         userService.logout(httpServletRequest, httpServletResponse);
         return ApiResponse.ok(
@@ -67,8 +66,7 @@ public class UserController {
     @PatchMapping("/update")
     @SecurityRequirement(name = "Bearer Authentication")
     public ApiResponse<?> update(
-            @Valid
-            @RequestBody UpdateProfileDTO updateProfileDTO,
+            @Valid @RequestBody UpdateProfileDTO updateProfileDTO,
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             HttpServletResponse httpServletResponse,
             HttpServletRequest httpServletRequest) {
@@ -81,7 +79,9 @@ public class UserController {
 
     @Operation(summary = "카카오 로그인")
     @GetMapping("/login/kakao/callback")
-    public ApiResponse<?> kakaoLogin(@RequestParam String code, HttpServletResponse response) {
+    public ApiResponse<?> kakaoLogin(
+            @RequestParam String code,
+            HttpServletResponse response) {
         kakaoService.kakaoLogin(code, response);
         return ApiResponse.ok(
                 "카카오 로그인 성공"

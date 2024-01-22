@@ -1,5 +1,6 @@
 package com.hobbyhop.domain.user.entity;
 
+import com.hobbyhop.domain.BaseEntity;
 import com.hobbyhop.domain.user.constant.UserRoleEnum;
 import jakarta.persistence.*;
 import java.sql.Timestamp;
@@ -18,7 +19,7 @@ import org.hibernate.annotations.Where;
 @Table(name = "users")
 @SQLDelete(sql = "UPDATE users SET deleted_at = NOW() where id=?")
 @Where(clause = "deleted_at is NULL")
-public class User {
+public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
