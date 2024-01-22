@@ -1,7 +1,7 @@
 package com.hobbyhop.global.security.userdetails;
 
 import com.hobbyhop.domain.user.entity.User;
-import com.hobbyhop.domain.user.constant.UserRoleEnum;
+import com.hobbyhop.domain.user.enums.UserRoleEnum;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

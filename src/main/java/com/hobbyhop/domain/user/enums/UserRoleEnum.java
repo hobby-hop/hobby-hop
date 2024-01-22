@@ -1,4 +1,4 @@
-package com.hobbyhop.domain.user.constant;
+package com.hobbyhop.domain.user.enums;
 
 import lombok.Getter;
 
