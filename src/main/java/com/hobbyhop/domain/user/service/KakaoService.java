@@ -2,7 +2,7 @@ package com.hobbyhop.domain.user.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hobbyhop.domain.user.constant.UserRoleEnum;
+import com.hobbyhop.domain.user.enums.UserRoleEnum;
 import com.hobbyhop.domain.user.dto.KakaoUserInfoDTO;
 import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.domain.user.repository.UserRepository;

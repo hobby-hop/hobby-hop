@@ -1,7 +1,7 @@
 package com.hobbyhop.domain.user.entity;
 
 import com.hobbyhop.domain.BaseEntity;
-import com.hobbyhop.domain.user.constant.UserRoleEnum;
+import com.hobbyhop.domain.user.enums.UserRoleEnum;
 import jakarta.persistence.*;
 import java.sql.Timestamp;
 import lombok.AllArgsConstructor;

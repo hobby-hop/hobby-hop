@@ -1,6 +1,6 @@
 package com.hobbyhop.domain.user.service;
 
-import com.hobbyhop.domain.user.constant.UserRoleEnum;
+import com.hobbyhop.domain.user.enums.UserRoleEnum;
 import com.hobbyhop.domain.user.dto.LoginRequestDTO;
 import com.hobbyhop.domain.user.dto.SignupRequestDTO;
 import com.hobbyhop.domain.user.dto.UpdateProfileDTO;
