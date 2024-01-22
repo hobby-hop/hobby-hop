@@ -14,7 +14,9 @@ public interface ClubMemberService {
     //모임을 탈퇴한다.
     void removeMember(Club club, User user);
 
-    ClubMember findByClubAndUser(Club club, User user);
+    ClubMember findByClubAndUser(Long clubId, Long userId);
 
     List<ClubMember> findByUserId(User user);
+
+    boolean isClubMember(Long clubId, Long UserId);
 }

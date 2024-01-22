@@ -8,7 +8,6 @@ import com.hobbyhop.domain.club.service.impl.ClubServiceImpl;
 import com.hobbyhop.domain.clubmember.entity.ClubMember;
 import com.hobbyhop.domain.clubmember.enums.MemberRole;
 import com.hobbyhop.domain.clubmember.pk.ClubMemberPK;
-import com.hobbyhop.domain.clubmember.repository.ClubMemberRepository;
 import com.hobbyhop.domain.clubmember.service.impl.ClubMemberServiceImpl;
 import com.hobbyhop.test.ClubTest;
 import lombok.extern.log4j.Log4j2;
@@ -26,6 +25,7 @@ import java.util.Optional;
 import static org.mockito.ArgumentMatchers.any;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.willDoNothing;
+
 
 @DisplayName("[Club]")
 @ExtendWith(MockitoExtension.class)
@@ -88,7 +88,7 @@ class ClubServiceTest implements ClubTest {
     void club_수정() {
         // Given
         given(clubRepository.findById(TEST_CLUB_ID)).willReturn(Optional.of(TEST_CLUB));
-        given(clubMemberService.findByClubAndUser(TEST_CLUB, TEST_USER)).willReturn(clubMember);
+        given(clubMemberService.findByClubAndUser(TEST_CLUB.getId(), TEST_USER.getId())).willReturn(clubMember);
         given(categoryService.findCategory(TEST_OTHER_CATEGORY_ID)).willReturn(TEST_OTHER_CATEGORY);
         given(clubRepository.save(TEST_CLUB)).willReturn(TEST_OTHER_CLUB);
 
@@ -103,15 +103,14 @@ class ClubServiceTest implements ClubTest {
 
     @DisplayName("[Remove]")
     @Test
-    void givenClubId_whenDoDeleteAction_thenReturnsNothing() {
+    void club_삭제() {
         // Given
         given(clubRepository.findById(TEST_CLUB_ID)).willReturn(Optional.of(TEST_CLUB));
-        given(clubMemberService.findByClubAndUser(TEST_CLUB, TEST_USER)).willReturn(clubMember);
+        given(clubMemberService.findByClubAndUser(TEST_CLUB.getId(), TEST_USER.getId())).willReturn(clubMember);
         willDoNothing().given(clubMemberService).removeMember(TEST_CLUB, TEST_USER);
         willDoNothing().given(clubRepository).delete(TEST_CLUB);
 
         // When & Then
-
         assertThatCode(() -> sut.removeClubById(TEST_CLUB_ID, TEST_USER)).doesNotThrowAnyException();
     }
 }

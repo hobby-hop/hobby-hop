@@ -13,9 +13,14 @@ spring:
         format_sql: true
     show-sql: true
 
-jwt:
-  secret:
-    key: ${JWT_SECRET_KEY}
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: 6379
+
+  jwt:
+    secret:
+      key: ${JWT_SECRET_KEY}
 
 cloud:
   aws:

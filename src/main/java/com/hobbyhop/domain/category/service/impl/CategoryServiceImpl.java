@@ -5,6 +5,7 @@ import com.hobbyhop.domain.category.dto.CategoryResponseDTO;
 import com.hobbyhop.domain.category.entity.Category;
 import com.hobbyhop.domain.category.repository.CategoryRepository;
 import com.hobbyhop.domain.category.service.CategoryService;
+import com.hobbyhop.global.exception.category.AlreadyExistCategoryException;
 import com.hobbyhop.global.exception.category.CategoryNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public CategoryResponseDTO makeCategory(CategoryRequestDTO categoryRequestDTO) {
+        validateCategoryName(categoryRequestDTO.getCategoryName());
         Category category = Category.builder()
                 .categoryName(categoryRequestDTO.getCategoryName())
                 .description(categoryRequestDTO.getDescription())
@@ -30,11 +32,17 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public void removeCategory(Long categoryId) {
-        categoryRepository.deleteById(categoryId);
+        Category category = categoryRepository.findById(categoryId).orElseThrow(CategoryNotFoundException::new);
+        categoryRepository.delete(category);
     }
 
     @Override
     public Category findCategory(Long categoryId) {
         return categoryRepository.findById(categoryId).orElseThrow(CategoryNotFoundException::new);
+    }
+    private void validateCategoryName(String categoryName) {
+        categoryRepository.findByCategoryName(categoryName).ifPresent(category -> {
+            throw new AlreadyExistCategoryException();
+        });
     }
 }

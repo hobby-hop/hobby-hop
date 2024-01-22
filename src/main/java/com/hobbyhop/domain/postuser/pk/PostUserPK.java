@@ -22,11 +22,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostUserPK implements Serializable {
 
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(nullable = false)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private User user;
 
-    @JoinColumn(name = "post_id", nullable = false)
+    @JoinColumn(nullable = false)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Post post;
 }

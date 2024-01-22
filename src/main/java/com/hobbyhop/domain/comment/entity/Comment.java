@@ -10,10 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
-import org.hibernate.annotations.DialectOverride.Wheres;
-import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 @Entity
@@ -21,7 +18,6 @@ import org.hibernate.annotations.Where;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@SQLDelete(sql = "UPDATE comment SET deleted_at = NOW() where id=?")
 @Where(clause = "deleted_at is NULL")
 public class Comment extends BaseEntity {
     @Id
@@ -45,7 +41,7 @@ public class Comment extends BaseEntity {
     private Comment parent;
 
     // 댓글 하나에 여러 개의 리플이 붙음
-    @OneToMany(mappedBy = "parent", orphanRemoval = true)
+    @OneToMany(mappedBy = "parent")
     private List<Comment> reply;
 
     public void changeContent(String content) {

@@ -6,11 +6,14 @@ import com.hobbyhop.domain.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import java.sql.Timestamp;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 
 @Entity
@@ -18,6 +21,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE post_user SET deleted_at = NOW() where id=?")
+@Where(clause = "deleted_at is NULL")
 public class PostUser {
 
     @EmbeddedId
@@ -25,6 +30,9 @@ public class PostUser {
 
     @Column(nullable = false)
     private Boolean isLiked;
+
+    @Column
+    private Timestamp deletedAt;
 
     public static PostUser PostUserBuilder(User user, Post post) {
 
