@@ -14,8 +14,6 @@ import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.global.exception.club.AlreadyExistClubTitle;
 import com.hobbyhop.global.exception.club.ClubNotFoundException;
 import com.hobbyhop.global.exception.clubmember.ClubMemberRoleException;
-import com.hobbyhop.global.exception.common.ErrorCode;
-import com.hobbyhop.global.exception.user.AlreadyExistUsername;
 import com.hobbyhop.global.request.PageRequestDTO;
 import com.hobbyhop.global.response.PageResponseDTO;
 import java.util.List;
@@ -97,11 +95,11 @@ public class ClubServiceImpl implements ClubService {
             throw new ClubMemberRoleException();
         }
 
-        if (clubRequestDTO.getTitle() != null && clubRequestDTO.getTitle().length() > 1) {
+        if (clubRequestDTO.getTitle() != null) {
             club.changeTitle(clubRequestDTO.getTitle());
         }
 
-        if (clubRequestDTO.getContent() != null && clubRequestDTO.getContent().length() > 1) {
+        if (clubRequestDTO.getContent() != null) {
             club.changeContent(clubRequestDTO.getContent());
         }
 
