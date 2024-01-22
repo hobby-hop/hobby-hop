@@ -18,9 +18,9 @@ spring:
       host: ${REDIS_HOST}
       port: 6379
 
-jwt:
-  secret:
-    key: ${JWT_SECRET_KEY}
+  jwt:
+    secret:
+      key: ${JWT_SECRET_KEY}
 
 cloud:
   aws:
