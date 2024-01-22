@@ -43,7 +43,8 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public PostResponseDTO makePost(User user, Long clubId, PostRequestDTO postRequestDTO) {
-        if(clubMemberService.isClubMember(clubId, user.getId()))
+        // exist보다는 findById + limit 1 로 하는게 훨씬 쿼리적으로 이득이다.
+        if(!clubMemberService.isClubMember(clubId, user.getId()))
             throw new ClubMemberNotFoundException();
 
         Club club = clubService.findClub(clubId);
