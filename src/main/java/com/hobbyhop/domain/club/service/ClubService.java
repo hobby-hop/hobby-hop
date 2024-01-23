@@ -18,7 +18,7 @@ public interface ClubService {
     ClubResponseDTO getClub(Long clubId);
 
     // 새로운 모임을 만든다.
-    ClubResponseDTO makeClub(ClubRequestDTO clubRequestDTOl, User user);
+    ClubResponseDTO makeClub(ClubRequestDTO clubRequestDTO, User user);
 
     // 모임의 관리자가 모임을 삭제한다.
     void removeClubById(Long clubId, User user);

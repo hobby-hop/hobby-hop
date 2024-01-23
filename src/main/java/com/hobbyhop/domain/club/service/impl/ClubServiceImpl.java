@@ -61,7 +61,7 @@ public class ClubServiceImpl implements ClubService {
         Club club = Club.builder().title(clubRequestDTO.getTitle())
                 .content(clubRequestDTO.getContent()).category(category).build();
         Club savedClub = clubRepository.save(club);
-        clubMemberService.joinClub(club, user);
+        clubMemberService.joinClub(club, user, MemberRole.ADMIN);
         return ClubResponseDTO.fromEntity(savedClub);
     }
 
