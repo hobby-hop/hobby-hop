@@ -4,7 +4,6 @@ import com.hobbyhop.domain.category.service.impl.CategoryServiceImpl;
 import com.hobbyhop.domain.club.dto.ClubRequestDTO;
 import com.hobbyhop.domain.club.dto.ClubResponseDTO;
 import com.hobbyhop.domain.club.repository.ClubRepository;
-import com.hobbyhop.domain.club.service.impl.impl.ClubServiceImpl;
 import com.hobbyhop.domain.clubmember.entity.ClubMember;
 import com.hobbyhop.domain.clubmember.enums.MemberRole;
 import com.hobbyhop.domain.clubmember.pk.ClubMemberPK;
@@ -25,7 +24,6 @@ import java.util.Optional;
 import static org.mockito.ArgumentMatchers.any;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.willDoNothing;
-import static org.mockito.Mockito.verify;
 
 
 @DisplayName("[Club]")
