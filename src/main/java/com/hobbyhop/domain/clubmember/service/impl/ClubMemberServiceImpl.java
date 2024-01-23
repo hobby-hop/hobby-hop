@@ -11,6 +11,8 @@ import com.hobbyhop.domain.clubmember.service.ClubMemberService;
 import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.global.exception.clubmember.ClubMemberAlreadyJoined;
 import com.hobbyhop.global.exception.clubmember.ClubMemberNotFoundException;
+
+import java.lang.reflect.Member;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,7 +28,7 @@ public class ClubMemberServiceImpl implements ClubMemberService {
 
     @Override
     @Transactional
-    public void joinClub(Club club, User user) {
+    public void joinClub(Club club, User user, MemberRole memberRole) {
         // 클럽에 이미 가입되어있는지 확인
         if (isClubMember(club.getId(), user.getId())) {
             throw new ClubMemberAlreadyJoined();
@@ -38,7 +40,7 @@ public class ClubMemberServiceImpl implements ClubMemberService {
                         .club(club)
                         .user(user)
                         .build())
-                .memberRole(MemberRole.MEMBER).build();
+                .memberRole(memberRole).build();
         ClubMember savedClubMember = clubMemberRepository.save(clubMember);
         ClubMemberResponseDTO.fromEntity(savedClubMember);
     }
