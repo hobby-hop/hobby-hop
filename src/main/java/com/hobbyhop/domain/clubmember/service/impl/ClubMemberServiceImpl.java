@@ -28,7 +28,7 @@ public class ClubMemberServiceImpl implements ClubMemberService {
 
     @Override
     @Transactional
-    public void joinClub(Club club, User user, MemberRole memberRole) {
+    public ClubMemberResponseDTO joinClub(Club club, User user, MemberRole memberRole) {
         // 클럽에 이미 가입되어있는지 확인
         if (isClubMember(club.getId(), user.getId())) {
             throw new ClubMemberAlreadyJoined();
@@ -42,7 +42,8 @@ public class ClubMemberServiceImpl implements ClubMemberService {
                         .build())
                 .memberRole(memberRole).build();
         ClubMember savedClubMember = clubMemberRepository.save(clubMember);
-        ClubMemberResponseDTO.fromEntity(savedClubMember);
+
+        return ClubMemberResponseDTO.fromEntity(savedClubMember);
     }
 
     @Override
