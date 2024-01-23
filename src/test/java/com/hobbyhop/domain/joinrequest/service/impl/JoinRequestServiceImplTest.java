@@ -1,6 +1,6 @@
 package com.hobbyhop.domain.joinrequest.service.impl;
 
-import com.hobbyhop.domain.club.service.impl.impl.ClubServiceImpl;
+import com.hobbyhop.domain.club.service.impl.ClubServiceImpl;
 import com.hobbyhop.domain.clubmember.dto.ClubMemberResponseDTO;
 import com.hobbyhop.domain.clubmember.entity.ClubMember;
 import com.hobbyhop.domain.clubmember.enums.MemberRole;
