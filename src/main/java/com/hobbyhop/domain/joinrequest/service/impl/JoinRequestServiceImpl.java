@@ -65,7 +65,7 @@ public class JoinRequestServiceImpl implements JoinRequestService {
         joinRequestRepository.save(joinRequest);
 
         if(status.equals(JoinRequestStatus.APPROVED)) {
-            clubMemberService.joinClub(joinRequest.getClub(), joinRequest.getUser());
+            clubMemberService.joinClub(joinRequest.getClub(), joinRequest.getUser(), MemberRole.MEMBER);
         }
     }
 }
