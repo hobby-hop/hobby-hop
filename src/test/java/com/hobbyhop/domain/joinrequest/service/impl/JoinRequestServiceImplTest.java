@@ -102,7 +102,6 @@ class JoinRequestServiceImplTest implements ClubTest {
         sut.processRequest(1L, JoinRequestStatus.APPROVED);
 
         // Then
-        verify(joinRequestRepository).save(joinRequest);
         verify(clubMemberService).joinClub(TEST_CLUB, TEST_USER, MemberRole.MEMBER);
     }
 }

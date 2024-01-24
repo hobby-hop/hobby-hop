@@ -108,9 +108,8 @@ public class ClubServiceImpl implements ClubService {
             club.changeCategory(category);
         }
 
-        Club modifiedClub = clubRepository.save(club);
 
-        return ClubResponseDTO.fromEntity(modifiedClub);
+        return ClubResponseDTO.fromEntity(club);
     }
 
     @Override
