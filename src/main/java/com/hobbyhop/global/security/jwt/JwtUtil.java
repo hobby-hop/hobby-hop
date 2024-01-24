@@ -1,9 +1,6 @@
 package com.hobbyhop.global.security.jwt;
 
-import com.hobbyhop.global.exception.jwt.ExpiredJwtTokenException;
-import com.hobbyhop.global.exception.jwt.InvalidJwtException;
-import com.hobbyhop.global.exception.jwt.InvalidJwtSignatureException;
-import com.hobbyhop.global.exception.jwt.UnsupportedJwtTokenException;
+import com.hobbyhop.global.exception.jwt.*;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -151,7 +148,7 @@ public class JwtUtil {
 
     public void removeRefreshToken(String accessToken) {
         if (!redisTemplate.hasKey(accessToken)) {
-            throw new IllegalArgumentException("RefreshToken이 유효하지 않습니다.");
+            throw new InvalidRefreshTokenException();
         }
         redisTemplate.delete(accessToken);
     }
@@ -160,7 +157,7 @@ public class JwtUtil {
         Claims claims = getUserInfo(accessToken.substring(7));
         String username = claims.getSubject();
         if (!redisTemplate.hasKey(username)) {
-            throw new IllegalArgumentException("AccessToken이 유효하지 않습니다.");
+            throw new InvalidJwtException();
         }
         redisTemplate.delete(username);
     }
