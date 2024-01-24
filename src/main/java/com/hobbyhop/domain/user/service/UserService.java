@@ -8,12 +8,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public interface UserService {
-
     void signup(SignupRequestDTO signupRequestDTO);
-
     void login(LoginRequestDTO loginRequestDTO, HttpServletResponse response);
-
     void logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse);
-
     void updateProfile(UpdateProfileDTO updateProfileDTO, UserDetailsImpl userDetails, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest);
 }
