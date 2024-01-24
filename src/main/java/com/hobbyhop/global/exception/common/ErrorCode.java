@@ -10,10 +10,11 @@ public enum ErrorCode {
     EXPIRED_JWT_TOKEN_EXCEPTION(401, "만료된 JWT 토큰입니다."),
     UNSUPPORTED_JWT_TOKEN_EXCEPTION(401, "지원되지 않는 JWT 토큰입니다."),
     INVALID_JWT_EXCEPTION(401, "JWT 토큰이 잘못되었습니다"),
-    NOT_REFRESH_TOKEN_EXCEPTION(401, "Refresh Token이 아닙니다."),
+    INVALID_REFRESH_TOKEN_EXCEPTION(401, "RefreshToken이 유효하지 않습니다."),
     NOT_MISMATCHED_REFRESH_TOKEN_EXCEPTION(401, "DB의 리프레쉬 토큰 값과 다릅니다."),
     NO_JWT_EXCEPTION(401, "이 요청은 JWT가 필요합니다."),
     NOT_SUPPORTED_GRANT_TYPE_EXCEPTION(401, "지원하지 않는 권한 부여 유형입니다."),
+
 
     // 회원
     NOT_FOUND_USER_EXCEPTION(401, "회원 정보를 찾을 수 없습니다."),
