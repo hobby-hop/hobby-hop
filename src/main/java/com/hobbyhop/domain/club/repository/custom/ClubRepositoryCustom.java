@@ -1,4 +1,4 @@
-package com.hobbyhop.domain.club.repository.search;
+package com.hobbyhop.domain.club.repository.custom;
 
 import com.hobbyhop.domain.club.dto.ClubResponseDTO;
 import org.springframework.data.domain.Page;
