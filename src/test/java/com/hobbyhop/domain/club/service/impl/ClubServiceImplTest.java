@@ -103,7 +103,6 @@ class ClubServiceImplTest implements ClubTest {
         given(clubRepository.findById(TEST_CLUB_ID)).willReturn(Optional.of(TEST_CLUB));
         given(clubMemberService.findByClubAndUser(TEST_CLUB.getId(), TEST_USER.getId())).willReturn(clubMember);
         given(categoryService.findCategory(TEST_OTHER_CATEGORY_ID)).willReturn(TEST_OTHER_CATEGORY);
-        given(clubRepository.save(TEST_CLUB)).willReturn(TEST_OTHER_CLUB);
 
         // When
         ClubResponseDTO clubResponseDTO = sut.modifyClub(TEST_CLUB_ID, otherClubRequestDTO, TEST_USER);
