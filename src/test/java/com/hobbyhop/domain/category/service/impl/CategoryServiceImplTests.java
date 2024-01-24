@@ -1,4 +1,4 @@
-package com.hobbyhop.domain.category.service;
+package com.hobbyhop.domain.category.service.impl;
 
 import com.hobbyhop.domain.category.dto.CategoryRequestDTO;
 import com.hobbyhop.domain.category.dto.CategoryResponseDTO;
@@ -25,9 +25,9 @@ import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("[Category]")
-public class CategoryServiceTests implements CategoryTest {
+public class CategoryServiceImplTests implements CategoryTest {
     @InjectMocks
-    private CategoryServiceImpl categoryService;
+    private CategoryServiceImpl sut;
     @Mock
     private CategoryRepository categoryRepository;
     private Category category;
@@ -57,8 +57,18 @@ public class CategoryServiceTests implements CategoryTest {
         given(categoryRepository.save(any())).willReturn(category);
 
         // When & Then
-        assertThat(categoryService.makeCategory(categoryRequestDTO)).isEqualTo(categoryResponseDTO);
+        assertThat(sut.makeCategory(categoryRequestDTO)).isEqualTo(categoryResponseDTO);
     }
+//    @DisplayName("[Create]")
+//    @Test
+//    void category_생성_실패() {
+//        // Given
+//        given(categoryRepository.save(any())).willReturn(category);
+//        given(categoryRepository.findByCategoryName(TEST_CATEGORY_NAME)).willReturn(Optional.of(TEST_CATEGORY));
+//
+//        // When & Then
+//        assertThatCode(() -> sut.makeCategory(categoryRequestDTO)).isInstanceOf(AlreadyExistCategoryException.class);
+//    }
 
     @DisplayName("[Delete]")
     @Test
@@ -67,7 +77,7 @@ public class CategoryServiceTests implements CategoryTest {
         given(categoryRepository.findById(TEST_CATEGORY_ID)).willReturn(Optional.of(TEST_CATEGORY));
 
         // When
-        categoryService.removeCategory(TEST_CATEGORY_ID);
+        sut.removeCategory(TEST_CATEGORY_ID);
 
         // Then
         verify(categoryRepository, times(1)).delete(TEST_CATEGORY);
