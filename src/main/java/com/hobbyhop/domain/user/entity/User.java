@@ -42,7 +42,7 @@ public class User extends BaseEntity {
     private Long kakaoId;
 
 
-    public void updateProfile(String updateUsername, String updateEmail, String updatePassword) {
+    public void updateProfile (String updateUsername, String updateEmail, String updatePassword) {
         if (!updateUsername.isBlank()) {
             this.username = updateUsername;
         }
@@ -54,7 +54,7 @@ public class User extends BaseEntity {
         }
     }
 
-    public void kakaoIdUpdate(Long kakaoId) {
+    public void kakaoIdUpdate (Long kakaoId) {
         this.kakaoId = kakaoId;
     }
 }
