@@ -1,9 +1,9 @@
-package com.hobbyhop.domain.club.repository.search.impl;
+package com.hobbyhop.domain.club.repository.custom.impl;
 
 import static com.hobbyhop.domain.club.entity.QClub.club;
 
 import com.hobbyhop.domain.club.dto.ClubResponseDTO;
-import com.hobbyhop.domain.club.repository.search.ClubRepositoryCustom;
+import com.hobbyhop.domain.club.repository.custom.ClubRepositoryCustom;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
