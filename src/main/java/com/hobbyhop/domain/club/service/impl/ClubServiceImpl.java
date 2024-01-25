@@ -76,9 +76,7 @@ public class ClubServiceImpl implements ClubService {
             throw new ClubMemberRoleException();
         }
 
-        clubMemberService.removeMember(club, user);
-
-        clubRepository.delete(club);
+        clubRepository.deleteAllElement(club.getId());
     }
 
     @Override

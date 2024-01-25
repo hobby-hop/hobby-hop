@@ -37,7 +37,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentResponseDTO postComment(CommentRequestDTO request, Long clubId, Long postId, User user) {
-        if(clubMemberService.isClubMember(clubId, user.getId()))
+        if(!clubMemberService.isClubMember(clubId, user.getId()))
             throw new ClubMemberNotFoundException();
 
         Post post = postService.findPost(postId);
@@ -51,7 +51,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentResponseDTO postComment(CommentRequestDTO request, Long clubId, Long postId, Long commentId, User user) {
-        if(clubMemberService.isClubMember(clubId, user.getId()))
+        if(!clubMemberService.isClubMember(clubId, user.getId()))
             throw new ClubMemberNotFoundException();
 
         Post post = postService.findPost(postId);
@@ -71,12 +71,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public void patchComment(CommentRequestDTO requestDto, Long clubId, Long postId, Long commentId, User user) {
-        ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
-
-        Comment comment = findById(clubId, postId, commentId); 
-
-        if(!comment.getUser().getId().equals(user.getId()) && !clubMember.getMemberRole().equals(MemberRole.ADMIN))
-            throw new UnAuthorizedModifyException();
+        Comment comment = checkAuth(clubId, postId, commentId, user);
 
         comment.changeContent(requestDto.getContent());
     }
@@ -84,12 +79,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public void deleteComment(Long clubId, Long postId, Long commentId, User user) {
-        ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
-
-        Comment comment = findById(clubId, postId, commentId); 
-
-        if(!comment.getUser().getId().equals(user.getId()) && !clubMember.getMemberRole().equals(MemberRole.ADMIN))
-            throw new UnAuthorizedModifyException();
+        Comment comment = checkAuth(clubId, postId, commentId, user);
 
         // 본인과 하위 리플의 아이디 값을 저장할 리스트 생성
         Map<Long, Comment> deleteList = makeDelete(comment);
@@ -138,5 +128,16 @@ public class CommentServiceImpl implements CommentService {
         deleteList.put(comment.getId(), comment);
 
         return deleteList;
+    }
+
+    private Comment checkAuth(Long clubId, Long postId, Long commentId, User user){
+        ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
+
+        Comment comment = findById(clubId, postId, commentId);
+
+        if(!comment.getUser().getId().equals(user.getId()) && !clubMember.getMemberRole().equals(MemberRole.ADMIN))
+            throw new UnAuthorizedModifyException();
+
+        return comment;
     }
 }
