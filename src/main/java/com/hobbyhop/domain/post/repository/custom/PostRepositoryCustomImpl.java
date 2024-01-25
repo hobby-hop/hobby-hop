@@ -1,5 +1,6 @@
 package com.hobbyhop.domain.post.repository.custom;
 
+import static com.hobbyhop.domain.comment.entity.QComment.comment;
 import static com.hobbyhop.domain.post.entity.QPost.post;
 import static com.hobbyhop.domain.postuser.entity.QPostUser.postUser;
 import static com.hobbyhop.domain.user.entity.QUser.user;
@@ -8,7 +9,10 @@ import com.hobbyhop.domain.post.dto.PostPageResponseDTO;
 import com.hobbyhop.domain.post.dto.PostResponseDTO;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +24,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
 
     @Override
     public PostPageResponseDTO findAllByClubId(Pageable pageable, Long clubId){
-        QueryResults<PostResponseDTO> query = queryFactory
+        JPAQuery<PostResponseDTO> query = queryFactory
                 .select(
                         Projections.constructor(
                                 PostResponseDTO.class,
@@ -43,14 +47,33 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 .where(post.club.id.eq(clubId))
                 .groupBy(post.id)
                 .orderBy(post.createdAt.desc())
-                .fetchResults();
+                .fetchAll();
 
-        List<PostResponseDTO> postPageList = query.getResults();
+        List<PostResponseDTO> postPageList = query.fetch();
 
         return PostPageResponseDTO.builder()
                 .page(pageable.getPageNumber())
-                .totalCount(query.getTotal())
+                .totalCount(query.fetchAll().stream().count())
                 .data(postPageList)
                 .build();
+    }
+
+    @Override
+    public void deleteAllElement(Long postId) {
+        Timestamp now = Timestamp.valueOf(LocalDateTime.now());
+        queryFactory.update(comment)
+                .set(comment.deletedAt, now)
+                .where(comment.post.id.eq(postId))
+                .execute();
+
+        queryFactory.update(postUser)
+                .set(postUser.deletedAt, now)
+                .where(postUser.postUserPK.post.id.eq(postId))
+                .execute();
+
+        queryFactory.update(post)
+                .set(post.deletedAt, now)
+                .where(post.id.eq(postId))
+                .execute();
     }
 }

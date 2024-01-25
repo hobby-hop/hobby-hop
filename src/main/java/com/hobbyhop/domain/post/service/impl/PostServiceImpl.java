@@ -152,7 +152,7 @@ public class PostServiceImpl implements PostService {
         if(!post.getUser().getId().equals(user.getId()))
             throw new PostNotCorrespondUser();
 
-        postRepository.deleteById(postId);
+        postRepository.deleteAllElement(postId);
     }
 
     @Override
