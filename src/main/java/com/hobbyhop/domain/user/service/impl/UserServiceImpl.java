@@ -25,6 +25,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
 
+    @Override
     public void signup(SignupRequestDTO signupRequestDTO) {
         validateExistingUser(signupRequestDTO);
 
@@ -38,6 +39,7 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    @Override
     public void login(LoginRequestDTO loginRequestDTO, HttpServletResponse response) {
         String email = loginRequestDTO.getEmail();
         String password = loginRequestDTO.getPassword();
@@ -56,6 +58,7 @@ public class UserServiceImpl implements UserService {
         jwtUtil.saveRefreshTokenByAccessToken(accessToken, refreshToken);
     }
 
+    @Override
     public void logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         String accessToken = httpServletRequest.getHeader(JwtUtil.AUTHORIZATION_HEADER);
 
@@ -70,6 +73,7 @@ public class UserServiceImpl implements UserService {
         httpServletResponse.setHeader(JwtUtil.AUTHORIZATION_HEADER, "logged-out");
     }
 
+    @Override
     @Transactional
     public void updateProfile(UpdateProfileDTO updateProfileDTO, UserDetailsImpl userDetails,
                               HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
