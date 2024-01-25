@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
     public void logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         String accessToken = httpServletRequest.getHeader(JwtUtil.AUTHORIZATION_HEADER);
 
-        if (jwtUtil.validateToken(accessToken.substring(7))) {
+        if (accessToken != null && jwtUtil.validateToken(accessToken.substring(7))) {
             jwtUtil.removeRefreshToken(accessToken);
             jwtUtil.removeAccessToken(accessToken);
         } else {
