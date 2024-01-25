@@ -42,7 +42,7 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "club_id")
     private Club club;
 
-    @OneToMany(mappedBy = "post", orphanRemoval = true)
+    @OneToMany(mappedBy = "post")
     @Builder.Default
     private List<Comment> commentList = new ArrayList<>();
 

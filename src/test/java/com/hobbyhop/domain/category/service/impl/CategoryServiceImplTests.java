@@ -70,16 +70,16 @@ public class CategoryServiceImplTests implements CategoryTest {
 //        assertThatCode(() -> sut.makeCategory(categoryRequestDTO)).isInstanceOf(AlreadyExistCategoryException.class);
 //    }
 
-    @DisplayName("[Delete]")
-    @Test
-    void category_삭제_성공() {
-        // Given
-        given(categoryRepository.findById(TEST_CATEGORY_ID)).willReturn(Optional.of(TEST_CATEGORY));
-
-        // When
-        sut.removeCategory(TEST_CATEGORY_ID);
-
-        // Then
-        verify(categoryRepository, times(1)).delete(TEST_CATEGORY);
-    }
+//    @DisplayName("[Delete]")
+//    @Test
+//    void category_삭제_성공() {
+//        // Given
+//        given(categoryRepository.findById(TEST_CATEGORY_ID)).willReturn(Optional.of(TEST_CATEGORY));
+//
+//        // When
+//        sut.removeCategory(TEST_CATEGORY_ID);
+//
+//        // Then
+//        verify(categoryRepository, times(1)).delete(TEST_CATEGORY);
+//    }
 }

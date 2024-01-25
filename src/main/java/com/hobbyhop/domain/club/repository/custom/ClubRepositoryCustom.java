@@ -6,4 +6,5 @@ import org.springframework.data.domain.Pageable;
 
 public interface ClubRepositoryCustom {
     Page<ClubResponseDTO> findAll(Pageable pageable, String keyword);
+    void deleteAllElement(Long clubId);
 }
