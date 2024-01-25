@@ -1,6 +1,7 @@
 package com.hobbyhop.domain.post.repository.custom.impl;
 
 import static com.hobbyhop.domain.comment.entity.QComment.comment;
+import static com.hobbyhop.domain.commentuser.entity.QCommentUser.commentUser;
 import static com.hobbyhop.domain.post.entity.QPost.post;
 import static com.hobbyhop.domain.postuser.entity.QPostUser.postUser;
 import static com.hobbyhop.domain.user.entity.QUser.user;
@@ -60,10 +61,22 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
 
     @Override
     public void deleteAllElement(Long postId) {
+        List<Long> ids = queryFactory
+                .select(comment.id)
+                .from(comment)
+                .where(comment.post.id.eq(postId))
+                .fetch().stream().distinct().toList();
+
         Timestamp now = Timestamp.valueOf(LocalDateTime.now());
+
+        queryFactory.update(commentUser)
+                .set(commentUser.deletedAt, now)
+                .where(commentUser.commentUserPK.comment.id.in(ids))
+                .execute();
+
         queryFactory.update(comment)
                 .set(comment.deletedAt, now)
-                .where(comment.post.id.eq(postId))
+                .where(comment.id.in(ids))
                 .execute();
 
         queryFactory.update(postUser)
