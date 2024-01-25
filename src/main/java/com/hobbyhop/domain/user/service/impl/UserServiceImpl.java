@@ -63,14 +63,14 @@ public class UserServiceImpl implements UserService {
         String accessToken = httpServletRequest.getHeader(JwtUtil.AUTHORIZATION_HEADER);
 
         if (accessToken != null && jwtUtil.validateToken(accessToken.substring(7))) {
-            jwtUtil.removeRefreshToken(accessToken);
             jwtUtil.removeAccessToken(accessToken);
+            jwtUtil.removeRefreshToken(accessToken);
         } else {
             String responseHeaderAccessToken = httpServletResponse.getHeader(JwtUtil.AUTHORIZATION_HEADER);
 
             if (responseHeaderAccessToken != null) {
-                jwtUtil.removeRefreshToken(responseHeaderAccessToken);
                 jwtUtil.removeAccessToken(responseHeaderAccessToken);
+                jwtUtil.removeRefreshToken(responseHeaderAccessToken);
             }
         }
         httpServletResponse.setHeader(JwtUtil.AUTHORIZATION_HEADER, "logged-out");
