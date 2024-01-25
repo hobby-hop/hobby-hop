@@ -81,14 +81,14 @@ public class ClubRepositoryCustomImpl implements ClubRepositoryCustom {
                 .where(post.id.in(postIds))
                 .execute();
 
-        jpaQueryFactory.update(club)
-                .set(club.deletedAt, now)
-                .where(club.id.eq(clubId))
-                .execute();
-
         jpaQueryFactory.update(clubMember)
                 .set(clubMember.deletedAt, now)
                 .where(clubMember.clubMemberPK.club.id.eq(clubId))
+                .execute();
+
+        jpaQueryFactory.update(club)
+                .set(club.deletedAt, now)
+                .where(club.id.eq(clubId))
                 .execute();
     }
 }
