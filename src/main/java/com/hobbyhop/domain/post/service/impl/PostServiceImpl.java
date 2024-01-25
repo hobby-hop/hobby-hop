@@ -18,8 +18,11 @@ import com.hobbyhop.global.exception.clubmember.ClubMemberNotFoundException;
 import com.hobbyhop.global.exception.common.UnAuthorizedModifyException;
 import com.hobbyhop.global.exception.post.PostNotCorrespondUser;
 import com.hobbyhop.global.exception.post.PostNotFoundException;
+import com.hobbyhop.global.request.PageRequestDTO;
+import com.hobbyhop.global.response.PageResponseDTO;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -104,8 +107,14 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostPageResponseDTO getAllPost(Pageable pageable, Long clubId) {
-        return postRepository.findAllByClubId(pageable, clubId);
+    public PageResponseDTO<PostResponseDTO> getAllPost(PageRequestDTO pageRequestDTO, Long clubId) {
+        Page<PostResponseDTO> result = postRepository.findAllByClubId(pageRequestDTO, clubId);
+
+        return PageResponseDTO.<PostResponseDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(result.toList())
+                .total(Long.valueOf(result.getTotalElements()).intValue())
+                .build();
     }
 
     @Override

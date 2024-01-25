@@ -6,6 +6,8 @@ import com.hobbyhop.domain.post.dto.PostResponseDTO;
 import com.hobbyhop.domain.post.entity.Post;
 import com.hobbyhop.domain.post.repository.PostRepository;
 import com.hobbyhop.domain.user.entity.User;
+import com.hobbyhop.global.request.PageRequestDTO;
+import com.hobbyhop.global.response.PageResponseDTO;
 import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
 import java.io.IOException;
 import java.util.List;
@@ -27,7 +29,7 @@ public interface PostService {
 
     PostResponseDTO getPostById(Long clubId, Long postId);
 
-    PostPageResponseDTO getAllPost(Pageable pageable, Long clubId);
+    PageResponseDTO<PostResponseDTO> getAllPost(PageRequestDTO pageRequestDTO, Long clubId);
 
     PostResponseDTO modifyPost(User user, Long clubId, Long postId,
             MultipartFile file, PostRequestDTO postRequestDTO)

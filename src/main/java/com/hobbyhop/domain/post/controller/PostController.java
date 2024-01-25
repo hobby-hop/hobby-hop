@@ -3,15 +3,14 @@ package com.hobbyhop.domain.post.controller;
 import com.hobbyhop.domain.post.dto.PostRequestDTO;
 import com.hobbyhop.domain.post.s3.S3Service;
 import com.hobbyhop.domain.post.service.PostService;
+import com.hobbyhop.global.request.PageRequestDTO;
 import com.hobbyhop.global.response.ApiResponse;
 import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @RestController
 @RequestMapping("/api/clubs/{clubId}/posts")
@@ -62,9 +60,9 @@ public class PostController {
 
     @Operation(summary = "게시글 전체 조회")
     @GetMapping
-    public ApiResponse<?> getAllPost(final Pageable pageable, @PathVariable(name = "clubId") Long clubId) {
+    public ApiResponse<?> getAllPost(PageRequestDTO pageRequestDTO, @PathVariable(name = "clubId") Long clubId) {
 
-        return ApiResponse.ok(postService.getAllPost(pageable, clubId));
+        return ApiResponse.ok(postService.getAllPost(pageRequestDTO, clubId));
     }
 
     @Operation(summary = "게시글 수정")
