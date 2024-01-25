@@ -1,9 +1,10 @@
-package com.hobbyhop.domain.comment.repository.custom;
+package com.hobbyhop.domain.comment.repository.custom.impl;
 
 import com.hobbyhop.domain.comment.dto.CommentListResponseDTO;
 import com.hobbyhop.domain.comment.dto.CommentResponseDTO;
 import com.hobbyhop.domain.comment.dto.CommentVO;
 import com.hobbyhop.domain.comment.entity.Comment;
+import com.hobbyhop.domain.comment.repository.custom.CommentRepositoryCustom;
 import com.hobbyhop.global.request.SortStandardRequest;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -157,5 +158,9 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
         Timestamp ts = Timestamp.valueOf(LocalDateTime.now());
         jpaQueryFactory.update(comment).set(comment.deletedAt, ts)
                 .where(comment.id.in(deleteId)).execute();
+
+
+        jpaQueryFactory.update(commentUser).set(commentUser.deletedAt, ts)
+                .where(commentUser.commentUserPK.comment.id.in(deleteId)).execute();
     }
 }

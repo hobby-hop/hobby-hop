@@ -2,8 +2,10 @@ package com.hobbyhop.domain.club.repository.custom.impl;
 
 import static com.hobbyhop.domain.club.entity.QClub.club;
 import static com.hobbyhop.domain.comment.entity.QComment.comment;
+import static com.hobbyhop.domain.commentuser.entity.QCommentUser.commentUser;
 import static com.hobbyhop.domain.post.entity.QPost.post;
 import static com.hobbyhop.domain.clubmember.entity.QClubMember.clubMember;
+import static com.hobbyhop.domain.postuser.entity.QPostUser.postUser;
 import static com.querydsl.core.group.GroupBy.groupBy;
 
 import com.hobbyhop.domain.club.dto.ClubElementVO;
@@ -71,9 +73,19 @@ public class ClubRepositoryCustomImpl implements ClubRepositoryCustom {
 
         Timestamp now = Timestamp.valueOf(LocalDateTime.now());
 
+        jpaQueryFactory.update(commentUser)
+                .set(commentUser.deletedAt, now)
+                .where(commentUser.commentUserPK.comment.id.in(commentIds))
+                .execute();
+
         jpaQueryFactory.update(comment)
                 .set(comment.deletedAt, now)
                 .where(comment.id.in(commentIds))
+                .execute();
+
+        jpaQueryFactory.update(postUser)
+                .set(postUser.deletedAt, now)
+                .where(postUser.postUserPK.post.id.in(postIds))
                 .execute();
 
         jpaQueryFactory.update(post)

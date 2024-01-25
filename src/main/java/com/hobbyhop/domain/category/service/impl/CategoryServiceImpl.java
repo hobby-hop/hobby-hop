@@ -32,8 +32,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public void removeCategory(Long categoryId) {
-        Category category = categoryRepository.findById(categoryId).orElseThrow(CategoryNotFoundException::new);
-        categoryRepository.delete(category);
+        categoryRepository.deleteAllElement(categoryId);
     }
 
     @Override
