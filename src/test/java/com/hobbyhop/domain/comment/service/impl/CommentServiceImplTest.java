@@ -1,13 +1,7 @@
 package com.hobbyhop.domain.comment.service.impl;
 
-import com.hobbyhop.domain.comment.dto.*;
-import com.hobbyhop.domain.comment.service.CommentService;
-import com.hobbyhop.global.request.SortStandardRequest;
-import com.hobbyhop.test.UserTest;
 import org.junit.jupiter.api.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
