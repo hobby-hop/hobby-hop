@@ -71,6 +71,7 @@ class JoinRequestServiceImplTest implements ClubTest {
     @Test
     void joinRequest_요청_보내기_성공() {
         given(clubService.findClub(TEST_CLUB_ID)).willReturn(TEST_CLUB);
+        given(clubMemberService.isClubMember(TEST_CLUB_ID, TEST_USER_ID)).willReturn(false);
         given(joinRequestRepository.save(any())).willReturn(joinRequest);
 
         assertThat(sut.sendRequest(TEST_CLUB_ID, TEST_USER)).isEqualTo(joinResponseDTO);
