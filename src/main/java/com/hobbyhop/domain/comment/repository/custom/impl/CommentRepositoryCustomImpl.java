@@ -1,9 +1,10 @@
-package com.hobbyhop.domain.comment.repository.custom;
+package com.hobbyhop.domain.comment.repository.custom.impl;
 
 import com.hobbyhop.domain.comment.dto.CommentListResponseDTO;
 import com.hobbyhop.domain.comment.dto.CommentResponseDTO;
 import com.hobbyhop.domain.comment.dto.CommentVO;
 import com.hobbyhop.domain.comment.entity.Comment;
+import com.hobbyhop.domain.comment.repository.custom.CommentRepositoryCustom;
 import com.hobbyhop.global.request.SortStandardRequest;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;

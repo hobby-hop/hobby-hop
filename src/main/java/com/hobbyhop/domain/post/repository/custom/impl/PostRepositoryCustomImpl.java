@@ -1,4 +1,4 @@
-package com.hobbyhop.domain.post.repository.custom;
+package com.hobbyhop.domain.post.repository.custom.impl;
 
 import static com.hobbyhop.domain.comment.entity.QComment.comment;
 import static com.hobbyhop.domain.post.entity.QPost.post;
@@ -7,6 +7,7 @@ import static com.hobbyhop.domain.user.entity.QUser.user;
 
 import com.hobbyhop.domain.post.dto.PostPageResponseDTO;
 import com.hobbyhop.domain.post.dto.PostResponseDTO;
+import com.hobbyhop.domain.post.repository.custom.PostRepositoryCustom;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
