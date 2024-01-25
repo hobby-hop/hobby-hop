@@ -1,11 +1,10 @@
 package com.hobbyhop.domain.comment.service;
 
-import com.hobbyhop.domain.comment.dto.CommentListResponseDTO;
 import com.hobbyhop.domain.comment.dto.CommentRequestDTO;
 import com.hobbyhop.domain.comment.dto.CommentResponseDTO;
 import com.hobbyhop.domain.user.entity.User;
-import com.hobbyhop.global.request.SortStandardRequest;
-import org.springframework.data.domain.Pageable;
+import com.hobbyhop.global.request.PageRequestDTO;
+import com.hobbyhop.global.response.PageResponseDTO;
 
 public interface CommentService {
 
@@ -17,7 +16,7 @@ public interface CommentService {
 
     void deleteComment(Long clubId, Long postId, Long commentId, User user);
 
-    CommentListResponseDTO getComments(Pageable pageable, SortStandardRequest standard, Long postId);
+    PageResponseDTO<CommentResponseDTO> getComments(PageRequestDTO pageRequestDTO, Long postId);
 
     void likeComment(Long clubId, Long postId, Long commentId, User user);
 }

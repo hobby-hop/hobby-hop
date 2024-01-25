@@ -6,16 +6,19 @@ import static com.hobbyhop.domain.post.entity.QPost.post;
 import static com.hobbyhop.domain.postuser.entity.QPostUser.postUser;
 import static com.hobbyhop.domain.user.entity.QUser.user;
 
-import com.hobbyhop.domain.post.dto.PostPageResponseDTO;
 import com.hobbyhop.domain.post.dto.PostResponseDTO;
 import com.hobbyhop.domain.post.repository.custom.PostRepositoryCustom;
+import com.hobbyhop.global.request.PageRequestDTO;
 import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 @RequiredArgsConstructor
@@ -24,13 +27,14 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public PostPageResponseDTO findAllByClubId(Pageable pageable, Long clubId){
-        JPAQuery<PostResponseDTO> query = queryFactory
+    public Page<PostResponseDTO> findAllByClubId(PageRequestDTO pageRequestDTO, Long clubId){
+        List<PostResponseDTO> content = queryFactory
                 .select(
                         Projections.constructor(
                                 PostResponseDTO.class,
                                 post.club.id,
                                 post.id,
+                                user.username,
                                 post.postTitle,
                                 post.postContent,
                                 post.originImageUrl,
@@ -41,22 +45,22 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                         )
                 )
                 .from(post)
-                .leftJoin(postUser)
-                .on(post.id.eq(postUser.postUserPK.post.id))
                 .join(user)
                 .on(post.user.id.eq(user.id))
                 .where(post.club.id.eq(clubId))
                 .groupBy(post.id)
                 .orderBy(post.createdAt.desc())
-                .fetchAll();
+                .fetch();
 
-        List<PostResponseDTO> postPageList = query.fetch();
+        Pageable pageable = PageRequest.of(pageRequestDTO.getPage(), pageRequestDTO.getSize());
 
-        return PostPageResponseDTO.builder()
-                .page(pageable.getPageNumber())
-                .totalCount(query.fetchAll().stream().count())
-                .data(postPageList)
-                .build();
+        List<PostResponseDTO> paging = new ArrayList<>();
+
+        for (int i = (pageable.getPageNumber() - 1) * pageable.getPageSize(); i < Long.valueOf(pageable.getOffset()).intValue() && i < content.size(); i++) {
+            paging.add(content.get(i));
+        }
+
+        return new PageImpl<>(paging, pageable, content.size());
     }
 
     @Override
