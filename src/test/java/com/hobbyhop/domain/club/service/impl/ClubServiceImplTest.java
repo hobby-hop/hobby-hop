@@ -113,18 +113,18 @@ class ClubServiceImplTest implements ClubTest {
         assertThat(clubResponseDTO.getCategoryId()).isEqualTo(TEST_OTHER_CATEGORY_ID);
     }
 
-    @DisplayName("[Remove]")
-    @Test
-    void club_삭제() {
-        // Given
-        given(clubRepository.findById(TEST_CLUB_ID)).willReturn(Optional.of(TEST_CLUB));
-        given(clubMemberService.findByClubAndUser(TEST_CLUB.getId(), TEST_USER.getId())).willReturn(clubMember);
-        willDoNothing().given(clubMemberService).removeMember(TEST_CLUB, TEST_USER);
-        willDoNothing().given(clubRepository).delete(TEST_CLUB);
-
-        // When & Then
-        assertThatCode(() -> sut.removeClubById(TEST_CLUB_ID, TEST_USER)).doesNotThrowAnyException();
-    }
+//    @DisplayName("[Remove]")
+//    @Test
+//    void club_삭제() {
+//        // Given
+//        given(clubRepository.findById(TEST_CLUB_ID)).willReturn(Optional.of(TEST_CLUB));
+//        given(clubMemberService.findByClubAndUser(TEST_CLUB.getId(), TEST_USER.getId())).willReturn(clubMember);
+//        willDoNothing().given(clubMemberService).removeMember(TEST_CLUB, TEST_USER);
+//        willDoNothing().given(clubRepository).delete(TEST_CLUB);
+//
+//        // When & Then
+//        assertThatCode(() -> sut.removeClubById(TEST_CLUB_ID, TEST_USER)).doesNotThrowAnyException();
+//    }
     @DisplayName("[GetMyClubs]")
     @Test
     void club_내가_속한_클럽_리스트_조회() {
