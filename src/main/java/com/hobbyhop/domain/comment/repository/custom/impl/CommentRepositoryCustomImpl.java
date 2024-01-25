@@ -1,17 +1,19 @@
 package com.hobbyhop.domain.comment.repository.custom.impl;
 
-import com.hobbyhop.domain.comment.dto.CommentListResponseDTO;
 import com.hobbyhop.domain.comment.dto.CommentResponseDTO;
 import com.hobbyhop.domain.comment.dto.CommentVO;
 import com.hobbyhop.domain.comment.entity.Comment;
 import com.hobbyhop.domain.comment.repository.custom.CommentRepositoryCustom;
-import com.hobbyhop.global.request.SortStandardRequest;
+import com.hobbyhop.global.request.PageRequestDTO;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
@@ -40,7 +42,7 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
     }
 
     @Override
-    public CommentListResponseDTO findAllByPostId(Pageable pageable, SortStandardRequest standard, Long postId) {
+    public Page<CommentResponseDTO> findAllByPostId(PageRequestDTO pageRequestDTO, Long postId) {
         List<CommentVO> query = jpaQueryFactory
                 .select(
                         Projections.constructor(
@@ -65,7 +67,9 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
 
         List<CommentResponseDTO> content = VOtoDTO(query);
 
-        sort(standard, content);
+        Pageable pageable = PageRequest.of(pageRequestDTO.getPage(), pageRequestDTO.getSize());
+
+        sort(pageRequestDTO, content);
 
         List<CommentResponseDTO> paging = new ArrayList<>();
 
@@ -73,13 +77,7 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
             paging.add(content.get(i));
         }
 
-        //Page<CommentResponseDTO> data = new PageImpl<>(paging, pageable, query.size());
-
-        return CommentListResponseDTO.builder()
-                .page(pageable.getPageNumber())
-                .totalCount(content.size())
-                .data(paging)
-                .build();
+        return new PageImpl<>(paging, pageable, query.size());
     }
 
     private List<CommentResponseDTO> VOtoDTO(List<CommentVO> query) {
@@ -115,31 +113,31 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
         return dto;
     }
 
-    private void sort(SortStandardRequest standard, List<CommentResponseDTO> content){
+    private void sort(PageRequestDTO requestDTO, List<CommentResponseDTO> content){
         for (CommentResponseDTO c : content) {
             if (c.getReply().size() > 3)
-                sort(standard, c.getReply());
+                sort(requestDTO, c.getReply());
             if (c.getReply().size() < 2)
                 return;
         }
 
-        switch (standard.getSortStandard()) {
-            case 1:
-                if (standard.isDesc()) {
+        switch (requestDTO.getKeyword()) {
+            case "like":
+                if (requestDTO.isDesc()) {
                     content.sort(Comparator.comparing(CommentResponseDTO::getLike));
                 } else {
                     content.sort(Comparator.comparing(CommentResponseDTO::getLike).reversed());
                 }
                 break;
-            case 2:
-                if (standard.isDesc()) {
+            case "replys":
+                if (requestDTO.isDesc()) {
                     content.sort(Comparator.comparingInt(c -> c.getReply().size()));
                 } else {
                     content.sort((c1, c2) -> Integer.compare(c2.getReply().size(), c1.getReply().size()));
                 }
                 break;
             default:
-                if (standard.isDesc()) {
+                if (requestDTO.isDesc()) {
                     content.sort(Comparator.comparing(CommentResponseDTO::getCreatedAt));
                 } else {
                     content.sort(Comparator.comparing(CommentResponseDTO::getCreatedAt).reversed());

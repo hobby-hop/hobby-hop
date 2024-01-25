@@ -3,7 +3,6 @@ package com.hobbyhop.domain.comment.service.impl;
 import com.hobbyhop.domain.clubmember.entity.ClubMember;
 import com.hobbyhop.domain.clubmember.enums.MemberRole;
 import com.hobbyhop.domain.clubmember.service.ClubMemberService;
-import com.hobbyhop.domain.comment.dto.CommentListResponseDTO;
 import com.hobbyhop.domain.comment.dto.CommentRequestDTO;
 import com.hobbyhop.domain.comment.dto.CommentResponseDTO;
 import com.hobbyhop.domain.comment.entity.Comment;
@@ -16,12 +15,13 @@ import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.global.exception.clubmember.ClubMemberNotFoundException;
 import com.hobbyhop.global.exception.comment.CommentNotFoundException;
 import com.hobbyhop.global.exception.common.UnAuthorizedModifyException;
-import com.hobbyhop.global.request.SortStandardRequest;
+import com.hobbyhop.global.request.PageRequestDTO;
+import com.hobbyhop.global.response.PageResponseDTO;
 import jakarta.transaction.Transactional;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -88,8 +88,14 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentListResponseDTO getComments(Pageable pageable, SortStandardRequest standard, Long postId) {
-        return commentRepository.findAllByPostId(pageable, standard, postId);
+    public PageResponseDTO<CommentResponseDTO> getComments(PageRequestDTO pageRequestDTO, Long postId) {
+        Page<CommentResponseDTO> result = commentRepository.findAllByPostId(pageRequestDTO, postId);
+
+        return PageResponseDTO.<CommentResponseDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(result.toList())
+                .total(Long.valueOf(result.getTotalElements()).intValue())
+                .build();
     }
 
     @Override

@@ -22,7 +22,7 @@ public class PageRequestDTO {
     private boolean isDesc = true;
 
     public Pageable getPageable(String... props) {
-        if(isDesc == false) {
+        if(!isDesc) {
             return PageRequest.of(this.page - 1, this.size, Sort.by(props).ascending());
         } else {
             return PageRequest.of(this.page - 1, this.size, Sort.by(props).descending());
