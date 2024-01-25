@@ -11,6 +11,7 @@ import com.hobbyhop.domain.joinrequest.enums.JoinRequestStatus;
 import com.hobbyhop.domain.joinrequest.repository.JoinRequestRepository;
 import com.hobbyhop.domain.joinrequest.service.JoinRequestService;
 import com.hobbyhop.domain.user.entity.User;
+import com.hobbyhop.global.exception.clubmember.ClubMemberAlreadyJoined;
 import com.hobbyhop.global.exception.clubmember.ClubMemberRoleException;
 import com.hobbyhop.global.exception.joinrequest.NoSuchRequestException;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,11 @@ public class JoinRequestServiceImpl implements JoinRequestService {
     @Transactional
     public JoinResponseDTO sendRequest(Long clubId, User user) {
         Club club = clubService.findClub(clubId);
+
+        // 이미 멤버라면 예외 반환
+        if(clubMemberService.isClubMember(clubId, user.getId())) {
+            throw new ClubMemberAlreadyJoined();
+        }
 
         JoinRequest joinRequest = JoinRequest.builder()
                 .club(club)
