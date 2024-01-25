@@ -157,5 +157,9 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
         Timestamp ts = Timestamp.valueOf(LocalDateTime.now());
         jpaQueryFactory.update(comment).set(comment.deletedAt, ts)
                 .where(comment.id.in(deleteId)).execute();
+
+
+        jpaQueryFactory.update(commentUser).set(commentUser.deletedAt, ts)
+                .where(commentUser.commentUserPK.comment.id.in(deleteId)).execute();
     }
 }
