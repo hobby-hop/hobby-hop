@@ -6,13 +6,10 @@ import static com.hobbyhop.domain.post.entity.QPost.post;
 import static com.hobbyhop.domain.postuser.entity.QPostUser.postUser;
 import static com.hobbyhop.domain.user.entity.QUser.user;
 
-import com.hobbyhop.domain.comment.dto.CommentResponseDTO;
-import com.hobbyhop.domain.post.dto.PostPageResponseDTO;
 import com.hobbyhop.domain.post.dto.PostResponseDTO;
 import com.hobbyhop.domain.post.repository.custom.PostRepositoryCustom;
 import com.hobbyhop.global.request.PageRequestDTO;
 import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
