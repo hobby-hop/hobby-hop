@@ -37,7 +37,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentResponseDTO postComment(CommentRequestDTO request, Long clubId, Long postId, User user) {
-        if(clubMemberService.isClubMember(clubId, user.getId()))
+        if(!clubMemberService.isClubMember(clubId, user.getId()))
             throw new ClubMemberNotFoundException();
 
         Post post = postService.findPost(postId);
@@ -51,7 +51,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentResponseDTO postComment(CommentRequestDTO request, Long clubId, Long postId, Long commentId, User user) {
-        if(clubMemberService.isClubMember(clubId, user.getId()))
+        if(!clubMemberService.isClubMember(clubId, user.getId()))
             throw new ClubMemberNotFoundException();
 
         Post post = postService.findPost(postId);
