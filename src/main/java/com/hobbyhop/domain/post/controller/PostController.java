@@ -77,7 +77,7 @@ public class PostController {
     @Operation(summary = "게시글 수정")
     @PatchMapping("/{postId}")
     public ApiResponse<?> modifyPost(@PathVariable(name = "clubId") Long clubId, @PathVariable(name = "postId") Long postId,
-            @RequestBody @Valid PostModifyRequestDTO postModifyRequestDTO, @RequestParam("file") MultipartFile file,
+            @RequestBody @Valid PostModifyRequestDTO postModifyRequestDTO, @RequestParam(required = false, value = "file") MultipartFile file,
             @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
 
         return ApiResponse.ok(postService.modifyPost(userDetails.getUser(), clubId, postId, file,postModifyRequestDTO));
