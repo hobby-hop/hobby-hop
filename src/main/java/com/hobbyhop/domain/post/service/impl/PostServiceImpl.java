@@ -141,7 +141,8 @@ public class PostServiceImpl implements PostService {
         String originFilename = null;
         String savedFilename = null;
 
-        if(!file.isEmpty()){
+
+        if(file != null && !file.isEmpty()){
             originFilename = s3Service.saveFile(file);
             savedFilename = UUID.randomUUID() + "_" + originFilename;
         }
