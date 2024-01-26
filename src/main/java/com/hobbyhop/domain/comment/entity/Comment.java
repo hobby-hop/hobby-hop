@@ -28,10 +28,10 @@ public class Comment extends BaseEntity {
     private String content;
 
     @ManyToOne
-    User user;
+    private User user;
 
     @ManyToOne
-    Post post;
+    private Post post;
 
     @Column(name="deleted_at")
     private Timestamp deletedAt;
