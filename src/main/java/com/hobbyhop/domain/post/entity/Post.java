@@ -6,6 +6,7 @@ import com.hobbyhop.domain.club.entity.Club;
 import com.hobbyhop.domain.comment.entity.Comment;
 import com.hobbyhop.domain.user.entity.User;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,10 @@ public class Post extends BaseEntity {
     private Long id;
     private String postTitle;
     private String postContent;
+
+    @Column(length = 500)
     private String originImageUrl;
+    @Column(length = 500)
     private String savedImageUrl;
 
     @Column(nullable = false)
