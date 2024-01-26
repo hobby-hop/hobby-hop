@@ -164,10 +164,12 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public void deletePost(User user, Long clubId, Long postId){
-        ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
-
-        if(!clubMember.getMemberRole().equals(MemberRole.ADMIN))
-            throw new UnAuthorizedModifyException();
+//        ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
+//
+//        if(!clubMember.getMemberRole().equals(MemberRole.ADMIN))
+//            throw new UnAuthorizedModifyException();
+        if(!clubMemberService.isClubMember(clubId, user.getId()))
+            throw new ClubMemberNotFoundException();
 
         Post post = findAndCheckPostAndClub(clubId, postId);
 
