@@ -85,13 +85,24 @@ public class PostServiceImpl implements PostService {
         post.changeImageUrl(originFilename, savedFilename);
     }
 
-
     @Override
     public PostResponseDTO getPostById(Long clubId, Long postId) {
         Post post = findAndCheckPostAndClub(clubId, postId);
 
         return PostResponseDTO.fromEntity(post);
     }
+
+    @Override
+    public PageResponseDTO<PostResponseDTO> getAllPostByKeyword(PageRequestDTO pageRequestDTO, String keyword) {
+        Page<PostResponseDTO> result = postRepository.findAllByKeyword(pageRequestDTO, keyword);
+
+        return PageResponseDTO.<PostResponseDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(result.toList())
+                .total(Long.valueOf(result.getTotalElements()).intValue())
+                .build();
+    }
+
 
     public Post findAndCheckPostAndClub(Long clubId, Long postId){
         Club club = clubService.findClub(clubId);
