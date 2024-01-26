@@ -2,6 +2,7 @@ package com.hobbyhop.domain.club.service.impl;
 
 import com.hobbyhop.domain.category.entity.Category;
 import com.hobbyhop.domain.category.service.CategoryService;
+import com.hobbyhop.domain.club.dto.ClubModifyDTO;
 import com.hobbyhop.domain.club.dto.ClubRequestDTO;
 import com.hobbyhop.domain.club.dto.ClubResponseDTO;
 import com.hobbyhop.domain.club.entity.Club;
@@ -69,43 +70,21 @@ public class ClubServiceImpl implements ClubService {
     @Transactional
     public void removeClubById(Long clubId, User user) {
         Club club = findClub(clubId);
-
         ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
 
-        if (!clubMember.getMemberRole().equals(MemberRole.ADMIN)) {
-            throw new ClubMemberRoleException();
-        }
+        validateClubRolePermission(clubMember);
 
         clubRepository.deleteAllElement(club.getId());
     }
 
     @Override
     @Transactional
-    public ClubResponseDTO modifyClub(Long clubId, ClubRequestDTO clubRequestDTO, User user) {
-        // 클럽이 존재하는지
+    public ClubResponseDTO modifyClub(Long clubId, ClubModifyDTO clubModifyDTO, User user) {
         Club club = findClub(clubId);
-
-        // 클럽에 가입되어있는지
         ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
 
-        // 예외 케이스 3번
-        if (clubMember.getMemberRole() != MemberRole.ADMIN) {
-            throw new ClubMemberRoleException();
-        }
-
-        if (clubRequestDTO.getTitle() != null) {
-            club.changeTitle(clubRequestDTO.getTitle());
-        }
-
-        if (clubRequestDTO.getContent() != null) {
-            club.changeContent(clubRequestDTO.getContent());
-        }
-
-        if (clubRequestDTO.getCategoryId() != null) {
-            Category category = categoryService.findCategory(clubRequestDTO.getCategoryId());
-            club.changeCategory(category);
-        }
-
+        validateClubRolePermission(clubMember);
+        applyChanges(clubModifyDTO, club);
 
         return ClubResponseDTO.fromEntity(club);
     }
@@ -132,5 +111,24 @@ public class ClubServiceImpl implements ClubService {
         clubRepository.findByTitle(clubTitle).ifPresent(existingClub -> {
             throw new AlreadyExistClubTitle();
         });
+    }
+    private void validateClubRolePermission(ClubMember clubMember) {
+        if (clubMember.getMemberRole() != MemberRole.ADMIN) {
+            throw new ClubMemberRoleException();
+        }
+    }
+    private void applyChanges(ClubModifyDTO clubModifyDTO, Club club) {
+        if (clubModifyDTO.getTitle() != null) {
+            club.changeTitle(clubModifyDTO.getTitle());
+        }
+
+        if (clubModifyDTO.getContent() != null) {
+            club.changeContent(clubModifyDTO.getContent());
+        }
+
+        if (clubModifyDTO.getCategoryId() != null) {
+            Category category = categoryService.findCategory(clubModifyDTO.getCategoryId());
+            club.changeCategory(category);
+        }
     }
 }

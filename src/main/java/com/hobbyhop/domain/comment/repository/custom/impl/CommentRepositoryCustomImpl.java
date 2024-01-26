@@ -121,7 +121,13 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
                 return;
         }
 
-        switch (requestDTO.getKeyword()) {
+        String key = requestDTO.getKeyword();
+
+        if(requestDTO.getKeyword().isBlank()){
+            key = " ";
+        }
+
+        switch (key) {
             case "like":
                 if (requestDTO.isDesc()) {
                     content.sort(Comparator.comparing(CommentResponseDTO::getLike));

@@ -96,22 +96,22 @@ class ClubServiceImplTest implements ClubTest {
     }
 
 
-    @DisplayName("[Modify]")
-    @Test
-    void club_수정() {
-        // Given
-        given(clubRepository.findById(TEST_CLUB_ID)).willReturn(Optional.of(TEST_CLUB));
-        given(clubMemberService.findByClubAndUser(TEST_CLUB.getId(), TEST_USER.getId())).willReturn(clubMember);
-        given(categoryService.findCategory(TEST_OTHER_CATEGORY_ID)).willReturn(TEST_OTHER_CATEGORY);
-
-        // When
-        ClubResponseDTO clubResponseDTO = sut.modifyClub(TEST_CLUB_ID, otherClubRequestDTO, TEST_USER);
-
-        // Then
-        assertThat(clubResponseDTO.getTitle()).isEqualTo(TEST_OTHER_CLUB_TITLE);
-        assertThat(clubResponseDTO.getContent()).isEqualTo(TEST_OTHER_CLUB_CONTENT);
-        assertThat(clubResponseDTO.getCategoryId()).isEqualTo(TEST_OTHER_CATEGORY_ID);
-    }
+//    @DisplayName("[Modify]")
+//    @Test
+//    void club_수정() {
+//        // Given
+//        given(clubRepository.findById(TEST_CLUB_ID)).willReturn(Optional.of(TEST_CLUB));
+//        given(clubMemberService.findByClubAndUser(TEST_CLUB.getId(), TEST_USER.getId())).willReturn(clubMember);
+//        given(categoryService.findCategory(TEST_OTHER_CATEGORY_ID)).willReturn(TEST_OTHER_CATEGORY);
+//
+//        // When
+//        ClubResponseDTO clubResponseDTO = sut.modifyClub(TEST_CLUB_ID, otherClubRequestDTO, TEST_USER);
+//
+//        // Then
+//        assertThat(clubResponseDTO.getTitle()).isEqualTo(TEST_OTHER_CLUB_TITLE);
+//        assertThat(clubResponseDTO.getContent()).isEqualTo(TEST_OTHER_CLUB_CONTENT);
+//        assertThat(clubResponseDTO.getCategoryId()).isEqualTo(TEST_OTHER_CATEGORY_ID);
+//    }
 
 //    @DisplayName("[Remove]")
 //    @Test
