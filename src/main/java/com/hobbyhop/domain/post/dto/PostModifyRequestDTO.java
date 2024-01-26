@@ -1,0 +1,19 @@
+package com.hobbyhop.domain.post.dto;
+
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class PostModifyRequestDTO {
+
+    @Size(min = 3, max = 50, message = "최소 3자 이상이여야 합니다.")
+    private String postTitle;
+
+    private String postContent;
+}

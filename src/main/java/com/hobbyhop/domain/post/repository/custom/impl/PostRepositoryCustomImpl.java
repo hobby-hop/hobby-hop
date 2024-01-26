@@ -58,6 +58,40 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
     }
 
     @Override
+    public Page<PostResponseDTO> findAllByClubIdAndKeyword(PageRequestDTO pageRequestDTO, Long clubId, String keyword){
+        List<PostResponseDTO> content = queryFactory
+                .select(
+                        Projections.constructor(
+                                PostResponseDTO.class,
+                                post.club.id,
+                                post.id,
+                                user.username,
+                                post.postTitle,
+                                post.postContent,
+                                post.originImageUrl,
+                                post.savedImageUrl,
+                                post.likeCnt,
+                                post.createdAt,
+                                post.modifiedAt
+                        )
+                )
+                .from(post)
+                .join(user).fetchJoin()
+                .on(post.user.id.eq(user.id))
+                .where(post.postTitle.eq(keyword),
+                        post.club.id.eq(clubId))
+                .groupBy(post.id)
+                .orderBy(post.createdAt.desc())
+                .offset(pageRequestDTO.getPageable().getOffset())
+                .limit(pageRequestDTO.getSize())
+                .fetch();
+
+        JPAQuery<Long> count = queryFactory.select(post.count()).from(post);
+
+        return PageableExecutionUtils.getPage(content, pageRequestDTO.getPageable(), count::fetchOne);
+    }
+
+    @Override
     public void deleteAllElement(Long postId) {
         List<Long> ids = queryFactory
                 .select(comment.id)

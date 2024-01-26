@@ -1,5 +1,6 @@
 package com.hobbyhop.domain.post.service;
 
+import com.hobbyhop.domain.post.dto.PostModifyRequestDTO;
 import com.hobbyhop.domain.post.dto.PostRequestDTO;
 import com.hobbyhop.domain.post.dto.PostResponseDTO;
 import com.hobbyhop.domain.post.entity.Post;
@@ -20,10 +21,12 @@ public interface PostService {
 
     PostResponseDTO getPostById(Long clubId, Long postId);
 
+    PageResponseDTO<PostResponseDTO> getAllPostByClubIdAndKeyword(PageRequestDTO pageRequestDTO, Long clubId, String keyword);
+
     PageResponseDTO<PostResponseDTO> getAllPost(PageRequestDTO pageRequestDTO, Long clubId);
 
     PostResponseDTO modifyPost(User user, Long clubId, Long postId,
-            MultipartFile file, PostRequestDTO postRequestDTO)
+            MultipartFile file, PostModifyRequestDTO postModifyRequestDTO)
             throws IOException;
 
     void deletePost(User user, Long clubId, Long postId);

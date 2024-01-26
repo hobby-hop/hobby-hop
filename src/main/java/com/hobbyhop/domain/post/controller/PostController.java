@@ -1,5 +1,6 @@
 package com.hobbyhop.domain.post.controller;
 
+import com.hobbyhop.domain.post.dto.PostModifyRequestDTO;
 import com.hobbyhop.domain.post.dto.PostRequestDTO;
 import com.hobbyhop.domain.post.s3.S3Service;
 import com.hobbyhop.domain.post.service.PostService;
@@ -58,6 +59,14 @@ public class PostController {
         return ApiResponse.ok(postService.getPostById(clubId, postId));
     }
 
+    @Operation(summary = "게시글 키워드 조회")
+    @GetMapping("/keywords/{keyword}")
+    public ApiResponse<?> getPostByKeyWord(PageRequestDTO pageRequestDTO, @PathVariable(name = "keyword") String keyword,
+            @PathVariable(name = "clubId") Long clubId) {
+
+        return ApiResponse.ok(postService.getAllPostByClubIdAndKeyword(pageRequestDTO, clubId, keyword));
+    }
+
     @Operation(summary = "게시글 전체 조회")
     @GetMapping
     public ApiResponse<?> getAllPost(PageRequestDTO pageRequestDTO, @PathVariable(name = "clubId") Long clubId) {
@@ -68,10 +77,10 @@ public class PostController {
     @Operation(summary = "게시글 수정")
     @PatchMapping("/{postId}")
     public ApiResponse<?> modifyPost(@PathVariable(name = "clubId") Long clubId, @PathVariable(name = "postId") Long postId,
-            @RequestBody @Valid PostRequestDTO postRequestDTO, @RequestParam("file") MultipartFile file,
+            @RequestBody @Valid PostModifyRequestDTO postModifyRequestDTO, @RequestParam(required = false, value = "file") MultipartFile file,
             @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
 
-        return ApiResponse.ok(postService.modifyPost(userDetails.getUser(), clubId, postId, file,postRequestDTO));
+        return ApiResponse.ok(postService.modifyPost(userDetails.getUser(), clubId, postId, file,postModifyRequestDTO));
     }
 
     @Operation(summary = "게시글 삭제")
