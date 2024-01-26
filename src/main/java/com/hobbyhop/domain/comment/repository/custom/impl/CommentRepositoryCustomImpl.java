@@ -35,7 +35,7 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
     public Optional<Comment> findById(Long clubId, Long postId, Long commentId){
         return Optional.ofNullable(jpaQueryFactory
                 .selectFrom(comment)
-                .join(post)
+                .join(post).fetchJoin()
                 .on(comment.post.id.eq(post.id))
                 .where(comment.id.eq(commentId).and(post.id.eq(postId)).and(post.club.id.eq(clubId)))
                 .fetchOne());
@@ -56,9 +56,9 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
                         )
                 )
                 .from(comment)
-                .leftJoin(commentUser)
+                .leftJoin(commentUser).fetchJoin()
                 .on(comment.id.eq(commentUser.commentUserPK.comment.id))
-                .join(user)
+                .join(user).fetchJoin()
                 .on(comment.user.id.eq(user.id))
                 .where(comment.post.id.eq(postId))
                 .groupBy(comment.id)

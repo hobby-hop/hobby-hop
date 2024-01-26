@@ -16,7 +16,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@SQLDelete(sql = "UPDATE club_member SET deleted_at = NOW() where id=?")
+@SQLDelete(sql = "UPDATE club_member SET deleted_at = NOW() where club_id=? and user_id=?")
 @Where(clause = "deleted_at is NULL")
 public class ClubMember {
 

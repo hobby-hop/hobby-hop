@@ -5,6 +5,7 @@ import com.hobbyhop.domain.commentuser.entity.CommentUser;
 import com.hobbyhop.domain.commentuser.repository.CommentUserRepository;
 import com.hobbyhop.domain.commentuser.service.CommentUserService;
 import com.hobbyhop.domain.user.entity.User;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,14 +15,19 @@ public class CommentUserServiceImpl implements CommentUserService {
 
     private final CommentUserRepository commentUserRepository;
 
+    @Transactional
     public void modifyCommentUser(Comment comment, User user) {
         CommentUser commentUser = commentUserRepository
                 .findCommentUserByIds(comment.getId(), user.getId()).orElse(null);
-        if(commentUser == null){
+        if (commentUser == null) {
             saveCommentUser(comment, user);
-        } else {
-            deleteCommentUser(commentUser);
+            return;
         }
+        if (commentUser.getDeletedAt() != null) {
+            commentUser.restore();
+            return;
+        }
+        deleteCommentUser(commentUser);
     }
 
     public int countLike(Comment comment){

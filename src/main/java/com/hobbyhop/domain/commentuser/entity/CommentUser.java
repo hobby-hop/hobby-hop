@@ -20,7 +20,7 @@ import org.hibernate.annotations.Where;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE comment_user SET deleted_at = NOW() where id=?")
+@SQLDelete(sql = "UPDATE comment_user SET deleted_at = NOW() where comment_id=? and user_id=?")
 @Where(clause = "deleted_at is NULL")
 public class CommentUser {
 
@@ -39,4 +39,7 @@ public class CommentUser {
                 .build();
     }
 
+    public void restore(){
+        deletedAt = null;
+    }
 }

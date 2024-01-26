@@ -21,7 +21,7 @@ import org.hibernate.annotations.Where;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE post_user SET deleted_at = NOW() where id=?")
+@SQLDelete(sql = "UPDATE post_user SET deleted_at = NOW() where post_id=? and user_id=?")
 @Where(clause = "deleted_at is NULL")
 public class PostUser {
 
