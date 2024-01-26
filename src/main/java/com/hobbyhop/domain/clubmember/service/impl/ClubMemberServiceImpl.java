@@ -66,6 +66,6 @@ public class ClubMemberServiceImpl implements ClubMemberService {
 
     @Override
     public boolean isClubMember(Long clubId, Long userId){
-        return clubMemberRepository.existsByClubMemberPK_Club_IdAndClubMemberPK_User_Id(clubId, userId);
+        return clubMemberRepository.isClubMember(clubId, userId);
     }
 }
