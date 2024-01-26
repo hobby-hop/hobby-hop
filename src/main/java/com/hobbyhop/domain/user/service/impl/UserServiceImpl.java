@@ -1,5 +1,7 @@
 package com.hobbyhop.domain.user.service.impl;
 
+import com.hobbyhop.domain.clubmember.service.ClubMemberService;
+import com.hobbyhop.domain.post.repository.PostRepository;
 import com.hobbyhop.domain.user.dto.LoginRequestDTO;
 import com.hobbyhop.domain.user.dto.MyProfileResponseDTO;
 import com.hobbyhop.domain.user.dto.SignupRequestDTO;
@@ -14,14 +16,17 @@ import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-
+    private final ClubMemberService clubMemberService;
+    private final PostRepository postRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
@@ -82,13 +87,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userDetails.getUser().getId())
                 .orElseThrow(NotFoundUserException::new);
 
-        return MyProfileResponseDTO.builder()
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .password(user.getPassword())
-                .clubList(user.getClubList())
-                .postList(user.getPostList())
-                .build();
+        return MyProfileResponseDTO.fromEntity(user);
     }
 
     @Override
