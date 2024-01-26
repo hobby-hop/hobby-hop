@@ -1,6 +1,7 @@
 package com.hobbyhop.domain.user.service.impl;
 
 import com.hobbyhop.domain.user.dto.LoginRequestDTO;
+import com.hobbyhop.domain.user.dto.MyProfileResponseDTO;
 import com.hobbyhop.domain.user.dto.SignupRequestDTO;
 import com.hobbyhop.domain.user.dto.UpdateProfileDTO;
 import com.hobbyhop.domain.user.entity.User;
@@ -74,6 +75,20 @@ public class UserServiceImpl implements UserService {
             }
         }
         httpServletResponse.setHeader(JwtUtil.AUTHORIZATION_HEADER, "logged-out");
+    }
+
+    @Override
+    public MyProfileResponseDTO getMyProfile(UserDetailsImpl userDetails, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
+        User user = userRepository.findById(userDetails.getUser().getId())
+                .orElseThrow(NotFoundUserException::new);
+
+        return MyProfileResponseDTO.builder()
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .clubList(user.getClubList())
+                .postList(user.getPostList())
+                .build();
     }
 
     @Override
