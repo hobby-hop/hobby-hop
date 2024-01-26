@@ -60,10 +60,11 @@ public class PostController {
     }
 
     @Operation(summary = "게시글 키워드 조회")
-    @GetMapping("/{keyword}")
-    public ApiResponse<?> getPostByKeyWord(PageRequestDTO pageRequestDTO, @PathVariable(name = "keyword") String keyword) {
+    @GetMapping("/keywords/{keyword}")
+    public ApiResponse<?> getPostByKeyWord(PageRequestDTO pageRequestDTO, @PathVariable(name = "keyword") String keyword,
+            @PathVariable(name = "clubId") Long clubId) {
 
-        return ApiResponse.ok(postService.getAllPostByKeyword(pageRequestDTO, keyword));
+        return ApiResponse.ok(postService.getAllPostByClubIdAndKeyword(pageRequestDTO, clubId, keyword));
     }
 
     @Operation(summary = "게시글 전체 조회")

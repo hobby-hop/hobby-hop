@@ -94,8 +94,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PageResponseDTO<PostResponseDTO> getAllPostByKeyword(PageRequestDTO pageRequestDTO, String keyword) {
-        Page<PostResponseDTO> result = postRepository.findAllByKeyword(pageRequestDTO, keyword);
+    public PageResponseDTO<PostResponseDTO> getAllPostByClubIdAndKeyword(PageRequestDTO pageRequestDTO, Long clubId, String keyword) {
+        Page<PostResponseDTO> result = postRepository.findAllByClubIdAndKeyword(pageRequestDTO, clubId, keyword);
 
         return PageResponseDTO.<PostResponseDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
