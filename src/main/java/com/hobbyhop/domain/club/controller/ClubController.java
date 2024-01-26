@@ -1,5 +1,6 @@
 package com.hobbyhop.domain.club.controller;
 
+import com.hobbyhop.domain.club.dto.ClubModifyDTO;
 import com.hobbyhop.domain.club.dto.ClubRequestDTO;
 import com.hobbyhop.domain.club.service.ClubService;
 import com.hobbyhop.global.request.PageRequestDTO;
@@ -50,8 +51,8 @@ public class ClubController {
 
     @Operation(summary = "모임 정보 수정")
     @PatchMapping("/{clubId}")
-    public ApiResponse<?> modifyClub(@PathVariable("clubId") Long clubId, @Valid @RequestBody ClubRequestDTO clubRequestDTO, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return ApiResponse.ok(clubService.modifyClub(clubId, clubRequestDTO, userDetails.getUser()));
+    public ApiResponse<?> modifyClub(@PathVariable("clubId") Long clubId, @Valid @RequestBody ClubModifyDTO clubModifyDTO, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ApiResponse.ok(clubService.modifyClub(clubId, clubModifyDTO, userDetails.getUser()));
     }
 
     @Operation(summary = "모임 삭제")
