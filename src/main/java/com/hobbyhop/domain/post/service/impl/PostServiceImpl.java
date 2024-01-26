@@ -5,6 +5,7 @@ import com.hobbyhop.domain.club.service.ClubService;
 import com.hobbyhop.domain.clubmember.entity.ClubMember;
 import com.hobbyhop.domain.clubmember.enums.MemberRole;
 import com.hobbyhop.domain.clubmember.service.ClubMemberService;
+import com.hobbyhop.domain.post.dto.PostModifyRequestDTO;
 import com.hobbyhop.domain.post.dto.PostRequestDTO;
 import com.hobbyhop.domain.post.dto.PostResponseDTO;
 import com.hobbyhop.domain.post.entity.Post;
@@ -117,7 +118,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public PostResponseDTO modifyPost(User user, Long clubId, Long postId, MultipartFile file, PostRequestDTO postRequestDTO) {
+    public PostResponseDTO modifyPost(User user, Long clubId, Long postId, MultipartFile file, PostModifyRequestDTO postModifyRequestDTO) {
+
         ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
 
         if(!clubMember.getMemberRole().equals(MemberRole.ADMIN))
@@ -128,15 +130,20 @@ public class PostServiceImpl implements PostService {
         if(!post.getUser().getId().equals(user.getId()))
             throw new PostNotCorrespondUser();
 
-        String originFilename = s3Service.saveFile(file);
-        String savedFilename = UUID.randomUUID() + "_" + originFilename;
+        String originFilename = null;
+        String savedFilename = null;
 
-        if(postRequestDTO.getPostTitle() != null) {
-            post.changeTitle(postRequestDTO.getPostTitle());
+        if(!file.isEmpty()){
+            originFilename = s3Service.saveFile(file);
+            savedFilename = UUID.randomUUID() + "_" + originFilename;
         }
 
-        if(postRequestDTO.getPostContent() != null) {
-            post.changeContent(postRequestDTO.getPostContent());
+        if(postModifyRequestDTO.getPostTitle() != null) {
+            post.changeTitle(postModifyRequestDTO.getPostTitle());
+        }
+
+        if(postModifyRequestDTO.getPostContent() != null) {
+            post.changeContent(postModifyRequestDTO.getPostContent());
         }
 
         if(originFilename != null) {
