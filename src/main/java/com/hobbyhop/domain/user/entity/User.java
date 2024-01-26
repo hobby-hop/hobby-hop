@@ -1,15 +1,20 @@
 package com.hobbyhop.domain.user.entity;
 
 import com.hobbyhop.domain.BaseEntity;
+import com.hobbyhop.domain.club.entity.Club;
+import com.hobbyhop.domain.post.entity.Post;
 import com.hobbyhop.domain.user.enums.UserRoleEnum;
 import jakarta.persistence.*;
-import java.sql.Timestamp;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -32,6 +37,14 @@ public class User extends BaseEntity {
 
     @Column(length = 100, nullable = false)
     private String password;
+
+    @OneToMany(mappedBy = "user")
+    @Builder.Default
+    private List<Club> clubList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    @Builder.Default
+    private List<Post> postList = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private UserRoleEnum role;
