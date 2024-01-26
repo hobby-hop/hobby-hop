@@ -45,7 +45,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public PostResponseDTO makePost(User user, Long clubId, PostRequestDTO postRequestDTO) {
-        // exist보다는 findById + limit 1 로 하는게 훨씬 쿼리적으로 이득이다.
+
         if(!clubMemberService.isClubMember(clubId, user.getId()))
             throw new ClubMemberNotFoundException();
 
@@ -69,10 +69,11 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public void imageUploadPost(User user, Long clubId, Long postId, MultipartFile file) {
-        ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
 
-        if(!clubMember.getMemberRole().equals(MemberRole.ADMIN))
-            throw new UnAuthorizedModifyException();
+        clubMemberService.findByClubAndUser(clubId, user.getId());
+
+        if(!clubMemberService.isClubMember(clubId, user.getId()))
+            throw new ClubMemberNotFoundException();
 
         Post post = findAndCheckPostAndClub(clubId, postId);
 
@@ -85,13 +86,24 @@ public class PostServiceImpl implements PostService {
         post.changeImageUrl(originFilename, savedFilename);
     }
 
-
     @Override
     public PostResponseDTO getPostById(Long clubId, Long postId) {
         Post post = findAndCheckPostAndClub(clubId, postId);
 
         return PostResponseDTO.fromEntity(post);
     }
+
+    @Override
+    public PageResponseDTO<PostResponseDTO> getAllPostByKeyword(PageRequestDTO pageRequestDTO, String keyword) {
+        Page<PostResponseDTO> result = postRepository.findAllByKeyword(pageRequestDTO, keyword);
+
+        return PageResponseDTO.<PostResponseDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(result.toList())
+                .total(Long.valueOf(result.getTotalElements()).intValue())
+                .build();
+    }
+
 
     public Post findAndCheckPostAndClub(Long clubId, Long postId){
         Club club = clubService.findClub(clubId);
