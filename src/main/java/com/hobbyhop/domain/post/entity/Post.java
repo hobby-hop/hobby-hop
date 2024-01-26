@@ -30,9 +30,9 @@ public class Post extends BaseEntity {
     private String postTitle;
     private String postContent;
 
-    @Column(length = 500)
+    @Column(length = 1000)
     private String originImageUrl;
-    @Column(length = 500)
+    @Column(length = 1000)
     private String savedImageUrl;
 
     @Column(nullable = false)

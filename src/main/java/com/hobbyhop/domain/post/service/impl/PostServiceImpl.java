@@ -70,8 +70,6 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public void imageUploadPost(User user, Long clubId, Long postId, MultipartFile file) {
 
-        clubMemberService.findByClubAndUser(clubId, user.getId());
-
         if(!clubMemberService.isClubMember(clubId, user.getId()))
             throw new ClubMemberNotFoundException();
 
@@ -132,10 +130,8 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public PostResponseDTO modifyPost(User user, Long clubId, Long postId, MultipartFile file, PostModifyRequestDTO postModifyRequestDTO) {
 
-        ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
-
-        if(!clubMember.getMemberRole().equals(MemberRole.ADMIN))
-            throw new UnAuthorizedModifyException();
+        if(!clubMemberService.isClubMember(clubId, user.getId()))
+            throw new ClubMemberNotFoundException();
 
         Post post = findAndCheckPostAndClub(clubId, postId);
 
