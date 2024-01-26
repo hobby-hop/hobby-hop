@@ -16,15 +16,6 @@ public class CommentUserRepositoryCustomImpl implements CommentUserRepositoryCus
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Optional<CommentUser> findCommentUserByIds(Long commentId, Long userId) {
-        return Optional.ofNullable(jpaQueryFactory
-                .selectFrom(commentUser)
-                .where(commentUser.commentUserPK.comment.id.eq(commentId)
-                        .and(commentUser.commentUserPK.user.id.eq(userId)))
-                .fetchOne());
-    }
-
-    @Override
     public int countLike(Long commentId) {
         return jpaQueryFactory
                 .selectFrom(commentUser)

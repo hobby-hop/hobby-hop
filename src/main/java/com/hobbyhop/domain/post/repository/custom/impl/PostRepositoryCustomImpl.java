@@ -10,16 +10,14 @@ import com.hobbyhop.domain.post.dto.PostResponseDTO;
 import com.hobbyhop.domain.post.repository.custom.PostRepositoryCustom;
 import com.hobbyhop.global.request.PageRequestDTO;
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 
 @RequiredArgsConstructor
 public class PostRepositoryCustomImpl implements PostRepositoryCustom {
@@ -45,22 +43,18 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                         )
                 )
                 .from(post)
-                .join(user)
+                .join(user).fetchJoin()
                 .on(post.user.id.eq(user.id))
                 .where(post.club.id.eq(clubId))
                 .groupBy(post.id)
                 .orderBy(post.createdAt.desc())
+                .offset(pageRequestDTO.getPageable().getOffset())
+                .limit(pageRequestDTO.getSize())
                 .fetch();
 
-        Pageable pageable = PageRequest.of(pageRequestDTO.getPage(), pageRequestDTO.getSize());
+        JPAQuery<Long> count = queryFactory.select(post.count()).from(post);
 
-        List<PostResponseDTO> paging = new ArrayList<>();
-
-        for (int i = (pageable.getPageNumber() - 1) * pageable.getPageSize(); i < Long.valueOf(pageable.getOffset()).intValue() && i < content.size(); i++) {
-            paging.add(content.get(i));
-        }
-
-        return new PageImpl<>(paging, pageable, content.size());
+        return PageableExecutionUtils.getPage(content, pageRequestDTO.getPageable(), count::fetchOne);
     }
 
     @Override
