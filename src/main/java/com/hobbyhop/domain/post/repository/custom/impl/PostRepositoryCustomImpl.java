@@ -58,7 +58,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
     }
 
     @Override
-    public Page<PostResponseDTO> findAllByKeyword(PageRequestDTO pageRequestDTO, String keyword){
+    public Page<PostResponseDTO> findAllByClubIdAndKeyword(PageRequestDTO pageRequestDTO, Long clubId, String keyword){
         List<PostResponseDTO> content = queryFactory
                 .select(
                         Projections.constructor(
@@ -78,7 +78,8 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 .from(post)
                 .join(user).fetchJoin()
                 .on(post.user.id.eq(user.id))
-                .where(post.postTitle.eq(keyword))
+                .where(post.postTitle.eq(keyword),
+                        post.club.id.eq(clubId))
                 .groupBy(post.id)
                 .orderBy(post.createdAt.desc())
                 .offset(pageRequestDTO.getPageable().getOffset())
