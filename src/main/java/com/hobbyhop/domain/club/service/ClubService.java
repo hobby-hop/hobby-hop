@@ -1,5 +1,6 @@
 package com.hobbyhop.domain.club.service;
 
+import com.hobbyhop.domain.club.dto.ClubModifyDTO;
 import com.hobbyhop.domain.club.dto.ClubRequestDTO;
 import com.hobbyhop.domain.club.dto.ClubResponseDTO;
 import com.hobbyhop.domain.club.entity.Club;
@@ -24,7 +25,7 @@ public interface ClubService {
     void removeClubById(Long clubId, User user);
 
     // 모임의 정보를 변경한다.
-    ClubResponseDTO modifyClub(Long clubId, ClubRequestDTO clubRequestDTO, User user);
+    ClubResponseDTO modifyClub(Long clubId, ClubModifyDTO clubModifyDTO, User user);
 
     // 다른 도메인에서 참조한다.
     Club findClub(Long clubId);
