@@ -1,6 +1,7 @@
 package com.hobbyhop.domain.user.controller;
 
 import com.hobbyhop.domain.user.dto.LoginRequestDTO;
+import com.hobbyhop.domain.user.dto.MyProfileResponseDTO;
 import com.hobbyhop.domain.user.dto.SignupRequestDTO;
 import com.hobbyhop.domain.user.dto.UpdateProfileDTO;
 import com.hobbyhop.domain.user.service.KakaoService;
@@ -65,10 +66,8 @@ public class UserController {
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             HttpServletResponse httpServletResponse,
             HttpServletRequest httpServletRequest) {
-        userService.getMyProfile(userDetails, httpServletResponse, httpServletRequest);
-        return ApiResponse.ok(
-                "내 프로필 조회 성공"
-        );
+        MyProfileResponseDTO myProfileResponseDTO = userService.getMyProfile(userDetails, httpServletResponse, httpServletRequest);
+        return ApiResponse.ok(myProfileResponseDTO);
     }
 
     @Operation(summary = "내 프로필 수정")
