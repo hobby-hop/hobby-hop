@@ -29,7 +29,6 @@ public class JwtUtil {
 
     // Token 식별자
     public static final String BEARER_PREFIX = "Bearer ";
-    public static final String AUTHORIZATION_KEY = "";
 
     private static final long ACCESS_TOKEN_TIME = 24 * 60 * 60 * 1000L; // 24 hours
     private static final long REFRESH_TOKEN_TIME = 30 * 24 * 60 * 60 * 1000L; // 30 days
@@ -181,7 +180,6 @@ public class JwtUtil {
 
     /**
      * createToken 메서드
-     *
      * @param username
      * @param tokenTime
      * @return
