@@ -2,10 +2,7 @@ package com.hobbyhop.domain.user.service.impl;
 
 import com.hobbyhop.domain.clubmember.service.ClubMemberService;
 import com.hobbyhop.domain.post.repository.PostRepository;
-import com.hobbyhop.domain.user.dto.LoginRequestDTO;
-import com.hobbyhop.domain.user.dto.MyProfileResponseDTO;
-import com.hobbyhop.domain.user.dto.SignupRequestDTO;
-import com.hobbyhop.domain.user.dto.UpdateProfileDTO;
+import com.hobbyhop.domain.user.dto.*;
 import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.domain.user.enums.UserRoleEnum;
 import com.hobbyhop.domain.user.repository.UserRepository;
@@ -91,21 +88,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public OtherProfileResponseDTO getOtherProfile(Long otherUserId, UserDetailsImpl userDetails, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
+        User user = userRepository.findById(otherUserId)
+                .orElseThrow(NotFoundUserException::new);
+
+        return OtherProfileResponseDTO.fromEntity(user);
+    }
+
+    @Override
     @Transactional
-    public void updateProfile(UpdateProfileDTO updateProfileDTO, UserDetailsImpl userDetails,
+    public void updateProfile(UpdateProfileRequestDTO updateProfileRequestDTO, UserDetailsImpl userDetails,
                               HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
         User user = userRepository.findById(userDetails.getUser().getId())
                 .orElseThrow(NotFoundUserException::new);
 
-        validatePassword(user, updateProfileDTO.getOldPassword());
+        validatePassword(user, updateProfileRequestDTO.getOldPassword());
 
-        if (!updateProfileDTO.getNewPassword().equals(updateProfileDTO.getConfirmPassword()))
+        if (!updateProfileRequestDTO.getNewPassword().equals(updateProfileRequestDTO.getConfirmPassword()))
             throw new MismatchedNewPasswordException();
 
-        if (updateProfileDTO.getNewPassword().isBlank()) {
-            user.updateProfile(updateProfileDTO.getUsername(), updateProfileDTO.getEmail(), updateProfileDTO.getNewPassword());
+        if (updateProfileRequestDTO.getNewPassword().isBlank()) {
+            user.updateProfile(updateProfileRequestDTO.getUsername(), updateProfileRequestDTO.getEmail(), updateProfileRequestDTO.getNewPassword());
         } else {
-            user.updateProfile(updateProfileDTO.getUsername(), updateProfileDTO.getEmail(), passwordEncoder.encode(updateProfileDTO.getNewPassword()));
+            user.updateProfile(updateProfileRequestDTO.getUsername(), updateProfileRequestDTO.getEmail(), passwordEncoder.encode(updateProfileRequestDTO.getNewPassword()));
         }
 
         String requestHeaderAccessToken = httpServletRequest.getHeader(JwtUtil.AUTHORIZATION_HEADER);
