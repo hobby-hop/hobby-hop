@@ -14,6 +14,7 @@ import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.global.exception.clubmember.ClubMemberAlreadyJoined;
 import com.hobbyhop.global.exception.clubmember.ClubMemberRoleException;
 import com.hobbyhop.global.exception.joinrequest.NoSuchRequestException;
+import com.hobbyhop.global.exception.joinrequest.PendingRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +36,9 @@ public class JoinRequestServiceImpl implements JoinRequestService {
         
         if(clubMemberService.isClubMember(clubId, user.getId())) {
             throw new ClubMemberAlreadyJoined();
+        }
+        if(joinRequestRepository.existRequest(clubId, user.getId())) {
+            throw new PendingRequest();
         }
 
         JoinRequest joinRequest = JoinRequest.builder()
