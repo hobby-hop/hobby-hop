@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Email;
 import lombok.Data;
 
 @Data
-public class UpdateProfileDTO {
+public class UpdateProfileRequestDTO {
     @NullablePattern(regexp = "^[a-zA-Z0-9가-힣]+$",
                      msg1 = "username : 한글, 영어, 숫자만 입력해야 합니다.",
                      min = 1,
