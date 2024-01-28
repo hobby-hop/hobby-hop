@@ -1,9 +1,6 @@
 package com.hobbyhop.domain.user.controller;
 
-import com.hobbyhop.domain.user.dto.LoginRequestDTO;
-import com.hobbyhop.domain.user.dto.MyProfileResponseDTO;
-import com.hobbyhop.domain.user.dto.SignupRequestDTO;
-import com.hobbyhop.domain.user.dto.UpdateProfileDTO;
+import com.hobbyhop.domain.user.dto.*;
 import com.hobbyhop.domain.user.service.KakaoService;
 import com.hobbyhop.domain.user.service.UserService;
 import com.hobbyhop.global.response.ApiResponse;
@@ -56,11 +53,8 @@ public class UserController {
         );
     }
 
-    // 내가 내 정보 조회했을 때 보여야 하는 것 : username, email, password, introduce, 가입한 모임 리스트, 내가 쓴 게시물 리스트, 사이트 회원 탈퇴
-    // 내가 다른 유저 정보 조회했을 때 보여야 하는 것 : username, introduce
-
     @Operation(summary = "내 프로필 조회")
-    @GetMapping ("/myprofile") // {userId} 넣어야 하나...?
+    @GetMapping ("/profile")
     @SecurityRequirement(name = "Bearer Authentication")
     public ApiResponse<?> getMyProfile (
             @AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -70,15 +64,27 @@ public class UserController {
         return ApiResponse.ok(myProfileResponseDTO);
     }
 
+    @Operation(summary = "다른 유저 프로필 조회")
+    @GetMapping ("/profile/{otherUserId}")
+    @SecurityRequirement(name = "Bearer Authentication")
+    public ApiResponse<?> getOtherProfile (
+            @PathVariable Long otherUserId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            HttpServletResponse httpServletResponse,
+            HttpServletRequest httpServletRequest) {
+        OtherProfileResponseDTO otherProfileResponseDTO = userService.getOtherProfile(otherUserId, userDetails, httpServletResponse, httpServletRequest);
+        return ApiResponse.ok(otherProfileResponseDTO);
+    }
+
     @Operation(summary = "내 프로필 수정")
     @PatchMapping("/update")
     @SecurityRequirement(name = "Bearer Authentication")
     public ApiResponse<?> update(
-            @Valid @RequestBody UpdateProfileDTO updateProfileDTO,
+            @Valid @RequestBody UpdateProfileRequestDTO updateProfileRequestDTO,
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             HttpServletResponse httpServletResponse,
             HttpServletRequest httpServletRequest) {
-        userService.updateProfile(updateProfileDTO, userDetails, httpServletResponse,
+        userService.updateProfile(updateProfileRequestDTO, userDetails, httpServletResponse,
                 httpServletRequest);
         return ApiResponse.ok(
                 "사용자 정보 수정 성공"
