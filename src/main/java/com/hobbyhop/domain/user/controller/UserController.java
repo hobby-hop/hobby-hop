@@ -44,6 +44,7 @@ public class UserController {
 
     @Operation(summary = "로그아웃")
     @PostMapping("/logout")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ApiResponse<?> logout (
             HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
@@ -55,6 +56,7 @@ public class UserController {
 
     @Operation(summary = "회원 탈퇴")
     @PostMapping("/withdrawal")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ApiResponse<?> withdrawal (
             @Valid @RequestBody WithdrawalRequestDTO withdrawalRequestDTO,
             HttpServletRequest httpServletRequest,
