@@ -27,6 +27,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void signup(SignupRequestDTO signupRequestDTO) {
+        if (signupRequestDTO == null) {
+            throw new SignupBlankException();
+        }
+
         validateExistingUser(signupRequestDTO);
 
         User user = User.builder()

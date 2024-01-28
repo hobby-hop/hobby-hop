@@ -17,6 +17,7 @@ public enum ErrorCode {
 
 
     // 회원
+    SIGNUP_BLANK_EXCEPTION(401, "회원 가입란은 모두 필수입니다."),
     NOT_FOUND_USER_EXCEPTION(401, "회원 정보를 찾을 수 없습니다."),
     FAILED_AUTHENTICATION_EXCEPTION(401, "인증에 실패하였습니다."),
     ALREADY_EXIST_USER_NAME_EXCEPTION(409, "이미 존재하는 이름입니다."),
