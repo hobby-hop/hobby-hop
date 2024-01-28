@@ -18,8 +18,8 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @Builder
 @Table(name = "users")
-@SQLDelete(sql = "UPDATE users SET deleted_at = NOW() where id=?")
-@Where(clause = "deleted_at is NULL")
+@SQLDelete(sql = "UPDATE users SET deleted_at = NOW() where id=?")  // 이걸 삭제하든지
+@Where(clause = "deleted_at is NULL")                               // 이걸 삭제하든지 해야 회원 탈퇴 시 DB 에서 지워지고 같은 회원정보로 회원가입해도 중복 에러가 안 떠요!
 public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,7 +41,6 @@ public class User extends BaseEntity {
     private Timestamp deletedAt;
 
     private Long kakaoId;
-
 
     public void updateProfile (String updateUsername, String updateEmail, String updatePassword) {
         if (!updateUsername.isBlank()) {

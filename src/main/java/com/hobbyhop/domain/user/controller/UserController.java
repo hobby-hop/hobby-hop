@@ -53,6 +53,18 @@ public class UserController {
         );
     }
 
+    @Operation(summary = "회원 탈퇴")
+    @PostMapping("/withdrawal")
+    public ApiResponse<?> withdrawal (
+            @Valid @RequestBody WithdrawalRequestDTO withdrawalRequestDTO,
+            HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
+        userService.withdraw(withdrawalRequestDTO, httpServletRequest, httpServletResponse);
+        return ApiResponse.ok(
+                "회원 탈퇴 성공"
+        );
+    }
+
     @Operation(summary = "내 프로필 조회")
     @GetMapping ("/profile")
     @SecurityRequirement(name = "Bearer Authentication")
