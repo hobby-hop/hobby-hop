@@ -10,27 +10,33 @@ import static com.querydsl.core.group.GroupBy.groupBy;
 
 import com.hobbyhop.domain.club.dto.ClubElementVO;
 import com.hobbyhop.domain.club.dto.ClubResponseDTO;
+import com.hobbyhop.domain.club.entity.Club;
 import com.hobbyhop.domain.club.repository.custom.ClubRepositoryCustom;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
 import java.util.List;
 
-@RequiredArgsConstructor
-public class ClubRepositoryCustomImpl implements ClubRepositoryCustom {
+public class ClubRepositoryCustomImpl extends QuerydslRepositorySupport implements ClubRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
+    public ClubRepositoryCustomImpl(JPAQueryFactory jpaQueryFactory) {
+        super(Club.class);
+        this.jpaQueryFactory = jpaQueryFactory;
+    }
 
     @Override
     public Page<ClubResponseDTO> findAll(Pageable pageable, String keyword) {
-        List<ClubResponseDTO> content = jpaQueryFactory
+        JPAQuery<ClubResponseDTO> query = jpaQueryFactory
                 .select(
                         Projections.constructor(
                                 ClubResponseDTO.class,
@@ -41,11 +47,19 @@ public class ClubRepositoryCustomImpl implements ClubRepositoryCustom {
                                 club.createdAt,
                                 club.modifiedAt,
                                 club.category.id.as("categoryId")))
-                .from(club)
-                .fetch();
-        int count = content.size();
+                .from(club);
 
-        return new PageImpl<>(content, pageable, count);
+        if (keyword != null) {
+            BooleanExpression titleContainsKeyword = club.title.containsIgnoreCase(keyword);
+//            BooleanExpression categoryNameContainsKeyword = club.category.categoryName.containsIgnoreCase(keyword);
+            query.where(titleContainsKeyword.or(titleContainsKeyword));
+        }
+
+
+        List<ClubResponseDTO> content = getQuerydsl().applyPagination(pageable, query).fetch();
+        long totalCount = query.fetchCount();
+
+        return new PageImpl<>(content, pageable, totalCount);
     }
 
     @Override
