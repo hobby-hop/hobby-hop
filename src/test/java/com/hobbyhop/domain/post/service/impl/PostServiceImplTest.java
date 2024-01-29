@@ -122,7 +122,7 @@ class PostServiceImplTest implements PostTest, UserTest, CategoryTest, ClubTest 
         String savedImageUrl = "testSavedUrl";
 
         //when
-        TEST_POST.changeImageUrl(originalImageUrl, savedImageUrl);
+        TEST_POST.modifyPost(null, null, originalImageUrl, savedImageUrl);
 
         //then
         assertThat(TEST_POST.getOriginImageUrl()).isEqualTo(originalImageUrl);
