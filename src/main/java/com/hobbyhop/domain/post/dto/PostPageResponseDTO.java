@@ -11,28 +11,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PostResponseDTO {
+public class PostPageResponseDTO {
 
     private Long clubId;
     private Long postId;
     private String username;
     private String postTitle;
-    private String postContent;
-    private String originImageUrl;
-    private String savedImageUrl;
     private Long likeCnt;
     private Timestamp createdAt;
     private Timestamp modifiedAt;
 
-    public static PostResponseDTO fromEntity(Post savedPost) {
-        return PostResponseDTO.builder()
+    public static PostPageResponseDTO fromEntity(Post savedPost) {
+        return PostPageResponseDTO.builder()
                 .clubId(savedPost.getClub().getId())
                 .postId(savedPost.getId())
                 .username(savedPost.getUser().getUsername())
                 .postTitle(savedPost.getPostTitle())
-                .postContent(savedPost.getPostContent())
-                .originImageUrl(savedPost.getOriginImageUrl())
-                .savedImageUrl(savedPost.getSavedImageUrl())
                 .likeCnt(savedPost.getLikeCnt())
                 .createdAt(savedPost.getCreatedAt())
                 .modifiedAt(savedPost.getModifiedAt())

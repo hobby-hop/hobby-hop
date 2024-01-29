@@ -2,10 +2,9 @@ package com.hobbyhop.domain.post.service.impl;
 
 import com.hobbyhop.domain.club.entity.Club;
 import com.hobbyhop.domain.club.service.ClubService;
-import com.hobbyhop.domain.clubmember.entity.ClubMember;
-import com.hobbyhop.domain.clubmember.enums.MemberRole;
 import com.hobbyhop.domain.clubmember.service.ClubMemberService;
 import com.hobbyhop.domain.post.dto.PostModifyRequestDTO;
+import com.hobbyhop.domain.post.dto.PostPageResponseDTO;
 import com.hobbyhop.domain.post.dto.PostRequestDTO;
 import com.hobbyhop.domain.post.dto.PostResponseDTO;
 import com.hobbyhop.domain.post.entity.Post;
@@ -15,7 +14,6 @@ import com.hobbyhop.domain.post.service.PostService;
 import com.hobbyhop.domain.postuser.service.PostUserService;
 import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.global.exception.clubmember.ClubMemberNotFoundException;
-import com.hobbyhop.global.exception.common.UnAuthorizedModifyException;
 import com.hobbyhop.global.exception.post.PostNotCorrespondUser;
 import com.hobbyhop.global.exception.post.PostNotFoundException;
 import com.hobbyhop.global.request.PageRequestDTO;
@@ -85,15 +83,20 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostResponseDTO getPostById(Long clubId, Long postId) {
+    public PostResponseDTO getPostById(User user, Long clubId, Long postId) {
+
+        if(!clubMemberService.isClubMember(clubId, user.getId()))
+            throw new ClubMemberNotFoundException();
+
         Post post = findAndCheckPostAndClub(clubId, postId);
 
         return PostResponseDTO.fromEntity(post);
     }
 
+
     @Override
-    public PageResponseDTO<PostResponseDTO> getAllPostByClubIdAndKeyword(PageRequestDTO pageRequestDTO, Long clubId, String keyword) {
-        Page<PostResponseDTO> result = postRepository.findAllByClubIdAndKeyword(pageRequestDTO, clubId, keyword);
+    public PageResponseDTO<PostResponseDTO> getAllPostByClubIdAndKeyword(PageRequestDTO pageRequestDTO, Long clubId) {
+        Page<PostResponseDTO> result = postRepository.findAllByClubIdAndKeyword(pageRequestDTO, clubId);
 
         return PageResponseDTO.<PostResponseDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
@@ -102,8 +105,8 @@ public class PostServiceImpl implements PostService {
                 .build();
     }
 
-
     public Post findAndCheckPostAndClub(Long clubId, Long postId){
+
         Club club = clubService.findClub(clubId);
 
         Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
@@ -116,10 +119,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PageResponseDTO<PostResponseDTO> getAllPost(PageRequestDTO pageRequestDTO, Long clubId) {
-        Page<PostResponseDTO> result = postRepository.findAllByClubId(pageRequestDTO, clubId);
+    public PageResponseDTO<PostPageResponseDTO> getAllPost(PageRequestDTO pageRequestDTO, Long clubId) {
+        Page<PostPageResponseDTO> result = postRepository.findAllByClubId(pageRequestDTO.getPageable("id"), clubId,
+                pageRequestDTO.getKeyword());
 
-        return PageResponseDTO.<PostResponseDTO>withAll()
+        return PageResponseDTO.<PostPageResponseDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
                 .dtoList(result.toList())
                 .total(Long.valueOf(result.getTotalElements()).intValue())
@@ -165,10 +169,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public void deletePost(User user, Long clubId, Long postId){
-//        ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
-//
-//        if(!clubMember.getMemberRole().equals(MemberRole.ADMIN))
-//            throw new UnAuthorizedModifyException();
+
         if(!clubMemberService.isClubMember(clubId, user.getId()))
             throw new ClubMemberNotFoundException();
 
