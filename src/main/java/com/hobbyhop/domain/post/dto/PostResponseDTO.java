@@ -21,7 +21,7 @@ public class PostResponseDTO {
     private String originImageUrl;
     private String savedImageUrl;
     private Long likeCnt;
-    private Timestamp createAt;
+    private Timestamp createdAt;
     private Timestamp modifiedAt;
 
     public static PostResponseDTO fromEntity(Post savedPost) {
@@ -34,7 +34,7 @@ public class PostResponseDTO {
                 .originImageUrl(savedPost.getOriginImageUrl())
                 .savedImageUrl(savedPost.getSavedImageUrl())
                 .likeCnt(savedPost.getLikeCnt())
-                .createAt(savedPost.getCreatedAt())
+                .createdAt(savedPost.getCreatedAt())
                 .modifiedAt(savedPost.getModifiedAt())
                 .build();
     }

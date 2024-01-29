@@ -68,7 +68,7 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
     }
 
     @Override
-    public Page<PostResponseDTO> findAllByClubIdAndKeyword(PageRequestDTO pageRequestDTO, Long clubId, String keyword){
+    public Page<PostResponseDTO> findAllByClubIdAndKeyword(PageRequestDTO pageRequestDTO, Long clubId){
         List<PostResponseDTO> content = queryFactory
                 .select(
                         Projections.constructor(
@@ -88,7 +88,7 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
                 .from(post)
                 .join(user).fetchJoin()
                 .on(post.user.id.eq(user.id))
-                .where(post.postTitle.eq(keyword),
+                .where(post.postTitle.eq(pageRequestDTO.getKeyword()),
                         post.club.id.eq(clubId))
                 .groupBy(post.id)
                 .orderBy(post.createdAt.desc())

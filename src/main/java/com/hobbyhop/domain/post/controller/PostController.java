@@ -60,11 +60,11 @@ public class PostController {
     }
 
     @Operation(summary = "게시글 키워드 조회")
-    @GetMapping("/keywords/{keyword}")
-    public ApiResponse<?> getPostByKeyWord(PageRequestDTO pageRequestDTO, @PathVariable(name = "keyword") String keyword,
+    @GetMapping("/keywords")
+    public ApiResponse<?> getPostByKeyWord(PageRequestDTO pageRequestDTO,
             @PathVariable(name = "clubId") Long clubId) {
 
-        return ApiResponse.ok(postService.getAllPostByClubIdAndKeyword(pageRequestDTO, clubId, keyword));
+        return ApiResponse.ok(postService.getAllPostByClubIdAndKeyword(pageRequestDTO, clubId));
     }
 
     @Operation(summary = "게시글 전체 조회")
@@ -99,13 +99,5 @@ public class PostController {
 
         postService.makePostUser(userDetails.getUser(), clubId, postId);
         return ApiResponse.ok("좋아요 성공");
-    }
-
-    @Operation(summary = "S3 이미지 업로드")
-    @PostMapping(value = "/imageUpload")
-    public ApiResponse<?> imageUpload(@RequestParam("file") MultipartFile file) throws IOException {
-
-        String originFilename = s3Service.saveFile(file);
-        return ApiResponse.ok("이미지 업로드 성공");
     }
 }
