@@ -57,7 +57,7 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 
         if (keyword != null) {
             BooleanExpression titleContainsKeyword = post.postTitle.containsIgnoreCase(keyword);
-            query.where(titleContainsKeyword.or(titleContainsKeyword));
+            query.where(titleContainsKeyword);
         }
 
 
