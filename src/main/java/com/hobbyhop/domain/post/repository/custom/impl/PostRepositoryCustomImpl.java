@@ -6,6 +6,7 @@ import static com.hobbyhop.domain.post.entity.QPost.post;
 import static com.hobbyhop.domain.postuser.entity.QPostUser.postUser;
 import static com.hobbyhop.domain.user.entity.QUser.user;
 
+import com.hobbyhop.domain.post.dto.PostPageResponseDTO;
 import com.hobbyhop.domain.post.dto.PostResponseDTO;
 import com.hobbyhop.domain.post.entity.Post;
 import com.hobbyhop.domain.post.repository.custom.PostRepositoryCustom;
@@ -33,18 +34,15 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
     }
 
     @Override
-    public Page<PostResponseDTO> findAllByClubId(Pageable pageable, Long clubId, String keyword){
-        JPAQuery<PostResponseDTO> query = queryFactory
+    public Page<PostPageResponseDTO> findAllByClubId(Pageable pageable, Long clubId, String keyword){
+        JPAQuery<PostPageResponseDTO> query = queryFactory
                 .select(
                         Projections.constructor(
-                                PostResponseDTO.class,
+                                PostPageResponseDTO.class,
                                 post.club.id,
                                 post.id,
                                 user.username,
                                 post.postTitle,
-                                post.postContent,
-                                post.originImageUrl,
-                                post.savedImageUrl,
                                 post.likeCnt,
                                 post.createdAt,
                                 post.modifiedAt
@@ -59,7 +57,7 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
         }
 
 
-        List<PostResponseDTO> content = getQuerydsl().applyPagination(pageable, query).fetch();
+        List<PostPageResponseDTO> content = getQuerydsl().applyPagination(pageable, query).fetch();
         long totalCount = query.fetchCount();
 
         return new PageImpl<>(content, pageable, totalCount);

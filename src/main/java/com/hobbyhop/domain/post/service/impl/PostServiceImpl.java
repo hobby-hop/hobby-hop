@@ -4,6 +4,7 @@ import com.hobbyhop.domain.club.entity.Club;
 import com.hobbyhop.domain.club.service.ClubService;
 import com.hobbyhop.domain.clubmember.service.ClubMemberService;
 import com.hobbyhop.domain.post.dto.PostModifyRequestDTO;
+import com.hobbyhop.domain.post.dto.PostPageResponseDTO;
 import com.hobbyhop.domain.post.dto.PostRequestDTO;
 import com.hobbyhop.domain.post.dto.PostResponseDTO;
 import com.hobbyhop.domain.post.entity.Post;
@@ -113,11 +114,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PageResponseDTO<PostResponseDTO> getAllPost(PageRequestDTO pageRequestDTO, Long clubId) {
-        Page<PostResponseDTO> result = postRepository.findAllByClubId(pageRequestDTO.getPageable("id"), clubId,
+    public PageResponseDTO<PostPageResponseDTO> getAllPost(PageRequestDTO pageRequestDTO, Long clubId) {
+        Page<PostPageResponseDTO> result = postRepository.findAllByClubId(pageRequestDTO.getPageable("id"), clubId,
                 pageRequestDTO.getKeyword());
 
-        return PageResponseDTO.<PostResponseDTO>withAll()
+        return PageResponseDTO.<PostPageResponseDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
                 .dtoList(result.toList())
                 .total(Long.valueOf(result.getTotalElements()).intValue())
