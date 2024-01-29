@@ -53,17 +53,19 @@ public class Post extends BaseEntity {
     @Column(name = "deleted_at")
     private Timestamp deletedAt;
 
-    public void changeTitle(String postTitle) {
-        this.postTitle = postTitle;
-    }
+    public void modifyPost(String postTitle, String postContent, String originImageUrl, String savedImageUrl){
+        if(postTitle != null) {
+            this.postTitle = postTitle;
+        }
 
-    public void changeContent(String postContent) {
-        this.postContent = postContent;
-    }
+        if(postContent != null) {
+            this.postContent = postContent;
+        }
 
-    public void changeImageUrl(String originImageUrl, String savedImageUrl) {
-        this.originImageUrl = originImageUrl;
-        this.savedImageUrl = savedImageUrl;
+        if(originImageUrl != null) {
+            this.originImageUrl = originImageUrl;
+            this.savedImageUrl = savedImageUrl;
+        }
     }
 
     public void updateLikeCnt(Boolean updated) {

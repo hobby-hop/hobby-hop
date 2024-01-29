@@ -11,7 +11,5 @@ public interface PostRepositoryCustom {
     Page<PostPageResponseDTO> findAllByClubId(Pageable pageable, Long clubId, String keyword);
 
     void deleteAllElement(Long postId);
-
-    Page<PostResponseDTO> findAllByClubIdAndKeyword(PageRequestDTO pageRequestDTO, Long clubId);
 }
 

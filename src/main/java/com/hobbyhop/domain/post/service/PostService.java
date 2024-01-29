@@ -20,15 +20,12 @@ public interface PostService {
 
     void imageUploadPost(User user, Long clubId, Long postId, MultipartFile file) throws IOException;
 
-    PostResponseDTO getPostById(User user, Long clubId, Long postId);
-
-    PageResponseDTO<PostResponseDTO> getAllPostByClubIdAndKeyword(PageRequestDTO pageRequestDTO, Long clubId);
+    PostResponseDTO getPostById(Long clubId, Long postId);
 
     PageResponseDTO<PostPageResponseDTO> getAllPost(PageRequestDTO pageRequestDTO, Long clubId);
 
     PostResponseDTO modifyPost(User user, Long clubId, Long postId,
-            MultipartFile file, PostModifyRequestDTO postModifyRequestDTO)
-            throws IOException;
+            MultipartFile file, PostModifyRequestDTO postModifyRequestDTO);
 
     void deletePost(User user, Long clubId, Long postId);
 

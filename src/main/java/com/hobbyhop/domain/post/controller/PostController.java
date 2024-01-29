@@ -54,17 +54,9 @@ public class PostController {
 
     @Operation(summary = "게시글 단일 조회")
     @GetMapping("/{postId}")
-    public ApiResponse<?> getPostById(@PathVariable(name = "clubId") Long clubId, @PathVariable(name = "postId") Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ApiResponse<?> getPostById(@PathVariable(name = "clubId") Long clubId, @PathVariable(name = "postId") Long postId) {
 
-        return ApiResponse.ok(postService.getPostById(userDetails.getUser(), clubId, postId));
-    }
-
-    @Operation(summary = "게시글 키워드 조회")
-    @GetMapping("/keywords")
-    public ApiResponse<?> getPostByKeyWord(PageRequestDTO pageRequestDTO,
-            @PathVariable(name = "clubId") Long clubId) {
-
-        return ApiResponse.ok(postService.getAllPostByClubIdAndKeyword(pageRequestDTO, clubId));
+        return ApiResponse.ok(postService.getPostById(clubId, postId));
     }
 
     @Operation(summary = "게시글 전체 조회")

@@ -13,29 +13,29 @@ import com.hobbyhop.domain.post.repository.custom.PostRepositoryCustom;
 import com.hobbyhop.global.request.PageRequestDTO;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.util.StringUtils;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
 
-public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implements PostRepositoryCustom{
+@RequiredArgsConstructor
+public class PostRepositoryCustomImpl implements PostRepositoryCustom{
 
     private final JPAQueryFactory queryFactory;
 
-    public PostRepositoryCustomImpl(JPAQueryFactory queryFactory) {
-        super(Post.class);
-        this.queryFactory = queryFactory;
-    }
-
     @Override
-    public Page<PostPageResponseDTO> findAllByClubId(Pageable pageable, Long clubId, String keyword){
-        JPAQuery<PostPageResponseDTO> query = queryFactory
+    public Page<PostPageResponseDTO> findAllByClubId(Pageable pageable, Long clubId, String keyword) {
+        List<PostPageResponseDTO> content = queryFactory
                 .select(
                         Projections.constructor(
                                 PostPageResponseDTO.class,
@@ -49,52 +49,16 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
                         )
                 )
                 .from(post)
-                .where(post.club.id.eq(clubId));
-
-        if (keyword != null) {
-            BooleanExpression titleContainsKeyword = post.postTitle.containsIgnoreCase(keyword);
-            query.where(titleContainsKeyword);
-        }
-
-
-        List<PostPageResponseDTO> content = getQuerydsl().applyPagination(pageable, query).fetch();
-        long totalCount = query.fetchCount();
-
-        return new PageImpl<>(content, pageable, totalCount);
-    }
-
-    @Override
-    public Page<PostResponseDTO> findAllByClubIdAndKeyword(PageRequestDTO pageRequestDTO, Long clubId){
-        List<PostResponseDTO> content = queryFactory
-                .select(
-                        Projections.constructor(
-                                PostResponseDTO.class,
-                                post.club.id,
-                                post.id,
-                                user.username,
-                                post.postTitle,
-                                post.postContent,
-                                post.originImageUrl,
-                                post.savedImageUrl,
-                                post.likeCnt,
-                                post.createdAt,
-                                post.modifiedAt
-                        )
-                )
-                .from(post)
-                .join(user).fetchJoin()
+                .leftJoin(user)
                 .on(post.user.id.eq(user.id))
-                .where(post.postTitle.eq(pageRequestDTO.getKeyword()),
-                        post.club.id.eq(clubId))
-                .groupBy(post.id)
-                .orderBy(post.createdAt.desc())
-                .offset(pageRequestDTO.getPageable().getOffset())
-                .limit(pageRequestDTO.getSize())
+                .where(post.club.id.eq(clubId), likeKeyword(keyword))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
 
         JPAQuery<Long> count = queryFactory.select(post.count()).from(post);
 
-        return PageableExecutionUtils.getPage(content, pageRequestDTO.getPageable(), count::fetchOne);
+        return PageableExecutionUtils.getPage(content, pageable, count::fetchOne);
     }
 
     @Override
@@ -126,5 +90,12 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
                 .set(post.deletedAt, now)
                 .where(post.id.eq(postId))
                 .execute();
+    }
+
+    private BooleanExpression likeKeyword(String keyword){
+        if(StringUtils.isNullOrEmpty(keyword)){
+            return null;
+        }
+        return post.postTitle.like(keyword);
     }
 }
