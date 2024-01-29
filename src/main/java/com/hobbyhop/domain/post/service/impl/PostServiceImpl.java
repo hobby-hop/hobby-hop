@@ -2,8 +2,6 @@ package com.hobbyhop.domain.post.service.impl;
 
 import com.hobbyhop.domain.club.entity.Club;
 import com.hobbyhop.domain.club.service.ClubService;
-import com.hobbyhop.domain.clubmember.entity.ClubMember;
-import com.hobbyhop.domain.clubmember.enums.MemberRole;
 import com.hobbyhop.domain.clubmember.service.ClubMemberService;
 import com.hobbyhop.domain.post.dto.PostModifyRequestDTO;
 import com.hobbyhop.domain.post.dto.PostRequestDTO;
@@ -15,7 +13,6 @@ import com.hobbyhop.domain.post.service.PostService;
 import com.hobbyhop.domain.postuser.service.PostUserService;
 import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.global.exception.clubmember.ClubMemberNotFoundException;
-import com.hobbyhop.global.exception.common.UnAuthorizedModifyException;
 import com.hobbyhop.global.exception.post.PostNotCorrespondUser;
 import com.hobbyhop.global.exception.post.PostNotFoundException;
 import com.hobbyhop.global.request.PageRequestDTO;
@@ -117,7 +114,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PageResponseDTO<PostResponseDTO> getAllPost(PageRequestDTO pageRequestDTO, Long clubId) {
-        Page<PostResponseDTO> result = postRepository.findAllByClubId(pageRequestDTO, clubId);
+        Page<PostResponseDTO> result = postRepository.findAllByClubId(pageRequestDTO.getPageable("id"), clubId,
+                pageRequestDTO.getKeyword());
 
         return PageResponseDTO.<PostResponseDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
@@ -165,10 +163,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public void deletePost(User user, Long clubId, Long postId){
-//        ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
-//
-//        if(!clubMember.getMemberRole().equals(MemberRole.ADMIN))
-//            throw new UnAuthorizedModifyException();
+
         if(!clubMemberService.isClubMember(clubId, user.getId()))
             throw new ClubMemberNotFoundException();
 
