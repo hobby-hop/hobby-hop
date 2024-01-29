@@ -1,7 +1,5 @@
 package com.hobbyhop.domain.user.service.impl;
 
-import com.hobbyhop.domain.clubmember.service.ClubMemberService;
-import com.hobbyhop.domain.post.repository.PostRepository;
 import com.hobbyhop.domain.user.dto.*;
 import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.domain.user.enums.UserRoleEnum;
@@ -16,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,28 +23,28 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final ClubMemberService clubMemberService;
-    private final PostRepository postRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
 
     @Override
     public void signup(SignupRequestDTO signupRequestDTO) {
-        if (signupRequestDTO == null) {
-            throw new SignupBlankException();
+        try {
+            deletedUserVerification(signupRequestDTO);
+            validateExistingUser(signupRequestDTO);
+
+            User user = User.builder()
+                    .username(signupRequestDTO.getUsername())
+                    .password(passwordEncoder.encode(signupRequestDTO.getPassword()))
+                    .email(signupRequestDTO.getEmail())
+                    .role(UserRoleEnum.USER)
+                    .build();
+
+            userRepository.save(user);
         }
-
-        validateExistingUser(signupRequestDTO);
-
-        User user = User.builder()
-                .username(signupRequestDTO.getUsername())
-                .password(passwordEncoder.encode(signupRequestDTO.getPassword()))
-                .email(signupRequestDTO.getEmail())
-                .role(UserRoleEnum.USER)
-                .build();
-
-        userRepository.save(user);
+        catch (DataIntegrityViolationException e) {
+            throw new DuplicateEntryException();
+        }
     }
 
     @Override
@@ -158,13 +157,31 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private void validateExistingUser(SignupRequestDTO signupRequestDTO) {
-        if (userRepository.existsByUsername((signupRequestDTO.getUsername()))) {
+    private void deletedUserVerification (SignupRequestDTO signupRequestDTO) {
+        if (userRepository.existsByEmailAndDeletedAtIsNull(signupRequestDTO.getEmail())) {
+            throw new AlreadyExistEmailException();
+        }
+
+        if (userRepository.existsByEmailAndDeletedAtIsNotNull(signupRequestDTO.getEmail())) {
+            throw new NotAvailableEmailException();
+        }
+
+        if (userRepository.existsByUsernameAndDeletedAtIsNull(signupRequestDTO.getUsername())) {
             throw new AlreadyExistUsernameException();
         }
 
-        if (userRepository.existsByEmail((signupRequestDTO.getEmail()))) {
-            throw new AlreadyExistEmailException();
+        if (userRepository.existsByUsernameAndDeletedAtIsNotNull(signupRequestDTO.getUsername())) {
+            throw new NotAvailableUsernameException();
+        }
+    }
+
+    private void validateExistingUser (SignupRequestDTO signupRequestDTO) {
+        if (userRepository.existsByUsername(signupRequestDTO.getUsername())) {
+            throw new NotAvailableUsernameException();
+        }
+
+        if (userRepository.existsByEmail(signupRequestDTO.getEmail())) {
+            throw new NotAvailableEmailException();
         }
 
         if (!signupRequestDTO.getConfirmPassword().equals(signupRequestDTO.getPassword())) {
