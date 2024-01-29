@@ -27,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Log4j2
 @Transactional(readOnly = true)
 public class ClubServiceImpl implements ClubService {
 

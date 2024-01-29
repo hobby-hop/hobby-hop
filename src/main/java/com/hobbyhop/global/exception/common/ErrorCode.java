@@ -17,11 +17,14 @@ public enum ErrorCode {
 
 
     // 회원
+    SIGNUP_BLANK_EXCEPTION(401, "회원 가입란은 모두 필수입니다."),
     NOT_FOUND_USER_EXCEPTION(401, "회원 정보를 찾을 수 없습니다."),
     FAILED_AUTHENTICATION_EXCEPTION(401, "인증에 실패하였습니다."),
     ALREADY_EXIST_USER_NAME_EXCEPTION(409, "이미 존재하는 이름입니다."),
     ALREADY_EXIST_EMAIL_EXCEPTION(409, "이미 존재하는 이메일입니다."),
     ALREADY_EXIST_USERNAME_EXCEPTION(409, "이미 존재하는 유저입니다."),
+    NOT_AVAILABLE_USERNAME(409, "사용할 수 없는 이름입니다."),
+    NOT_AVAILABLE_EMAIL(409, "사용할 수 없는 이메일입니다."),
     UNAUTHORIZED_MODIFY_EXCEPTION(403, "수정할 권한이 없습니다."),
     NO_AUTHORIZATION_EXCEPTION(403, "접근 권한이 없습니다"),
     MISMATCHED_PASSWORD_EXCEPTION(401, "비밀번호가 일치하지 않습니다."),
