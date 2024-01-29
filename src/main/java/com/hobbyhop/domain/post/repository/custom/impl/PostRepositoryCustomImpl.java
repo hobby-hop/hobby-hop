@@ -51,8 +51,6 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
                         )
                 )
                 .from(post)
-                .join(user).fetchJoin()
-                .on(post.user.id.eq(user.id))
                 .where(post.club.id.eq(clubId));
 
         if (keyword != null) {
