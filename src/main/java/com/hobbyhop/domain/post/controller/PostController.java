@@ -54,9 +54,9 @@ public class PostController {
 
     @Operation(summary = "게시글 단일 조회")
     @GetMapping("/{postId}")
-    public ApiResponse<?> getPostById(@PathVariable(name = "clubId") Long clubId, @PathVariable(name = "postId") Long postId) {
+    public ApiResponse<?> getPostById(@PathVariable(name = "clubId") Long clubId, @PathVariable(name = "postId") Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        return ApiResponse.ok(postService.getPostById(clubId, postId));
+        return ApiResponse.ok(postService.getPostById(userDetails.getUser(), clubId, postId));
     }
 
     @Operation(summary = "게시글 키워드 조회")
