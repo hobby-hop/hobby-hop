@@ -20,7 +20,7 @@ public interface PostService {
 
     void imageUploadPost(User user, Long clubId, Long postId, MultipartFile file) throws IOException;
 
-    PostResponseDTO getPostById(Long clubId, Long postId);
+    PostResponseDTO getPostById(User user, Long clubId, Long postId);
 
     PageResponseDTO<PostResponseDTO> getAllPostByClubIdAndKeyword(PageRequestDTO pageRequestDTO, Long clubId);
 

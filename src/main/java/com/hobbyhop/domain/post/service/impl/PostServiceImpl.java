@@ -83,7 +83,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostResponseDTO getPostById(Long clubId, Long postId) {
+    public PostResponseDTO getPostById(User user, Long clubId, Long postId) {
+
+        if(!clubMemberService.isClubMember(clubId, user.getId()))
+            throw new ClubMemberNotFoundException();
+
         Post post = findAndCheckPostAndClub(clubId, postId);
 
         return PostResponseDTO.fromEntity(post);
@@ -100,8 +104,8 @@ public class PostServiceImpl implements PostService {
                 .build();
     }
 
-
     public Post findAndCheckPostAndClub(Long clubId, Long postId){
+
         Club club = clubService.findClub(clubId);
 
         Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
