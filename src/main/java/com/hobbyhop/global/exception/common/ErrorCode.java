@@ -45,6 +45,7 @@ public enum ErrorCode {
 
     // JoinReqeust
     NO_SUCH_REQUEST_EXCEPTION(404, "존재하지 않는 요청입니다."),
+    PENDING_REQUEST(409, "이전 가입신청에 대한 처리가 완료되지 않았습니다."),
 
     // Comment
     NOT_FOUND_COMMENT_EXCEPTION(401, "해당 댓글을 찾을 수 없습니다."),

@@ -5,6 +5,7 @@ import com.hobbyhop.domain.club.service.ClubService;
 import com.hobbyhop.domain.clubmember.entity.ClubMember;
 import com.hobbyhop.domain.clubmember.enums.MemberRole;
 import com.hobbyhop.domain.clubmember.service.ClubMemberService;
+import com.hobbyhop.domain.post.dto.PostModifyRequestDTO;
 import com.hobbyhop.domain.post.dto.PostRequestDTO;
 import com.hobbyhop.domain.post.dto.PostResponseDTO;
 import com.hobbyhop.domain.post.entity.Post;
@@ -44,7 +45,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public PostResponseDTO makePost(User user, Long clubId, PostRequestDTO postRequestDTO) {
-        // exist보다는 findById + limit 1 로 하는게 훨씬 쿼리적으로 이득이다.
+
         if(!clubMemberService.isClubMember(clubId, user.getId()))
             throw new ClubMemberNotFoundException();
 
@@ -68,10 +69,9 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public void imageUploadPost(User user, Long clubId, Long postId, MultipartFile file) {
-        ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
 
-        if(!clubMember.getMemberRole().equals(MemberRole.ADMIN))
-            throw new UnAuthorizedModifyException();
+        if(!clubMemberService.isClubMember(clubId, user.getId()))
+            throw new ClubMemberNotFoundException();
 
         Post post = findAndCheckPostAndClub(clubId, postId);
 
@@ -84,13 +84,24 @@ public class PostServiceImpl implements PostService {
         post.changeImageUrl(originFilename, savedFilename);
     }
 
-
     @Override
     public PostResponseDTO getPostById(Long clubId, Long postId) {
         Post post = findAndCheckPostAndClub(clubId, postId);
 
         return PostResponseDTO.fromEntity(post);
     }
+
+    @Override
+    public PageResponseDTO<PostResponseDTO> getAllPostByClubIdAndKeyword(PageRequestDTO pageRequestDTO, Long clubId, String keyword) {
+        Page<PostResponseDTO> result = postRepository.findAllByClubIdAndKeyword(pageRequestDTO, clubId, keyword);
+
+        return PageResponseDTO.<PostResponseDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(result.toList())
+                .total(Long.valueOf(result.getTotalElements()).intValue())
+                .build();
+    }
+
 
     public Post findAndCheckPostAndClub(Long clubId, Long postId){
         Club club = clubService.findClub(clubId);
@@ -117,26 +128,31 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public PostResponseDTO modifyPost(User user, Long clubId, Long postId, MultipartFile file, PostRequestDTO postRequestDTO) {
-        ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
+    public PostResponseDTO modifyPost(User user, Long clubId, Long postId, MultipartFile file, PostModifyRequestDTO postModifyRequestDTO) {
 
-        if(!clubMember.getMemberRole().equals(MemberRole.ADMIN))
-            throw new UnAuthorizedModifyException();
+        if(!clubMemberService.isClubMember(clubId, user.getId()))
+            throw new ClubMemberNotFoundException();
 
         Post post = findAndCheckPostAndClub(clubId, postId);
 
         if(!post.getUser().getId().equals(user.getId()))
             throw new PostNotCorrespondUser();
 
-        String originFilename = s3Service.saveFile(file);
-        String savedFilename = UUID.randomUUID() + "_" + originFilename;
+        String originFilename = null;
+        String savedFilename = null;
 
-        if(postRequestDTO.getPostTitle() != null) {
-            post.changeTitle(postRequestDTO.getPostTitle());
+
+        if(file != null && !file.isEmpty()){
+            originFilename = s3Service.saveFile(file);
+            savedFilename = UUID.randomUUID() + "_" + originFilename;
         }
 
-        if(postRequestDTO.getPostContent() != null) {
-            post.changeContent(postRequestDTO.getPostContent());
+        if(postModifyRequestDTO.getPostTitle() != null) {
+            post.changeTitle(postModifyRequestDTO.getPostTitle());
+        }
+
+        if(postModifyRequestDTO.getPostContent() != null) {
+            post.changeContent(postModifyRequestDTO.getPostContent());
         }
 
         if(originFilename != null) {
@@ -149,10 +165,12 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public void deletePost(User user, Long clubId, Long postId){
-        ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
-
-        if(!clubMember.getMemberRole().equals(MemberRole.ADMIN))
-            throw new UnAuthorizedModifyException();
+//        ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
+//
+//        if(!clubMember.getMemberRole().equals(MemberRole.ADMIN))
+//            throw new UnAuthorizedModifyException();
+        if(!clubMemberService.isClubMember(clubId, user.getId()))
+            throw new ClubMemberNotFoundException();
 
         Post post = findAndCheckPostAndClub(clubId, postId);
 
