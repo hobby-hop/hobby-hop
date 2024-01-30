@@ -22,8 +22,6 @@ public interface PostService {
 
     PostResponseDTO getPostById(User user, Long clubId, Long postId);
 
-    PageResponseDTO<PostResponseDTO> getAllPostByClubIdAndKeyword(PageRequestDTO pageRequestDTO, Long clubId);
-
     PageResponseDTO<PostPageResponseDTO> getAllPost(PageRequestDTO pageRequestDTO, Long clubId);
 
     PostResponseDTO modifyPost(User user, Long clubId, Long postId,
