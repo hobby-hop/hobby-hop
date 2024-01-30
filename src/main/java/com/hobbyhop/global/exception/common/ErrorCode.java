@@ -40,8 +40,8 @@ public enum ErrorCode {
 
     // Club
     NOT_FOUND_CLUB_EXCEPTION(404, "해당 클럽을 찾을 수 없습니다."),
-    ALREADY_USER_OF_CLUB_EXCEPTION(401, "이미 클럽에 유저가 있습니다."),
-    ALREADY_CLUB_TITLE_EXIST_EXCEPTION(401, "이미 존재하는 클럽 명입니다."),
+    ALREADY_USER_OF_CLUB_EXCEPTION(404, "이미 클럽에 유저가 있습니다."),
+    ALREADY_CLUB_TITLE_EXIST_EXCEPTION(404, "이미 존재하는 클럽 명입니다."),
 
     // ClubMember
     NOT_FOUND_CLUB_MEMBER_EXCEPTION(404, "해당 멤버를 찾을 수 없습니다."),
