@@ -37,6 +37,7 @@ public class UserServiceImpl implements UserService {
                     .username(signupRequestDTO.getUsername())
                     .password(passwordEncoder.encode(signupRequestDTO.getPassword()))
                     .email(signupRequestDTO.getEmail())
+                    .info(signupRequestDTO.getInfo())
                     .role(UserRoleEnum.USER)
                     .build();
 
@@ -126,18 +127,22 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void updateProfile(UpdateProfileRequestDTO updateProfileRequestDTO, UserDetailsImpl userDetails,
                               HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
+
         User user = userRepository.findById(userDetails.getUser().getId())
                 .orElseThrow(NotFoundUserException::new);
 
         validatePassword(user, updateProfileRequestDTO.getOldPassword());
 
+        if (updateProfileRequestDTO.getNewPassword().equals(updateProfileRequestDTO.getOldPassword()))
+            throw new MatchedPasswordException();
+
         if (!updateProfileRequestDTO.getNewPassword().equals(updateProfileRequestDTO.getConfirmPassword()))
             throw new MismatchedNewPasswordException();
 
         if (updateProfileRequestDTO.getNewPassword().isBlank()) {
-            user.updateProfile(updateProfileRequestDTO.getUsername(), updateProfileRequestDTO.getEmail(), updateProfileRequestDTO.getNewPassword());
+            user.updateProfile(updateProfileRequestDTO.getUsername(), updateProfileRequestDTO.getEmail(), updateProfileRequestDTO.getInfo(), updateProfileRequestDTO.getNewPassword());
         } else {
-            user.updateProfile(updateProfileRequestDTO.getUsername(), updateProfileRequestDTO.getEmail(), passwordEncoder.encode(updateProfileRequestDTO.getNewPassword()));
+            user.updateProfile(updateProfileRequestDTO.getUsername(), updateProfileRequestDTO.getEmail(), updateProfileRequestDTO.getInfo(), passwordEncoder.encode(updateProfileRequestDTO.getNewPassword()));
         }
 
         String requestHeaderAccessToken = httpServletRequest.getHeader(JwtUtil.AUTHORIZATION_HEADER);

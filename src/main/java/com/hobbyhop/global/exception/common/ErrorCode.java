@@ -31,6 +31,7 @@ public enum ErrorCode {
     MISMATCHED_PASSWORD_EXCEPTION(401, "비밀번호가 일치하지 않습니다."),
     FAILED_LOGIN_EXCEPTION(401, "닉네임 또는 패스워드를 확인해주세요."),
     MISMATCHED_NEWPASSWORD_EXCEPTION(401, "새 비밀번호가 일치하지 않습니다."),
+    MATCHED_PASSWORD_EXCEPTION(401, "새 비밀번호와 기존 비밀번호가 일치합니다."),
     JSON_PROCESSING_EXCEPTION(408, "요청 응답 시간 초과"),
 
     // 이메일 인증
