@@ -23,6 +23,11 @@ public class SignupRequestDTO {
 			max = 50)
 	private String email;
 
+	@Size(	min = 3,
+			max = 50,
+			message = "info : 자기소개를 3~50자 입력해주세요.")
+	private String info;
+
 	@NotBlank(message = "password : 비밀번호를 입력해주세요.")
 	@Pattern(regexp = "^[a-zA-Z0-9]+$",
 			 message = "password : 비밀번호는 알파벳 대소문자, 숫자의 조합으로 입력해야 합니다.")
