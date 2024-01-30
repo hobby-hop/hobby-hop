@@ -16,6 +16,7 @@ public class CommentResponseDTO {
     String writer;
     int like;
     Timestamp createdAt;
+    Long id;
     List<CommentResponseDTO> reply;
 
     public static CommentResponseDTO buildDTO(Comment comment, int like){
@@ -24,6 +25,7 @@ public class CommentResponseDTO {
                 .writer(comment.getUser().getUsername())
                 .like(like)
                 .createdAt(comment.getCreatedAt())
+                .id(comment.getId())
                 .build();
     }
 }
