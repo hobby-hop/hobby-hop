@@ -53,11 +53,11 @@ public enum ErrorCode {
     PENDING_REQUEST(409, "이전 가입신청에 대한 처리가 완료되지 않았습니다."),
 
     // Comment
-    NOT_FOUND_COMMENT_EXCEPTION(401, "해당 댓글을 찾을 수 없습니다."),
+    NOT_FOUND_COMMENT_EXCEPTION(404, "해당 댓글을 찾을 수 없습니다."),
 
     // Post
-    NOT_FOUND_POST_EXCEPTION(401, "해당 게시글을 찾을 수 없습니다."),
-    NOT_CORRESPOND_USER_EXCEPTION(401, "해당 유저와 일치하는 게시글이 없습니다."),
+    NOT_FOUND_POST_EXCEPTION(404, "해당 게시글을 찾을 수 없습니다."),
+    NOT_CORRESPOND_USER_EXCEPTION(404, "해당 유저와 일치하는 게시글이 없습니다."),
 
     // 3S
     IMAGE_SAVE_EXCEPTION(401, "이미지 저장에 실패했습니다."),

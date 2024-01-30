@@ -93,18 +93,6 @@ public class PostServiceImpl implements PostService {
         return PostResponseDTO.fromEntity(post);
     }
 
-
-    @Override
-    public PageResponseDTO<PostResponseDTO> getAllPostByClubIdAndKeyword(PageRequestDTO pageRequestDTO, Long clubId) {
-        Page<PostResponseDTO> result = postRepository.findAllByClubIdAndKeyword(pageRequestDTO, clubId);
-
-        return PageResponseDTO.<PostResponseDTO>withAll()
-                .pageRequestDTO(pageRequestDTO)
-                .dtoList(result.toList())
-                .total(Long.valueOf(result.getTotalElements()).intValue())
-                .build();
-    }
-
     public Post findAndCheckPostAndClub(Long clubId, Long postId){
 
         Club club = clubService.findClub(clubId);
