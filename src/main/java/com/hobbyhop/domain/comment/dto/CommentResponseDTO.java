@@ -17,7 +17,6 @@ public class CommentResponseDTO {
     int like;
     Timestamp createdAt;
     Long id;
-    List<CommentResponseDTO> reply;
 
     public static CommentResponseDTO buildDTO(Comment comment, int like){
         return CommentResponseDTO.builder()

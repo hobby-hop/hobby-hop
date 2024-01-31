@@ -1,6 +1,7 @@
 package com.hobbyhop.domain.post.controller;
 
 import com.hobbyhop.domain.post.dto.PostModifyRequestDTO;
+import com.hobbyhop.domain.post.dto.PostPageRequestDTO;
 import com.hobbyhop.domain.post.dto.PostRequestDTO;
 import com.hobbyhop.domain.post.s3.S3Service;
 import com.hobbyhop.domain.post.service.PostService;
@@ -61,7 +62,7 @@ public class PostController {
 
     @Operation(summary = "게시글 전체 조회")
     @GetMapping
-    public ApiResponse<?> getAllPost(PageRequestDTO pageRequestDTO, @PathVariable(name = "clubId") Long clubId) {
+    public ApiResponse<?> getAllPost(PostPageRequestDTO pageRequestDTO, @PathVariable(name = "clubId") Long clubId) {
 
         return ApiResponse.ok(postService.getAllPost(pageRequestDTO, clubId));
     }

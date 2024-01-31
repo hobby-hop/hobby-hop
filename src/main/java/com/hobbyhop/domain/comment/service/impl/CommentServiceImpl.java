@@ -3,6 +3,7 @@ package com.hobbyhop.domain.comment.service.impl;
 import com.hobbyhop.domain.clubmember.entity.ClubMember;
 import com.hobbyhop.domain.clubmember.enums.MemberRole;
 import com.hobbyhop.domain.clubmember.service.ClubMemberService;
+import com.hobbyhop.domain.comment.dto.CommentPageRequestDTO;
 import com.hobbyhop.domain.comment.dto.CommentRequestDTO;
 import com.hobbyhop.domain.comment.dto.CommentResponseDTO;
 import com.hobbyhop.domain.comment.entity.Comment;
@@ -88,8 +89,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public PageResponseDTO<CommentResponseDTO> getComments(PageRequestDTO pageRequestDTO, Long postId) {
-        Page<CommentResponseDTO> result = commentRepository.findAllByPostId(pageRequestDTO, postId);
+    public PageResponseDTO<CommentResponseDTO> getComments(CommentPageRequestDTO pageRequestDTO, Long postId, Long commentId) {
+        Page<CommentResponseDTO> result = commentRepository.findAllByPostId(pageRequestDTO, postId, commentId);
 
         return PageResponseDTO.<CommentResponseDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
@@ -111,8 +112,9 @@ public class CommentServiceImpl implements CommentService {
     private Comment buildComment(CommentRequestDTO request, Post post, User user, Comment comment){
         return Comment.builder()
                 .content(request.getContent())
-                .post(post)
                 .user(user)
+                .post(post)
+                .linkCnt(0L)
                 .parent(comment)
                 .reply(new ArrayList<>())
                 .build();
