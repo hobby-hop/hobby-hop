@@ -45,13 +45,7 @@ public class User extends BaseEntity {
 
     private Long kakaoId;
 
-    public void updateProfile (String updateUsername, String updateEmail, String updateInfo, String updatePassword) {
-        if (!updateUsername.isBlank()) {
-            this.username = updateUsername;
-        }
-        if (!updateEmail.isBlank()) {
-            this.email = updateEmail;
-        }
+    public void updateProfile (String updateInfo, String updatePassword) {
         if (!updateInfo.isBlank()) {
             this.info = updateInfo;
         }
