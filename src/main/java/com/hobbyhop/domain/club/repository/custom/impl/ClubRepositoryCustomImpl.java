@@ -35,7 +35,7 @@ public class ClubRepositoryCustomImpl extends QuerydslRepositorySupport implemen
     }
 
     @Override
-    public Page<ClubResponseDTO> findAll(Pageable pageable, String keyword, String category) {
+    public Page<ClubResponseDTO> findAll(Pageable pageable, String keyword, Long category) {
         JPAQuery<ClubResponseDTO> query = jpaQueryFactory
                 .select(
                         Projections.constructor(
@@ -48,7 +48,7 @@ public class ClubRepositoryCustomImpl extends QuerydslRepositorySupport implemen
                                 club.modifiedAt,
                                 club.category.id.as("categoryId")))
                 .from(club)
-                .where(likeKeyword(keyword), likeCategory(category));
+                .where(likeKeyword(keyword), eqCategory(category));
 
         List<ClubResponseDTO> content = getQuerydsl().applyPagination(pageable, query).fetch();
         long totalCount = query.fetchCount();
@@ -63,11 +63,11 @@ public class ClubRepositoryCustomImpl extends QuerydslRepositorySupport implemen
         return club.title.containsIgnoreCase(keyword);
     }
 
-    private BooleanExpression likeCategory(String category){
-        if(category.isBlank()){
+    private BooleanExpression eqCategory(Long category){
+        if(category == null){
             return null;
         }
-        return club.category.categoryName.containsIgnoreCase(category);
+        return club.category.id.eq(category);
     }
 
     @Override
