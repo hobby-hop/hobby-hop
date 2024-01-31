@@ -33,7 +33,7 @@ public class CommentController {
 
     @Operation(summary = "댓글 조회")
     @GetMapping
-    public ApiResponse<?> getComments(CommentPageRequestDTO pageRequestDTO, @PathVariable("postId") Long postId){
+    public ApiResponse<?> getComments(CommentPageRequestDTO pageRequestDTO, @PathVariable("clubId") Long clubId, @PathVariable("postId") Long postId){
         // 호출시 ?page=보고 싶은 페이지&size=페이지에 들어갈 댓글 숫자 로 호출
         // ex) 2페이지에서 5개씩 보고 싶다. http://localhost:8080/api/groups/{groupId}/posts/{postId}/comments/sorted/1?page=2&size=5
         return ApiResponse.ok(commentService.getComments(pageRequestDTO, postId, null));
@@ -41,7 +41,7 @@ public class CommentController {
 
     @Operation(summary = "대댓글 조회")
     @GetMapping("/{commentId}")
-    public ApiResponse<?> getComments(CommentPageRequestDTO pageRequestDTO, @PathVariable("postId") Long postId, Long commentId){
+    public ApiResponse<?> getComments(CommentPageRequestDTO pageRequestDTO, @PathVariable("clubId") Long clubId, @PathVariable("postId") Long postId, @PathVariable("commentId") Long commentId){
         // 호출시 ?page=보고 싶은 페이지&size=페이지에 들어갈 댓글 숫자 로 호출
         // ex) 2페이지에서 5개씩 보고 싶다. http://localhost:8080/api/groups/{groupId}/posts/{postId}/comments/sorted/1?page=2&size=5
         return ApiResponse.ok(commentService.getComments(pageRequestDTO, postId, commentId));

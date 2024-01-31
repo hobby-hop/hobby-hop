@@ -13,15 +13,15 @@ import java.sql.Timestamp;
 public class CommentResponseDTO {
     String content;
     String writer;
-    int like;
+    Long like;
     Timestamp createdAt;
     Long id;
 
-    public static CommentResponseDTO buildDTO(Comment comment, int like){
+    public static CommentResponseDTO buildDTO(Comment comment){
         return CommentResponseDTO.builder()
                 .content(comment.getContent())
                 .writer(comment.getUser().getUsername())
-                .like(like)
+                .like(comment.getLinkCnt())
                 .createdAt(comment.getCreatedAt())
                 .id(comment.getId())
                 .build();

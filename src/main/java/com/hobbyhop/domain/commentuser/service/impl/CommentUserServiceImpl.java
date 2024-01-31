@@ -33,10 +33,6 @@ public class CommentUserServiceImpl implements CommentUserService {
         comment.subLike();
     }
 
-    public int countLike(Comment comment){
-        return commentUserRepository.countLike(comment.getId());
-    }
-
     private void saveCommentUser(Comment comment, User user) {
         CommentUser commentUser = CommentUser.buildCommentUser(comment, user);
         commentUserRepository.save(commentUser);
