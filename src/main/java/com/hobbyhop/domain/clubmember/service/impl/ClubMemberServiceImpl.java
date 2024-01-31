@@ -13,6 +13,8 @@ import com.hobbyhop.global.exception.clubmember.ClubMemberAlreadyJoined;
 import com.hobbyhop.global.exception.clubmember.ClubMemberNotFoundException;
 
 import java.util.List;
+
+import com.hobbyhop.global.exception.clubmember.ClubMemberRoleException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,5 +68,10 @@ public class ClubMemberServiceImpl implements ClubMemberService {
     @Override
     public boolean isClubMember(Long clubId, Long userId){
         return clubMemberRepository.isClubMember(clubId, userId);
+    }
+
+    @Override
+    public boolean isAdminMember(Long clubId, Long userId) {
+        return clubMemberRepository.isAdminMember(clubId, userId);
     }
 }

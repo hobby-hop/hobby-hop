@@ -22,5 +22,7 @@ public interface ClubMemberService {
 
     List<ClubMember> findByUserId(User user);
 
-    boolean isClubMember(Long clubId, Long UserId);
+    boolean isClubMember(Long clubId, Long userId);
+
+    boolean isAdminMember(Long clubId,Long userId);
 }
