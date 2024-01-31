@@ -15,7 +15,7 @@ public class PostResponseDTO {
 
     private Long clubId;
     private Long postId;
-    private String username;
+    private String writer;
     private String postTitle;
     private String postContent;
     private String originImageUrl;
@@ -28,7 +28,7 @@ public class PostResponseDTO {
         return PostResponseDTO.builder()
                 .clubId(savedPost.getClub().getId())
                 .postId(savedPost.getId())
-                .username(savedPost.getUser().getUsername())
+                .writer(savedPost.getUser().getUsername())
                 .postTitle(savedPost.getPostTitle())
                 .postContent(savedPost.getPostContent())
                 .originImageUrl(savedPost.getOriginImageUrl())
