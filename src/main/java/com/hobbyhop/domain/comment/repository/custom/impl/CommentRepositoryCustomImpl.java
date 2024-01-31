@@ -90,6 +90,7 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
                         .writer(c.getWriter())
                         .like(c.getLike())
                         .createdAt(c.getCreatedAt())
+                        .id(c.getId())
                         .reply(addVOtoDTO(query, c.getId()))
                         .build());
             }
@@ -106,6 +107,7 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
                         .writer(c.getWriter())
                         .like(c.getLike())
                         .createdAt(c.getCreatedAt())
+                        .id(c.getId())
                         .reply(addVOtoDTO(vo, c.getId()))
                         .build());
             }
