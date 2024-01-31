@@ -5,5 +5,5 @@ import lombok.Getter;
 
 @Getter
 public class PostPageRequestDTO extends PageRequestDTO {
-
+    private String keyword;
 }

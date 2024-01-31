@@ -64,7 +64,7 @@ public class CommentRepositoryCustomImpl extends QuerydslRepositorySupport imple
                 .on(comment.user.id.eq(user.id))
                 .where(comment.post.id.eq(postId), eqParentId(parent));
 
-        Pageable pageable = pageRequestDTO.getPageable(pageRequestDTO.getKeyword());
+        Pageable pageable = pageRequestDTO.getPageable(pageRequestDTO.getStandard());
 
         List<CommentResponseDTO> content = getQuerydsl().applyPagination(pageable, query).fetch();
         long totalCount = query.fetchCount();

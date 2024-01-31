@@ -5,5 +5,6 @@ import lombok.Getter;
 
 @Getter
 public class ClubPageRequestDTO extends PageRequestDTO {
-    Long category;
+    private String keyword;
+    private Long category;
 }
