@@ -23,9 +23,8 @@ public class SignupRequestDTO {
 			max = 50)
 	private String email;
 
-	@NotBlank(message = "info : 자기소개를 3~50자 입력해주세요.")
-	@Size(	min = 3,
-			max = 50)
+	@Size(	max = 50,
+			message = "info : 자기소개를 50자 미만으로 입력해주세요.")
 	private String info;
 
 	@NotBlank(message = "password : 비밀번호를 입력해주세요.")
