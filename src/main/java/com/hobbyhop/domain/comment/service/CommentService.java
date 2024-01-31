@@ -4,7 +4,6 @@ import com.hobbyhop.domain.comment.dto.CommentPageRequestDTO;
 import com.hobbyhop.domain.comment.dto.CommentRequestDTO;
 import com.hobbyhop.domain.comment.dto.CommentResponseDTO;
 import com.hobbyhop.domain.user.entity.User;
-import com.hobbyhop.global.request.PageRequestDTO;
 import com.hobbyhop.global.response.PageResponseDTO;
 
 public interface CommentService {

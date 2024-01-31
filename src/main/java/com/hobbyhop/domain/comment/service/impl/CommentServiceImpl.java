@@ -16,7 +16,6 @@ import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.global.exception.clubmember.ClubMemberNotFoundException;
 import com.hobbyhop.global.exception.comment.CommentNotFoundException;
 import com.hobbyhop.global.exception.common.UnAuthorizedModifyException;
-import com.hobbyhop.global.request.PageRequestDTO;
 import com.hobbyhop.global.response.PageResponseDTO;
 import jakarta.transaction.Transactional;
 import java.util.HashMap;
