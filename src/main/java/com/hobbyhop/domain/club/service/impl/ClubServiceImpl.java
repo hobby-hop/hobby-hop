@@ -3,6 +3,7 @@ package com.hobbyhop.domain.club.service.impl;
 import com.hobbyhop.domain.category.entity.Category;
 import com.hobbyhop.domain.category.service.CategoryService;
 import com.hobbyhop.domain.club.dto.ClubModifyDTO;
+import com.hobbyhop.domain.club.dto.ClubPageRequestDTO;
 import com.hobbyhop.domain.club.dto.ClubRequestDTO;
 import com.hobbyhop.domain.club.dto.ClubResponseDTO;
 import com.hobbyhop.domain.club.entity.Club;
@@ -35,9 +36,9 @@ public class ClubServiceImpl implements ClubService {
     private final CategoryService categoryService;
 
     @Override
-    public PageResponseDTO<ClubResponseDTO> getAllClubs(PageRequestDTO pageRequestDTO) {
+    public PageResponseDTO<ClubResponseDTO> getAllClubs(ClubPageRequestDTO pageRequestDTO) {
         Page<ClubResponseDTO> result = clubRepository.findAll(pageRequestDTO.getPageable("id"),
-                pageRequestDTO.getKeyword());
+                pageRequestDTO.getKeyword(), pageRequestDTO.getCategory());
 
         return PageResponseDTO.<ClubResponseDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
