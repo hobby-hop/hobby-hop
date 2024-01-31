@@ -34,12 +34,12 @@ public class UserServiceImpl implements UserService {
             validateExistingUser(signupRequestDTO);
 
             User user = User.builder()
-                    .username(signupRequestDTO.getUsername())
-                    .password(passwordEncoder.encode(signupRequestDTO.getPassword()))
-                    .email(signupRequestDTO.getEmail())
-                    .info(signupRequestDTO.getInfo())
-                    .role(UserRoleEnum.USER)
-                    .build();
+                .username(signupRequestDTO.getUsername())
+                .password(passwordEncoder.encode(signupRequestDTO.getPassword()))
+                .email(signupRequestDTO.getEmail())
+                .info(signupRequestDTO.getInfo())
+                .role(UserRoleEnum.USER)
+                .build();
 
             userRepository.save(user);
         }
@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
         String password = loginRequestDTO.getPassword();
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(NotFoundUserException::new);
+            .orElseThrow(NotFoundUserException::new);
         String username = user.getUsername();
 
         validatePassword(user, password);
@@ -96,7 +96,7 @@ public class UserServiceImpl implements UserService {
         String username = claims.getSubject();
 
         User user = userRepository.findByUsername(username)
-                .orElseThrow(NotFoundUserException::new);
+            .orElseThrow(NotFoundUserException::new);
 
         validatePassword(user, withdrawalRequestDTO.getPassword());
 
@@ -110,7 +110,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public MyProfileResponseDTO getMyProfile(UserDetailsImpl userDetails, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
         User user = userRepository.findById(userDetails.getUser().getId())
-                .orElseThrow(NotFoundUserException::new);
+            .orElseThrow(NotFoundUserException::new);
 
         return MyProfileResponseDTO.fromEntity(user);
     }
@@ -118,7 +118,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public OtherProfileResponseDTO getOtherProfile(Long otherUserId, UserDetailsImpl userDetails, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
         User user = userRepository.findById(otherUserId)
-                .orElseThrow(NotFoundUserException::new);
+            .orElseThrow(NotFoundUserException::new);
 
         return OtherProfileResponseDTO.fromEntity(user);
     }
@@ -126,10 +126,10 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void updateProfile(UpdateProfileRequestDTO updateProfileRequestDTO, UserDetailsImpl userDetails,
-                              HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
+        HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
 
         User user = userRepository.findById(userDetails.getUser().getId())
-                .orElseThrow(NotFoundUserException::new);
+            .orElseThrow(NotFoundUserException::new);
 
         validatePassword(user, updateProfileRequestDTO.getOldPassword());
 
@@ -140,9 +140,9 @@ public class UserServiceImpl implements UserService {
             throw new MismatchedNewPasswordException();
 
         if (updateProfileRequestDTO.getNewPassword().isBlank()) {
-            user.updateProfile(updateProfileRequestDTO.getUsername(), updateProfileRequestDTO.getEmail(), updateProfileRequestDTO.getInfo(), updateProfileRequestDTO.getNewPassword());
+            user.updateProfile(updateProfileRequestDTO.getInfo(), updateProfileRequestDTO.getNewPassword());
         } else {
-            user.updateProfile(updateProfileRequestDTO.getUsername(), updateProfileRequestDTO.getEmail(), updateProfileRequestDTO.getInfo(), passwordEncoder.encode(updateProfileRequestDTO.getNewPassword()));
+            user.updateProfile(updateProfileRequestDTO.getInfo(), passwordEncoder.encode(updateProfileRequestDTO.getNewPassword()));
         }
 
         String requestHeaderAccessToken = httpServletRequest.getHeader(JwtUtil.AUTHORIZATION_HEADER);
