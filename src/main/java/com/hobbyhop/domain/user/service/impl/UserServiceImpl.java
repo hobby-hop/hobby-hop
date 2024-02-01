@@ -31,23 +31,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public void signup(SignupRequestDTO signupRequestDTO) {
         try {
-            deletedUserVerification(signupRequestDTO);
+            withdrawnUserVerification(signupRequestDTO);
             validateExistingUser(signupRequestDTO);
-
-            User user = User.builder()
-                .username(signupRequestDTO.getUsername())
-                .password(passwordEncoder.encode(signupRequestDTO.getPassword()))
-                .email(signupRequestDTO.getEmail())
-                .info(signupRequestDTO.getInfo())
-                .role(UserRoleEnum.USER)
-                .build();
-
+            User user = signupUser(signupRequestDTO);
             userRepository.save(user);
-        }
-        catch (DataIntegrityViolationException e) {
+        } catch (DataIntegrityViolationException e) {
             throw new DuplicateEntryException();
         }
     }
+
 
     @Override
     public void login(LoginRequestDTO loginRequestDTO, HttpServletResponse response) {
