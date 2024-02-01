@@ -26,6 +26,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
+    private static final String AUTHORIZATION_HEADER = JwtUtil.AUTHORIZATION_HEADER;
 
     @Override
     public void signup(SignupRequestDTO signupRequestDTO) {
