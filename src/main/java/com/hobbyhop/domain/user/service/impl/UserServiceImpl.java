@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
             throw new DuplicateEntryException();
         }
     }
-    
+
     @Override
     public void login(LoginRequestDTO loginRequestDTO, HttpServletResponse response) {
         User user = userRepository.findByEmail(loginRequestDTO.getEmail())
@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void withdraw(WithdrawalRequestDTO withdrawalRequestDTO, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        String accessToken = httpServletRequest.getHeader(JwtUtil.AUTHORIZATION_HEADER);
+        String accessToken = httpServletRequest.getHeader(AUTHORIZATION_HEADER);
 
         if (accessToken == null || !jwtUtil.validateToken(accessToken.substring(7))) {
             throw new InvalidJwtException();
@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
         String username = claims.getSubject();
 
         User user = userRepository.findByUsername(username)
-            .orElseThrow(NotFoundUserException::new);
+                .orElseThrow(NotFoundUserException::new);
 
         validatePassword(user, withdrawalRequestDTO.getPassword());
 
@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService {
         jwtUtil.removeRefreshToken(accessToken);
         userRepository.delete(user);
 
-        httpServletResponse.setHeader(jwtUtil.AUTHORIZATION_HEADER, "withdrawal");
+        httpServletResponse.setHeader(AUTHORIZATION_HEADER, "withdrawal");
     }
 
     @Override
