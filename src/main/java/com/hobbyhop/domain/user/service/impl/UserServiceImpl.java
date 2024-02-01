@@ -230,6 +230,17 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    // 유저 정보 수정 메서드 2 - 액세스 토큰 새로 발급
+    private void updateAccessToken(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, User user) {
+        String requestHeaderAccessToken = httpServletRequest.getHeader(AUTHORIZATION_HEADER); // 현재 액세스 토큰을 헤더에서 가져오기
+        String newAccessToken = jwtUtil.createAccessToken(user.getUsername()); // username 으로 새 액세스 토큰 생성
 
-
+        if (jwtUtil.validateToken(requestHeaderAccessToken.substring(7))) { // 현재 액세스 토큰이 유효한지 확인
+            jwtUtil.rebaseToken(newAccessToken, requestHeaderAccessToken); // 유효하면 새 액세스 토큰으로 업데이트
+        } else {
+            String responseHeaderAccessToken = httpServletResponse.getHeader(AUTHORIZATION_HEADER);
+            jwtUtil.rebaseToken(newAccessToken, responseHeaderAccessToken); // 유효하지 않으면 헤더 액세스 토큰으로 업데이트
+        }
+        httpServletResponse.setHeader(AUTHORIZATION_HEADER, newAccessToken); // 헤더에 새 액세스 토큰 set하기
+    }
 }
