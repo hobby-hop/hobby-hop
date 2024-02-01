@@ -158,12 +158,6 @@ public class UserServiceImpl implements UserService {
         httpServletResponse.setHeader(JwtUtil.AUTHORIZATION_HEADER, newAccessToken);
     }
 
-    private void validatePassword(User user, String password) {
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new MismatchedPasswordException();
-        }
-    }
-
     private void deletedUserVerification (SignupRequestDTO signupRequestDTO) {
         if (userRepository.existsByEmailAndDeletedAtIsNull(signupRequestDTO.getEmail())) {
             throw new AlreadyExistEmailException();
@@ -203,5 +197,10 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(userId).orElseThrow(NotFoundUserException::new);
     }
 
-
+    // 공통 메서드 2 - 비밀번호 일치하는지 확인
+    private void validatePassword(User user, String password) {
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new MismatchedPasswordException();
+        }
+    }
 }
