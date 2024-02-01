@@ -203,4 +203,16 @@ public class UserServiceImpl implements UserService {
             throw new MismatchedPasswordException();
         }
     }
+
+    // 회원가입 메서드 1 - 회원가입 빌더
+    private User signupUser(SignupRequestDTO signupRequestDTO) {
+        return User.builder()
+                .username(signupRequestDTO.getUsername())
+                .password(passwordEncoder.encode(signupRequestDTO.getPassword()))
+                .email(signupRequestDTO.getEmail())
+                .info(signupRequestDTO.getInfo())
+                .role(UserRoleEnum.USER)
+                .build();
+    }
+
 }
