@@ -140,7 +140,7 @@ public class UserServiceImpl implements UserService {
            if (!updateProfileRequestDTO.getNewPassword().equals(updateProfileRequestDTO.getConfirmPassword())) {
                throw new MismatchedNewPasswordException();
            }
-           user.changePassword(updateProfileRequestDTO.getNewPassword());
+           user.changePassword(passwordEncoder.encode(updateProfileRequestDTO.getNewPassword()));
         }
         if(updateProfileRequestDTO.getInfo() != null) {
             user.changeInfo(updateProfileRequestDTO.getInfo());
