@@ -219,5 +219,17 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    // 유저 정보 수정 메서드 1  - 비밀번호 변경
+    private void validateNewPassword(String oldPassword, String newPassword, String confirmPassword) {
+        if (newPassword.equals(oldPassword)) { // 새 비밀번호와 예전 비밀번호가 같다면 예외 처리
+            throw new MatchedPasswordException();
+        }
+
+        if (!newPassword.equals(confirmPassword)) { // 새 비밀번호와 확인용 비밀번호가 다르다면 예외 처리
+            throw new MismatchedNewPasswordException();
+        }
+    }
+
+
 
 }
