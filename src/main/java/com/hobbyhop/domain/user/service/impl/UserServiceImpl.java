@@ -39,21 +39,17 @@ public class UserServiceImpl implements UserService {
             throw new DuplicateEntryException();
         }
     }
-
-
+    
     @Override
     public void login(LoginRequestDTO loginRequestDTO, HttpServletResponse response) {
-        String email = loginRequestDTO.getEmail();
-        String password = loginRequestDTO.getPassword();
-
-        User user = userRepository.findByEmail(email)
-            .orElseThrow(NotFoundUserException::new);
+        User user = userRepository.findByEmail(loginRequestDTO.getEmail())
+                .orElseThrow(NotFoundUserException::new);
         String username = user.getUsername();
 
-        validatePassword(user, password);
+        validatePassword(user, loginRequestDTO.getPassword());
 
         String accessToken = jwtUtil.createAccessToken(username);
-        response.setHeader("Authorization", accessToken);
+        response.setHeader(AUTHORIZATION_HEADER, accessToken);
         jwtUtil.saveAccessTokenByUsername(username, accessToken);
 
         String refreshToken = jwtUtil.createRefreshToken(username);
