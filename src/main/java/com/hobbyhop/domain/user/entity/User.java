@@ -54,7 +54,7 @@ public class User extends BaseEntity {
     }
 
     public void changePassword(String updatePassword) {
-        this.password = password;
+        this.password = updatePassword;
     }
 
     public void kakaoIdUpdate (Long kakaoId) {

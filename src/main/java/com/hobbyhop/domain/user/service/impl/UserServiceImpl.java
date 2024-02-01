@@ -127,14 +127,12 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void updateProfile(UpdateProfileRequestDTO updateProfileRequestDTO, UserDetailsImpl userDetails,
         HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
-        //케이스 1번 유저가 존재하지 않는 경우
         User user = userRepository.findById(userDetails.getUser().getId())
             .orElseThrow(NotFoundUserException::new);
-        //케이스 2번 유저는 존재하나 패스워드가 틀렸을 경우.
+
         validatePassword(user, updateProfileRequestDTO.getOldPassword());
-        //사용자가 수정한 필드가 어딘지 체크
         if(updateProfileRequestDTO.getNewPassword() != null) {
-            //여기서 로직
+
            if (updateProfileRequestDTO.getNewPassword().equals(updateProfileRequestDTO.getOldPassword())) {
                throw new MatchedPasswordException();
            }
