@@ -215,4 +215,23 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
+    // 회원가입 메서드 2 - 탈퇴한 사용자인지 확인
+    private void withdrawnUserVerification(SignupRequestDTO signupRequestDTO) {
+        if (userRepository.existsByEmailAndDeletedAtIsNull(signupRequestDTO.getEmail())) {
+            throw new AlreadyExistEmailException();
+        }
+
+        if (userRepository.existsByEmailAndDeletedAtIsNotNull(signupRequestDTO.getEmail())) {
+            throw new NotAvailableEmailException();
+        }
+
+        if (userRepository.existsByUsernameAndDeletedAtIsNull(signupRequestDTO.getUsername())) {
+            throw new AlreadyExistUsernameException();
+        }
+
+        if (userRepository.existsByUsernameAndDeletedAtIsNotNull(signupRequestDTO.getUsername())) {
+            throw new NotAvailableUsernameException();
+        }
+    }
+
 }
