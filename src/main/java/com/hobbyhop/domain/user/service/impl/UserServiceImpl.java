@@ -195,4 +195,13 @@ public class UserServiceImpl implements UserService {
             throw new MismatchedPasswordException();
         }
     }
+
+
+    //===================================================================================================
+    // 공통 메서드 1 - 유저 저장
+    private User getUserById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(NotFoundUserException::new);
+    }
+
+
 }
