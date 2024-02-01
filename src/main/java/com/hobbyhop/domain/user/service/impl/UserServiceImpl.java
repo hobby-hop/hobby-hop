@@ -176,21 +176,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private void validateExistingUser (SignupRequestDTO signupRequestDTO) {
-        if (userRepository.existsByUsername(signupRequestDTO.getUsername())) {
-            throw new NotAvailableUsernameException();
-        }
-
-        if (userRepository.existsByEmail(signupRequestDTO.getEmail())) {
-            throw new NotAvailableEmailException();
-        }
-
-        if (!signupRequestDTO.getConfirmPassword().equals(signupRequestDTO.getPassword())) {
-            throw new MismatchedPasswordException();
-        }
-    }
-
-
     //===================================================================================================
     // 공통 메서드 1 - 유저 저장
     private User getUserById(Long userId) {
@@ -231,6 +216,21 @@ public class UserServiceImpl implements UserService {
 
         if (userRepository.existsByUsernameAndDeletedAtIsNotNull(signupRequestDTO.getUsername())) {
             throw new NotAvailableUsernameException();
+        }
+    }
+
+    // 회원가입 메서드 3 - 존재하는 유저인지 확인
+    private void validateExistingUser(SignupRequestDTO signupRequestDTO) {
+        if (userRepository.existsByUsername(signupRequestDTO.getUsername())) {
+            throw new NotAvailableUsernameException();
+        }
+
+        if (userRepository.existsByEmail(signupRequestDTO.getEmail())) {
+            throw new NotAvailableEmailException();
+        }
+
+        if (!signupRequestDTO.getConfirmPassword().equals(signupRequestDTO.getPassword())) {
+            throw new MismatchedPasswordException();
         }
     }
 
