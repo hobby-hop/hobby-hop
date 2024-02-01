@@ -226,4 +226,13 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    // 로그아웃 메서드
+    private void processToken(String token) {
+        if (token != null && jwtUtil.validateToken(token.substring(7))) {
+            jwtUtil.removeAccessToken(token);
+            jwtUtil.removeRefreshToken(token);
+        }
+    }
+
+
 }
