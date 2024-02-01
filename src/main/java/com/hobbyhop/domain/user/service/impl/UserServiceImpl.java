@@ -103,37 +103,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void updateProfile(UpdateProfileRequestDTO updateProfileRequestDTO, UserDetailsImpl userDetails,
-        HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
-        User user = userRepository.findById(userDetails.getUser().getId())
-            .orElseThrow(NotFoundUserException::new);
-
+    public void updateProfile(UpdateProfileRequestDTO updateProfileRequestDTO, UserDetailsImpl userDetails, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
+        User user = getUserById(userDetails.getUser().getId());
         validatePassword(user, updateProfileRequestDTO.getOldPassword());
-        if(updateProfileRequestDTO.getNewPassword() != null) {
-
-           if (updateProfileRequestDTO.getNewPassword().equals(updateProfileRequestDTO.getOldPassword())) {
-               throw new MatchedPasswordException();
-           }
-
-           if (!updateProfileRequestDTO.getNewPassword().equals(updateProfileRequestDTO.getConfirmPassword())) {
-               throw new MismatchedNewPasswordException();
-           }
-           user.changePassword(passwordEncoder.encode(updateProfileRequestDTO.getNewPassword()));
+        // 비밀번호 변경
+        if (updateProfileRequestDTO.getNewPassword() != null) {  // 새 비밀번호가 null 이 아닐 경우
+            validateNewPassword(updateProfileRequestDTO.getOldPassword(), updateProfileRequestDTO.getNewPassword(), updateProfileRequestDTO.getConfirmPassword());
+            user.changePassword(passwordEncoder.encode(updateProfileRequestDTO.getNewPassword()));
         }
-        if(updateProfileRequestDTO.getInfo() != null) {
+        // 자기소개 변경
+        if (updateProfileRequestDTO.getInfo() != null) {
             user.changeInfo(updateProfileRequestDTO.getInfo());
         }
-
-        String requestHeaderAccessToken = httpServletRequest.getHeader(JwtUtil.AUTHORIZATION_HEADER);
-        String newAccessToken = jwtUtil.createAccessToken(user.getUsername());
-        if (jwtUtil.validateToken(requestHeaderAccessToken.substring(7))) {
-            jwtUtil.rebaseToken(newAccessToken, requestHeaderAccessToken);
-        } else {
-            String responseHeaderAccessToken = httpServletResponse.getHeader(JwtUtil.AUTHORIZATION_HEADER);
-            jwtUtil.rebaseToken(newAccessToken, responseHeaderAccessToken);
-        }
-        httpServletResponse.setHeader(JwtUtil.AUTHORIZATION_HEADER, newAccessToken);
+        // 토큰 재발급
+        updateAccessToken(httpServletRequest, httpServletResponse, user);
     }
+
 
     private void deletedUserVerification (SignupRequestDTO signupRequestDTO) {
         if (userRepository.existsByEmailAndDeletedAtIsNull(signupRequestDTO.getEmail())) {
