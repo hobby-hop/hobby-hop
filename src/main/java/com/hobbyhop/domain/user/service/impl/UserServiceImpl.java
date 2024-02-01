@@ -119,25 +119,6 @@ public class UserServiceImpl implements UserService {
         updateAccessToken(httpServletRequest, httpServletResponse, user);
     }
 
-
-    private void deletedUserVerification (SignupRequestDTO signupRequestDTO) {
-        if (userRepository.existsByEmailAndDeletedAtIsNull(signupRequestDTO.getEmail())) {
-            throw new AlreadyExistEmailException();
-        }
-
-        if (userRepository.existsByEmailAndDeletedAtIsNotNull(signupRequestDTO.getEmail())) {
-            throw new NotAvailableEmailException();
-        }
-
-        if (userRepository.existsByUsernameAndDeletedAtIsNull(signupRequestDTO.getUsername())) {
-            throw new AlreadyExistUsernameException();
-        }
-
-        if (userRepository.existsByUsernameAndDeletedAtIsNotNull(signupRequestDTO.getUsername())) {
-            throw new NotAvailableUsernameException();
-        }
-    }
-
     //===================================================================================================
     // 공통 메서드 1 - 유저 저장
     private User getUserById(Long userId) {
