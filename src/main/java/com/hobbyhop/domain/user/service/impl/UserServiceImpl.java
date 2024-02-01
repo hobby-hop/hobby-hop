@@ -91,11 +91,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public MyProfileResponseDTO getMyProfile(UserDetailsImpl userDetails, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
-        User user = userRepository.findById(userDetails.getUser().getId())
-            .orElseThrow(NotFoundUserException::new);
-
+        User user = getUserById(userDetails.getUser().getId());
         return MyProfileResponseDTO.fromEntity(user);
     }
+
 
     @Override
     public OtherProfileResponseDTO getOtherProfile(Long otherUserId, UserDetailsImpl userDetails, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
