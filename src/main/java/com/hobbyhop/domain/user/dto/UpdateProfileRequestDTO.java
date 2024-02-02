@@ -1,8 +1,5 @@
 package com.hobbyhop.domain.user.dto;
 
-import com.hobbyhop.domain.user.dto.validCustom.NullablePattern;
-
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
