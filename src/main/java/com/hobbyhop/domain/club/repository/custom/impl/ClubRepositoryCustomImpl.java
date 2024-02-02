@@ -35,7 +35,7 @@ public class ClubRepositoryCustomImpl extends QuerydslRepositorySupport implemen
     }
 
     @Override
-    public Page<ClubResponseDTO> findAll(Pageable pageable, String keyword) {
+    public Page<ClubResponseDTO> findAll(Pageable pageable, String keyword, Long categoryId) {
         JPAQuery<ClubResponseDTO> query = jpaQueryFactory
                 .select(
                         Projections.constructor(
@@ -47,19 +47,27 @@ public class ClubRepositoryCustomImpl extends QuerydslRepositorySupport implemen
                                 club.createdAt,
                                 club.modifiedAt,
                                 club.category.id.as("categoryId")))
-                .from(club);
-
-        if (keyword != null) {
-            BooleanExpression titleContainsKeyword = club.title.containsIgnoreCase(keyword);
-//            BooleanExpression categoryNameContainsKeyword = club.category.categoryName.containsIgnoreCase(keyword);
-            query.where(titleContainsKeyword.or(titleContainsKeyword));
-        }
-
+                .from(club)
+                .where(likeKeyword(keyword), eqCategory(categoryId));
 
         List<ClubResponseDTO> content = getQuerydsl().applyPagination(pageable, query).fetch();
         long totalCount = query.fetchCount();
 
         return new PageImpl<>(content, pageable, totalCount);
+    }
+
+    private BooleanExpression likeKeyword(String keyword){
+        if(keyword == null){
+            return null;
+        }
+        return club.title.containsIgnoreCase(keyword);
+    }
+
+    private BooleanExpression eqCategory(Long categoryId){
+        if(categoryId == null){
+            return null;
+        }
+        return club.category.id.eq(categoryId);
     }
 
     @Override

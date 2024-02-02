@@ -3,6 +3,7 @@ package com.hobbyhop.domain.comment.service.impl;
 import com.hobbyhop.domain.clubmember.entity.ClubMember;
 import com.hobbyhop.domain.clubmember.enums.MemberRole;
 import com.hobbyhop.domain.clubmember.service.ClubMemberService;
+import com.hobbyhop.domain.comment.dto.CommentPageRequestDTO;
 import com.hobbyhop.domain.comment.dto.CommentRequestDTO;
 import com.hobbyhop.domain.comment.dto.CommentResponseDTO;
 import com.hobbyhop.domain.comment.entity.Comment;
@@ -15,7 +16,6 @@ import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.global.exception.clubmember.ClubMemberNotFoundException;
 import com.hobbyhop.global.exception.comment.CommentNotFoundException;
 import com.hobbyhop.global.exception.common.UnAuthorizedModifyException;
-import com.hobbyhop.global.request.PageRequestDTO;
 import com.hobbyhop.global.response.PageResponseDTO;
 import jakarta.transaction.Transactional;
 import java.util.HashMap;
@@ -46,7 +46,7 @@ public class CommentServiceImpl implements CommentService {
 
         commentRepository.save(comment);
 
-        return CommentResponseDTO.buildDTO(comment, getLike(comment));
+        return CommentResponseDTO.buildDTO(comment);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class CommentServiceImpl implements CommentService {
         // 상위 댓글에 리플 추가
         comment.getReply().add(reply);
 
-        return CommentResponseDTO.buildDTO(comment, getLike(comment));
+        return CommentResponseDTO.buildDTO(comment);
     }
 
     @Override
@@ -88,8 +88,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public PageResponseDTO<CommentResponseDTO> getComments(PageRequestDTO pageRequestDTO, Long postId) {
-        Page<CommentResponseDTO> result = commentRepository.findAllByPostId(pageRequestDTO, postId);
+    public PageResponseDTO<CommentResponseDTO> getComments(CommentPageRequestDTO pageRequestDTO, Long postId, Long commentId) {
+        Page<CommentResponseDTO> result = commentRepository.findAllByPostId(pageRequestDTO, postId, commentId);
 
         return PageResponseDTO.<CommentResponseDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
@@ -111,15 +111,12 @@ public class CommentServiceImpl implements CommentService {
     private Comment buildComment(CommentRequestDTO request, Post post, User user, Comment comment){
         return Comment.builder()
                 .content(request.getContent())
-                .post(post)
                 .user(user)
+                .post(post)
+                .linkCnt(0L)
                 .parent(comment)
                 .reply(new ArrayList<>())
                 .build();
-    }
-
-    private int getLike(Comment comment){
-        return commentUserService.countLike(comment);
     }
 
     private Map<Long, Comment> makeDelete(Comment comment){

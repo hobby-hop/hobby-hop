@@ -21,17 +21,16 @@ public class CommentUserServiceImpl implements CommentUserService {
                 .findCommentUserByIds(comment.getId(), user.getId()).orElse(null);
         if (commentUser == null) {
             saveCommentUser(comment, user);
+            comment.addLike();
             return;
         }
         if (commentUser.getDeletedAt() != null) {
             commentUser.restore();
+            comment.addLike();
             return;
         }
         deleteCommentUser(commentUser);
-    }
-
-    public int countLike(Comment comment){
-        return commentUserRepository.countLike(comment.getId());
+        comment.subLike();
     }
 
     private void saveCommentUser(Comment comment, User user) {

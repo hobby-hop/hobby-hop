@@ -1,11 +1,11 @@
 package com.hobbyhop.domain.club.service;
 
 import com.hobbyhop.domain.club.dto.ClubModifyDTO;
+import com.hobbyhop.domain.club.dto.ClubPageRequestDTO;
 import com.hobbyhop.domain.club.dto.ClubRequestDTO;
 import com.hobbyhop.domain.club.dto.ClubResponseDTO;
 import com.hobbyhop.domain.club.entity.Club;
 import com.hobbyhop.domain.user.entity.User;
-import com.hobbyhop.global.request.PageRequestDTO;
 import com.hobbyhop.global.response.PageResponseDTO;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
 public interface ClubService {
 
     // 모든 모임의 정보를 본다.
-    PageResponseDTO<ClubResponseDTO> getAllClubs(PageRequestDTO pageRequestDTO);
+    PageResponseDTO<ClubResponseDTO> getAllClubs(ClubPageRequestDTO pageRequestDTO);
 
     // 해당 모임에 대한 정보를 본다.
     ClubResponseDTO getClub(Long clubId);

@@ -5,5 +5,4 @@ import com.hobbyhop.domain.user.entity.User;
 
 public interface CommentUserService {
     void modifyCommentUser(Comment comment, User user);
-    int countLike(Comment comment);
 }

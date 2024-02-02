@@ -3,6 +3,7 @@ package com.hobbyhop.domain.club.service.impl;
 import com.hobbyhop.domain.category.entity.Category;
 import com.hobbyhop.domain.category.service.CategoryService;
 import com.hobbyhop.domain.club.dto.ClubModifyDTO;
+import com.hobbyhop.domain.club.dto.ClubPageRequestDTO;
 import com.hobbyhop.domain.club.dto.ClubRequestDTO;
 import com.hobbyhop.domain.club.dto.ClubResponseDTO;
 import com.hobbyhop.domain.club.entity.Club;
@@ -15,12 +16,10 @@ import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.global.exception.club.AlreadyExistClubTitle;
 import com.hobbyhop.global.exception.club.ClubNotFoundException;
 import com.hobbyhop.global.exception.clubmember.ClubMemberRoleException;
-import com.hobbyhop.global.request.PageRequestDTO;
 import com.hobbyhop.global.response.PageResponseDTO;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,9 +34,9 @@ public class ClubServiceImpl implements ClubService {
     private final CategoryService categoryService;
 
     @Override
-    public PageResponseDTO<ClubResponseDTO> getAllClubs(PageRequestDTO pageRequestDTO) {
+    public PageResponseDTO<ClubResponseDTO> getAllClubs(ClubPageRequestDTO pageRequestDTO) {
         Page<ClubResponseDTO> result = clubRepository.findAll(pageRequestDTO.getPageable("id"),
-                pageRequestDTO.getKeyword());
+                pageRequestDTO.getKeyword(), pageRequestDTO.getCategory());
 
         return PageResponseDTO.<ClubResponseDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
