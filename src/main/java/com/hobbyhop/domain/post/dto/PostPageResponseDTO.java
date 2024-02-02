@@ -15,7 +15,7 @@ public class PostPageResponseDTO {
 
     private Long clubId;
     private Long postId;
-    private String username;
+    private String writer;
     private String postTitle;
     private Long likeCnt;
     private Timestamp createdAt;
@@ -25,7 +25,7 @@ public class PostPageResponseDTO {
         return PostPageResponseDTO.builder()
                 .clubId(savedPost.getClub().getId())
                 .postId(savedPost.getId())
-                .username(savedPost.getUser().getUsername())
+                .writer(savedPost.getUser().getUsername())
                 .postTitle(savedPost.getPostTitle())
                 .likeCnt(savedPost.getLikeCnt())
                 .createdAt(savedPost.getCreatedAt())
