@@ -51,9 +51,13 @@ public class PostServiceImpl implements PostService {
 
         clubMemberService.findByClubAndUser(clubId, user.getId());
 
+        Long postNumber = clubService.getClubCount(clubId) + 1;
+
+
         Post post = Post.builder()
                 .postTitle(postRequestDTO.getPostTitle())
                 .postContent(postRequestDTO.getPostContent())
+                .postNumber(postNumber)
                 .club(club)
                 .user(user)
                 .likeCnt(0L)
