@@ -46,19 +46,18 @@ public class CommentRepositoryCustomImpl extends QuerydslRepositorySupport imple
 
     @Override
     public Page<CommentResponseDTO> findAllByPostId(CommentPageRequestDTO pageRequestDTO, Long postId, Long parent) {
-        JPAQuery<CommentResponseDTO> query = jpaQueryFactory
-                .select(
-                        Projections.constructor(
-                                CommentResponseDTO.class,
-                                comment.content,
-                                user.username,
-                                comment.linkCnt,
-                                comment.createdAt,
+            JPAQuery<CommentResponseDTO> query = jpaQueryFactory
+                    .select(
+                            Projections.constructor(
+                                    CommentResponseDTO.class,
+                                    comment.content,
+                                    user.username,
+                                    comment.linkCnt,
+                                    comment.createdAt,
                                 comment.id
                         )
                 )
                 .from(comment)
-                .on(comment.user.id.eq(user.id))
                 .where(comment.post.id.eq(postId), eqParentId(parent));
 
         Pageable pageable = pageRequestDTO.getPageable(pageRequestDTO.getStandard());
