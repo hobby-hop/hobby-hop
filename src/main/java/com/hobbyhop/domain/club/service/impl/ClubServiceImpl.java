@@ -54,6 +54,12 @@ public class ClubServiceImpl implements ClubService {
     }
 
     @Override
+    public Long getClubCount(Long clubId) {
+
+        return clubRepository.findByClubId(clubId);
+    }
+
+    @Override
     @Transactional
     public ClubResponseDTO makeClub(ClubRequestDTO clubRequestDTO, User user) {
         validateClubTitle(clubRequestDTO.getTitle());

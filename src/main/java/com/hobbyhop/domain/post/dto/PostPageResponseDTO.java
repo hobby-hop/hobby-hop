@@ -17,6 +17,7 @@ public class PostPageResponseDTO {
     private Long postId;
     private String writer;
     private String postTitle;
+    private Long postNumber;
     private Long likeCnt;
     private Timestamp createdAt;
     private Timestamp modifiedAt;
@@ -27,6 +28,7 @@ public class PostPageResponseDTO {
                 .postId(savedPost.getId())
                 .writer(savedPost.getUser().getUsername())
                 .postTitle(savedPost.getPostTitle())
+                .postNumber(savedPost.getPostNumber())
                 .likeCnt(savedPost.getLikeCnt())
                 .createdAt(savedPost.getCreatedAt())
                 .modifiedAt(savedPost.getModifiedAt())

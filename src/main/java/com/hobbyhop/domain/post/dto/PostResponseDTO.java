@@ -20,6 +20,7 @@ public class PostResponseDTO {
     private String postContent;
     private String originImageUrl;
     private String savedImageUrl;
+    private Long postNumber;
     private Long likeCnt;
     private Timestamp createdAt;
     private Timestamp modifiedAt;
@@ -33,6 +34,7 @@ public class PostResponseDTO {
                 .postContent(savedPost.getPostContent())
                 .originImageUrl(savedPost.getOriginImageUrl())
                 .savedImageUrl(savedPost.getSavedImageUrl())
+                .postNumber(savedPost.getPostNumber())
                 .likeCnt(savedPost.getLikeCnt())
                 .createdAt(savedPost.getCreatedAt())
                 .modifiedAt(savedPost.getModifiedAt())

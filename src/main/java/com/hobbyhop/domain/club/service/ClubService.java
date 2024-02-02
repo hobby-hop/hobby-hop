@@ -34,4 +34,6 @@ public interface ClubService {
     List<ClubResponseDTO> getMyClubs(User user);
 
     void removeMember(Long clubId, User user);
+
+    Long getClubCount(Long clubId);
 }
