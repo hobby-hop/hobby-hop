@@ -43,6 +43,7 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
                                 post.id,
                                 user.username,
                                 post.postTitle,
+                                post.postNumber,
                                 post.likeCnt,
                                 post.createdAt,
                                 post.modifiedAt
