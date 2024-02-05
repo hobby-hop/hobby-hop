@@ -90,7 +90,6 @@ class ClubServiceImplTest implements ClubTest {
         given(categoryService.findCategory(TEST_CATEGORY_ID)).willReturn(TEST_CATEGORY);
         given(clubRepository.save(any())).willReturn(TEST_CLUB);
         // When & Then
-//        verify(clubMemberService.);
         assertThat(sut.makeClub(clubRequestDTO, TEST_USER).getTitle()).isEqualTo(TEST_CLUB_TITLE);
         assertThat(sut.makeClub(clubRequestDTO, TEST_USER).getContent()).isEqualTo(TEST_CLUB_CONTENT);
     }
