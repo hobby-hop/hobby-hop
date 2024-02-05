@@ -5,6 +5,7 @@ import com.hobbyhop.domain.club.service.ClubService;
 import com.hobbyhop.domain.clubmember.entity.ClubMember;
 import com.hobbyhop.domain.clubmember.enums.MemberRole;
 import com.hobbyhop.domain.clubmember.service.ClubMemberService;
+import com.hobbyhop.domain.joinrequest.dto.JoinPageRequestDTO;
 import com.hobbyhop.domain.joinrequest.dto.JoinResponseDTO;
 import com.hobbyhop.domain.joinrequest.entity.JoinRequest;
 import com.hobbyhop.domain.joinrequest.enums.JoinRequestStatus;
@@ -15,7 +16,9 @@ import com.hobbyhop.global.exception.clubmember.ClubMemberAlreadyJoined;
 import com.hobbyhop.global.exception.clubmember.ClubMemberRoleException;
 import com.hobbyhop.global.exception.joinrequest.NoSuchRequestException;
 import com.hobbyhop.global.exception.joinrequest.PendingRequest;
+import com.hobbyhop.global.response.PageResponseDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -74,5 +77,22 @@ public class JoinRequestServiceImpl implements JoinRequestService {
         if(status.equals(JoinRequestStatus.APPROVED)) {
             clubMemberService.joinClub(joinRequest.getClub(), joinRequest.getUser(), MemberRole.MEMBER);
         }
+    }
+
+    @Override
+    public PageResponseDTO<JoinResponseDTO> getAllRequests(Long clubId, JoinPageRequestDTO pageRequestDTO, User user) {
+        ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
+
+        if(!clubMember.getMemberRole().equals(MemberRole.ADMIN)) {
+            throw new ClubMemberRoleException();
+        }
+
+        Page<JoinResponseDTO> result = joinRequestRepository.findAllByClubId(clubId, pageRequestDTO);
+
+        return PageResponseDTO.<JoinResponseDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(result.toList())
+                .total(Long.valueOf(result.getTotalElements()).intValue())
+                .build();
     }
 }
