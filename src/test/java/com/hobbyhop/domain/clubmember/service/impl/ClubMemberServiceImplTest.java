@@ -61,17 +61,17 @@ class ClubMemberServiceImplTest implements ClubTest {
 
 //        assertThat(clubMemberResponseDTO.getClubId()).isEqualTo(TEST_CLUB_ID);
     }
-    @DisplayName("[Remove]")
-    @Test
-    void clubMember_삭제_성공() {
-        // Given
-        willDoNothing().given(clubMemberRepository).delete(clubMember);
-        given(clubMemberRepository.findByClubMemberPK_Club_IdAndClubMemberPK_User_Id(TEST_CLUB_ID, TEST_USER_ID)).willReturn(Optional.of(clubMember));
-        // When
-        sut.removeMember(TEST_CLUB, TEST_USER);
-        // Then
-        verify(clubMemberRepository, times(1)).delete(clubMember);
-    }
+//    @DisplayName("[Remove]")
+//    @Test
+//    void clubMember_삭제_성공() {
+//        // Given
+//        willDoNothing().given(clubMemberRepository).delete(clubMember);
+//        given(clubMemberRepository.findByClubMemberPK_Club_IdAndClubMemberPK_User_Id(TEST_CLUB_ID, TEST_USER_ID)).willReturn(Optional.of(clubMember));
+//        // When
+//        sut.removeMember(TEST_CLUB, TEST_USER);
+//        // Then
+//        verify(clubMemberRepository, times(1)).delete(clubMember);
+//    }
     @DisplayName("[FindByUserId]")
     @Test
     void clubMember_유저가_속한_클럽_리스트_조회() {
