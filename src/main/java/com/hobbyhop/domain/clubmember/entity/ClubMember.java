@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.SQLRestriction;
 import java.sql.Timestamp;
 
 @Entity
@@ -17,7 +17,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Builder
 @SQLDelete(sql = "UPDATE club_member SET deleted_at = NOW() where club_id=? and user_id=?")
-@Where(clause = "deleted_at is NULL")
+@SQLRestriction("deleted_at is NULL")
 public class ClubMember {
 
     @EmbeddedId
