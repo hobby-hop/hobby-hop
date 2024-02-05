@@ -107,6 +107,7 @@ public class JoinRequestServiceImpl implements JoinRequestService {
             throw new JoiningClubCountExceed();
         }
     }
+
     private void checkIfAdminRole(ClubMember clubMember) {
         if (!clubMember.getMemberRole().equals(MemberRole.ADMIN)) {
             throw new ClubMemberRoleException();
