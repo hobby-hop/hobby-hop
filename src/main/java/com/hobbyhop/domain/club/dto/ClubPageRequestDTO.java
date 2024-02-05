@@ -53,15 +53,15 @@ public class ClubPageRequestDTO extends PageRequestDTO {
         this.keyword = keyword;
     }
 
-    public Long getCategory() {
-        return category;
+    public Long getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategory(Long category) {
-        this.category = category;
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 
     private String keyword;
-    private Long category;
+    private Long categoryId;
 
 }
