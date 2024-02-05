@@ -9,6 +9,7 @@ import static com.hobbyhop.domain.postuser.entity.QPostUser.postUser;
 import static com.querydsl.core.group.GroupBy.groupBy;
 
 import com.hobbyhop.domain.club.dto.ClubElementVO;
+import com.hobbyhop.domain.club.dto.ClubPageRequestDTO;
 import com.hobbyhop.domain.club.dto.ClubResponseDTO;
 import com.hobbyhop.domain.club.entity.Club;
 import com.hobbyhop.domain.club.repository.custom.ClubRepositoryCustom;
@@ -35,7 +36,7 @@ public class ClubRepositoryCustomImpl extends QuerydslRepositorySupport implemen
     }
 
     @Override
-    public Page<ClubResponseDTO> findAll(Pageable pageable, String keyword, Long categoryId) {
+    public Page<ClubResponseDTO> findAll(ClubPageRequestDTO pageRequestDTO) {
         JPAQuery<ClubResponseDTO> query = jpaQueryFactory
                 .select(
                         Projections.constructor(
@@ -48,8 +49,8 @@ public class ClubRepositoryCustomImpl extends QuerydslRepositorySupport implemen
                                 club.modifiedAt,
                                 club.category.id.as("categoryId")))
                 .from(club)
-                .where(likeKeyword(keyword), eqCategory(categoryId));
-
+                .where(likeKeyword(pageRequestDTO.getKeyword()), eqCategory(pageRequestDTO.getCategoryId()));
+        Pageable pageable = pageRequestDTO.getPageable("id");
         List<ClubResponseDTO> content = getQuerydsl().applyPagination(pageable, query).fetch();
         long totalCount = query.fetchCount();
 

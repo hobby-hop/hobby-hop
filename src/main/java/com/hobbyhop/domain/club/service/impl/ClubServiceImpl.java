@@ -35,8 +35,7 @@ public class ClubServiceImpl implements ClubService {
 
     @Override
     public PageResponseDTO<ClubResponseDTO> getAllClubs(ClubPageRequestDTO pageRequestDTO) {
-        Page<ClubResponseDTO> result = clubRepository.findAll(pageRequestDTO.getPageable("id"),
-                pageRequestDTO.getKeyword(), pageRequestDTO.getCategory());
+        Page<ClubResponseDTO> result = clubRepository.findAll(pageRequestDTO);
 
         return PageResponseDTO.<ClubResponseDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
