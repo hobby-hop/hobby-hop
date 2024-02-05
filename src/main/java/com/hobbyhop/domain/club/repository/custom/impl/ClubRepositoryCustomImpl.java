@@ -50,11 +50,11 @@ public class ClubRepositoryCustomImpl extends QuerydslRepositorySupport implemen
                                 club.category.id.as("categoryId")))
                 .from(club)
                 .where(likeKeyword(pageRequestDTO.getKeyword()), eqCategory(pageRequestDTO.getCategoryId()));
-
-        List<ClubResponseDTO> content = getQuerydsl().applyPagination(pageRequestDTO.getPageable("id"), query).fetch();
+        Pageable pageable = pageRequestDTO.getPageable("id");
+        List<ClubResponseDTO> content = getQuerydsl().applyPagination(pageable, query).fetch();
         long totalCount = query.fetchCount();
 
-        return new PageImpl<>(content, pageRequestDTO.getPageable("id"), totalCount);
+        return new PageImpl<>(content, pageable, totalCount);
     }
 
     private BooleanExpression likeKeyword(String keyword){
