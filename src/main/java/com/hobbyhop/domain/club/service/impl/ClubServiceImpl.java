@@ -16,6 +16,7 @@ import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.global.exception.club.AlreadyExistClubTitle;
 import com.hobbyhop.global.exception.club.ClubNotFoundException;
 import com.hobbyhop.global.exception.clubmember.ClubMemberRoleException;
+import com.hobbyhop.global.exception.joinrequest.JoiningClubCountExceed;
 import com.hobbyhop.global.response.PageResponseDTO;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -60,6 +61,9 @@ public class ClubServiceImpl implements ClubService {
     @Override
     @Transactional
     public ClubResponseDTO makeClub(ClubRequestDTO clubRequestDTO, User user) {
+        if(clubMemberService.isMemberLimitReached(user.getId())) {
+            throw new JoiningClubCountExceed();
+        }
         validateClubTitle(clubRequestDTO.getTitle());
         Category category = categoryService.findCategory(clubRequestDTO.getCategoryId());
         Club club = Club.builder().title(clubRequestDTO.getTitle())
@@ -87,6 +91,10 @@ public class ClubServiceImpl implements ClubService {
         ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
 
         validateClubRolePermission(clubMember);
+
+        if(clubModifyDTO.getTitle() != null) {
+            validateClubTitle(clubModifyDTO.getTitle());
+        }
         applyChanges(clubModifyDTO, club);
 
         return ClubResponseDTO.fromEntity(club);
@@ -95,6 +103,7 @@ public class ClubServiceImpl implements ClubService {
     @Override
     public List<ClubResponseDTO> getMyClubs(User user) {
         List<ClubMember> list = clubMemberService.findByUserId(user);
+
         return list.stream().map(clubMember -> ClubResponseDTO.fromEntity(
                 clubMember.getClubMemberPK().getClub())).collect(Collectors.toList());
     }
@@ -111,9 +120,9 @@ public class ClubServiceImpl implements ClubService {
     }
 
     private void validateClubTitle(String clubTitle) {
-        clubRepository.findByTitle(clubTitle).ifPresent(existingClub -> {
+        if(clubRepository.existsClubByTitle(clubTitle)) {
             throw new AlreadyExistClubTitle();
-        });
+        }
     }
     private void validateClubRolePermission(ClubMember clubMember) {
         if (clubMember.getMemberRole() != MemberRole.ADMIN) {

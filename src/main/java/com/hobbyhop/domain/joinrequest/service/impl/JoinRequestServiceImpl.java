@@ -14,6 +14,7 @@ import com.hobbyhop.domain.joinrequest.service.JoinRequestService;
 import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.global.exception.clubmember.ClubMemberAlreadyJoined;
 import com.hobbyhop.global.exception.clubmember.ClubMemberRoleException;
+import com.hobbyhop.global.exception.joinrequest.JoiningClubCountExceed;
 import com.hobbyhop.global.exception.joinrequest.NoSuchRequestException;
 import com.hobbyhop.global.exception.joinrequest.PendingRequest;
 import com.hobbyhop.global.response.PageResponseDTO;
@@ -36,13 +37,10 @@ public class JoinRequestServiceImpl implements JoinRequestService {
     @Transactional
     public JoinResponseDTO sendRequest(Long clubId, User user) {
         Club club = clubService.findClub(clubId);
-        
-        if(clubMemberService.isClubMember(clubId, user.getId())) {
-            throw new ClubMemberAlreadyJoined();
-        }
-        if(joinRequestRepository.existRequest(clubId, user.getId())) {
-            throw new PendingRequest();
-        }
+
+        checkIfAlreadyJoined(clubId, user);
+        checkIfPendingRequestExists(clubId, user);
+        checkIfMemberLimitReached(user);
 
         JoinRequest joinRequest = JoinRequest.builder()
                 .club(club)
@@ -60,9 +58,7 @@ public class JoinRequestServiceImpl implements JoinRequestService {
     public List<JoinResponseDTO> getRequestByClub(Long clubId, User user) {
         ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
 
-        if(!clubMember.getMemberRole().equals(MemberRole.ADMIN)) {
-            throw new ClubMemberRoleException();
-        }
+       checkIfAdminRole(clubMember);
 
         return joinRequestRepository.findByClub_IdAndStatus(clubId, JoinRequestStatus.PENDING).stream()
                 .map(JoinResponseDTO::fromEntity).collect(Collectors.toList());
@@ -83,9 +79,7 @@ public class JoinRequestServiceImpl implements JoinRequestService {
     public PageResponseDTO<JoinResponseDTO> getAllRequests(Long clubId, JoinPageRequestDTO pageRequestDTO, User user) {
         ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
 
-        if(!clubMember.getMemberRole().equals(MemberRole.ADMIN)) {
-            throw new ClubMemberRoleException();
-        }
+        checkIfAdminRole(clubMember);
 
         Page<JoinResponseDTO> result = joinRequestRepository.findAllByClubId(clubId, pageRequestDTO);
 
@@ -94,5 +88,29 @@ public class JoinRequestServiceImpl implements JoinRequestService {
                 .dtoList(result.toList())
                 .total(Long.valueOf(result.getTotalElements()).intValue())
                 .build();
+    }
+
+    private void checkIfAlreadyJoined(Long clubId, User user) {
+        if (clubMemberService.isClubMember(clubId, user.getId())) {
+            throw new ClubMemberAlreadyJoined();
+        }
+    }
+
+    private void checkIfPendingRequestExists(Long clubId, User user) {
+        if (joinRequestRepository.existRequest(clubId, user.getId())) {
+            throw new PendingRequest();
+        }
+    }
+
+    private void checkIfMemberLimitReached(User user) {
+        if (clubMemberService.isMemberLimitReached(user.getId())) {
+            throw new JoiningClubCountExceed();
+        }
+    }
+
+    private void checkIfAdminRole(ClubMember clubMember) {
+        if (!clubMember.getMemberRole().equals(MemberRole.ADMIN)) {
+            throw new ClubMemberRoleException();
+        }
     }
 }

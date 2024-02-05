@@ -14,7 +14,6 @@ import com.hobbyhop.global.exception.clubmember.ClubMemberNotFoundException;
 
 import java.util.List;
 
-import com.hobbyhop.global.exception.clubmember.ClubMemberRoleException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,12 +29,10 @@ public class ClubMemberServiceImpl implements ClubMemberService {
     @Override
     @Transactional
     public ClubMemberResponseDTO joinClub(Club club, User user, MemberRole memberRole) {
-        // 클럽에 이미 가입되어있는지 확인
         if (isClubMember(club.getId(), user.getId())) {
             throw new ClubMemberAlreadyJoined();
         }
 
-        // 가입시키기
         ClubMember clubMember = ClubMember.builder()
                 .clubMemberPK(ClubMemberPK.builder()
                         .club(club)
@@ -73,5 +70,10 @@ public class ClubMemberServiceImpl implements ClubMemberService {
     @Override
     public boolean isAdminMember(Long clubId, Long userId) {
         return clubMemberRepository.isAdminMember(clubId, userId);
+    }
+
+    @Override
+    public boolean isMemberLimitReached(Long userId) {
+        return clubMemberRepository.isMemberLimitReached(userId);
     }
 }
