@@ -1,17 +1,21 @@
 package com.hobbyhop.domain.joinrequest.service.impl;
 
+import com.hobbyhop.domain.club.entity.Club;
 import com.hobbyhop.domain.club.service.impl.ClubServiceImpl;
 import com.hobbyhop.domain.clubmember.dto.ClubMemberResponseDTO;
 import com.hobbyhop.domain.clubmember.entity.ClubMember;
 import com.hobbyhop.domain.clubmember.enums.MemberRole;
 import com.hobbyhop.domain.clubmember.pk.ClubMemberPK;
 import com.hobbyhop.domain.clubmember.service.impl.ClubMemberServiceImpl;
+import com.hobbyhop.domain.joinrequest.dto.JoinPageRequestDTO;
 import com.hobbyhop.domain.joinrequest.dto.JoinResponseDTO;
 import com.hobbyhop.domain.joinrequest.entity.JoinRequest;
 import com.hobbyhop.domain.joinrequest.enums.JoinRequestStatus;
 import com.hobbyhop.domain.joinrequest.repository.JoinRequestRepository;
 
+import com.hobbyhop.global.exception.clubmember.ClubMemberRoleException;
 import com.hobbyhop.test.ClubTest;
+import org.hibernate.mapping.Join;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +23,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
 
 import java.util.List;
 import java.util.Optional;
@@ -44,7 +49,9 @@ class JoinRequestServiceImplTest implements ClubTest {
     private JoinRequest joinRequest;
     private JoinResponseDTO joinResponseDTO;
     private ClubMember clubMember;
+    private ClubMember normalClubMember;
     private ClubMemberPK clubMemberPk;
+    private JoinPageRequestDTO pageRequestDTO;
 
 
     @BeforeEach
@@ -63,7 +70,14 @@ class JoinRequestServiceImplTest implements ClubTest {
                 .memberRole(MemberRole.ADMIN)
                 .clubMemberPK(clubMemberPk)
                 .build();
+        normalClubMember = ClubMember.builder()
+                .memberRole(MemberRole.MEMBER)
+                .clubMemberPK(clubMemberPk)
+                .build();
         joinResponseDTO = JoinResponseDTO.fromEntity(joinRequest);
+        int page = 1;
+        int size = 1;
+        pageRequestDTO = new JoinPageRequestDTO(page, size, true);
     }
 
 
@@ -87,8 +101,30 @@ class JoinRequestServiceImplTest implements ClubTest {
         assertThat(sut.getRequestByClub(TEST_CLUB_ID, TEST_USER).get(0).getUsername()).isEqualTo(joinResponseDTO.getUsername());
         assertThat(sut.getRequestByClub(TEST_CLUB_ID, TEST_USER).get(0).getRecvClubId()).isEqualTo(joinResponseDTO.getRecvClubId());
         assertThat(sut.getRequestByClub(TEST_CLUB_ID, TEST_USER).get(0).getSendUserId()).isEqualTo(joinResponseDTO.getSendUserId());
-
     }
+
+
+    @DisplayName("[GetAllRequests]")
+    @Test
+    void JoinRequest_페이징_조회() {
+        // Given
+        List<JoinResponseDTO> list = List.of(joinResponseDTO);
+        long totalCount = list.stream().count();
+        given(clubMemberService.findByClubAndUser(TEST_CLUB_ID, TEST_USER_ID)).willReturn(clubMember);
+        given(joinRequestRepository.findAllByClubId(TEST_CLUB_ID, pageRequestDTO)).willReturn(new PageImpl<>(list, pageRequestDTO.getPageable("id"), totalCount));
+        // When & Then
+        assertThat(sut.getAllRequests(TEST_CLUB_ID, pageRequestDTO, TEST_USER).getDtoList()).isEqualTo(list);
+        assertThat(sut.getAllRequests(TEST_CLUB_ID, pageRequestDTO, TEST_USER).getTotal()).isEqualTo(totalCount);
+    }
+    @DisplayName("[GetAllRequests]")
+    @Test
+    void JoinRequest_페이징_조회_권한이없어서_실패() {
+        // Given
+        given(clubMemberService.findByClubAndUser(TEST_CLUB_ID, TEST_USER_ID)).willReturn(normalClubMember);
+        // When & Then
+        assertThatCode(() -> sut.getAllRequests(TEST_CLUB_ID, pageRequestDTO, TEST_USER)).isInstanceOf(ClubMemberRoleException.class);
+    }
+
 
     @DisplayName("[Process]")
     @Test
