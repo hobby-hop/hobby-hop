@@ -6,7 +6,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import com.hobbyhop.domain.club.service.impl.ClubServiceImpl;
 import com.hobbyhop.domain.clubmember.service.impl.ClubMemberServiceImpl;
 import com.hobbyhop.domain.comment.dto.CommentPageRequestDTO;
 import com.hobbyhop.domain.comment.dto.CommentRequestDTO;
@@ -14,7 +13,6 @@ import com.hobbyhop.domain.comment.dto.CommentResponseDTO;
 import com.hobbyhop.domain.comment.repository.CommentRepository;
 import com.hobbyhop.domain.commentuser.service.impl.CommentUserServiceImpl;
 import com.hobbyhop.domain.post.service.impl.PostServiceImpl;
-import com.hobbyhop.domain.user.repository.UserRepository;
 import com.hobbyhop.test.CommentTest;
 import java.util.ArrayList;
 import java.util.List;
@@ -119,7 +117,7 @@ class CommentServiceImplTest implements CommentTest {
 
         // then
         verify(commentRepository, times(1)).deleteList(
-                commentService.makeDelete(TEST_COMMENT).values().stream().toList());
+                commentService.makeDelete(Objects.requireNonNull(TEST_COMMENT)).values().stream().toList());
     }
 
     @Test
