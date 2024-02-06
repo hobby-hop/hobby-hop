@@ -21,7 +21,7 @@ public class CommentResponseDTO {
         return CommentResponseDTO.builder()
                 .content(comment.getContent())
                 .writer(comment.getUser().getUsername())
-                .like(comment.getLinkCnt())
+                .like(comment.getLikeCnt())
                 .createdAt(comment.getCreatedAt())
                 .id(comment.getId())
                 .build();

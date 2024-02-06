@@ -52,7 +52,7 @@ public class CommentRepositoryCustomImpl extends QuerydslRepositorySupport imple
                                     CommentResponseDTO.class,
                                     comment.content,
                                     user.username,
-                                    comment.linkCnt,
+                                    comment.likeCnt,
                                     comment.createdAt,
                                 comment.id
                         )

@@ -33,8 +33,8 @@ public class Comment extends BaseEntity {
     @ManyToOne
     private Post post;
 
-    @Column
-    private Long linkCnt;
+    @Column(nullable = false)
+    private Long likeCnt;
 
     @Column(name="deleted_at")
     private Timestamp deletedAt;
@@ -51,7 +51,7 @@ public class Comment extends BaseEntity {
         this.content = content;
     }
 
-    public void addLike(){linkCnt++;}
+    public void addLike(){likeCnt++;}
 
-    public void subLike(){linkCnt--;}
+    public void subLike(){likeCnt--;}
 }

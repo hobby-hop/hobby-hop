@@ -12,7 +12,7 @@ public interface CommentService {
 
     CommentResponseDTO postComment(CommentRequestDTO request, Long clubId, Long postId, Long commentId, User user);
 
-    void patchComment(CommentRequestDTO requestDto, Long clubId, Long postId, Long commentId, User user);
+    CommentResponseDTO patchComment(CommentRequestDTO requestDto, Long clubId, Long postId, Long commentId, User user);
 
     void deleteComment(Long clubId, Long postId, Long commentId, User user);
 
