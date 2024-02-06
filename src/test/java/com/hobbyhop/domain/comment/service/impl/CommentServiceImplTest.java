@@ -36,13 +36,9 @@ class CommentServiceImplTest implements CommentTest {
     private CommentServiceImpl commentService;
 
     @Mock
-    private UserRepository userRepository;
-    @Mock
     private CommentRepository commentRepository;
     @Mock
     private PostServiceImpl postService;
-    @Mock
-    private ClubServiceImpl clubService;
     @Mock
     private CommentUserServiceImpl commentUserService;
     @Mock
