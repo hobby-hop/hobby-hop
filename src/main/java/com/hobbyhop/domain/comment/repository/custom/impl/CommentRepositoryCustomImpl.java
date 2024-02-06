@@ -1,5 +1,10 @@
 package com.hobbyhop.domain.comment.repository.custom.impl;
 
+import static com.hobbyhop.domain.comment.entity.QComment.comment;
+import static com.hobbyhop.domain.commentuser.entity.QCommentUser.commentUser;
+import static com.hobbyhop.domain.post.entity.QPost.post;
+import static com.hobbyhop.domain.user.entity.QUser.user;
+
 import com.hobbyhop.domain.comment.dto.CommentPageRequestDTO;
 import com.hobbyhop.domain.comment.dto.CommentResponseDTO;
 import com.hobbyhop.domain.comment.entity.Comment;
@@ -11,19 +16,13 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-
-import java.util.ArrayList;
-import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
-
-import static com.hobbyhop.domain.comment.entity.QComment.comment;
-import static com.hobbyhop.domain.commentuser.entity.QCommentUser.commentUser;
-import static com.hobbyhop.domain.post.entity.QPost.post;
-import static com.hobbyhop.domain.user.entity.QUser.user;
 
 public class CommentRepositoryCustomImpl extends QuerydslRepositorySupport implements CommentRepositoryCustom {
 
@@ -52,7 +51,7 @@ public class CommentRepositoryCustomImpl extends QuerydslRepositorySupport imple
                                     CommentResponseDTO.class,
                                     comment.content,
                                     user.username,
-                                    comment.linkCnt,
+                                    comment.likeCnt,
                                     comment.createdAt,
                                 comment.id
                         )

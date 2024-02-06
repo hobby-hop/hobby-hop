@@ -18,13 +18,12 @@ import com.hobbyhop.global.exception.comment.CommentNotFoundException;
 import com.hobbyhop.global.exception.common.UnAuthorizedModifyException;
 import com.hobbyhop.global.response.PageResponseDTO;
 import jakarta.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
@@ -70,10 +69,12 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public void patchComment(CommentRequestDTO requestDto, Long clubId, Long postId, Long commentId, User user) {
+    public CommentResponseDTO patchComment(CommentRequestDTO requestDto, Long clubId, Long postId, Long commentId, User user) {
         Comment comment = checkAuth(clubId, postId, commentId, user);
 
         comment.changeContent(requestDto.getContent());
+
+        return CommentResponseDTO.buildDTO(comment);
     }
 
     @Override
@@ -113,16 +114,16 @@ public class CommentServiceImpl implements CommentService {
                 .content(request.getContent())
                 .user(user)
                 .post(post)
-                .linkCnt(0L)
+                .likeCnt(0L)
                 .parent(comment)
                 .reply(new ArrayList<>())
                 .build();
     }
 
-    private Map<Long, Comment> makeDelete(Comment comment){
+    Map<Long, Comment> makeDelete(Comment comment){
         Map<Long, Comment> deleteList = new HashMap<>();
 
-        if (!comment.getReply().isEmpty()){
+        if (comment.getReply() != null){
             comment.getReply().forEach((c) -> {
                 Map<Long, Comment> temp = makeDelete(c);
                 deleteList.putAll(temp);
@@ -133,7 +134,7 @@ public class CommentServiceImpl implements CommentService {
         return deleteList;
     }
 
-    private Comment checkAuth(Long clubId, Long postId, Long commentId, User user){
+    Comment checkAuth(Long clubId, Long postId, Long commentId, User user){
         ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
 
         Comment comment = findById(clubId, postId, commentId);
