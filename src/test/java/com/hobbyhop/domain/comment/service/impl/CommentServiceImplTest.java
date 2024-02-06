@@ -1,46 +1,33 @@
 package com.hobbyhop.domain.comment.service.impl;
 
-import com.hobbyhop.domain.category.entity.Category;
-import com.hobbyhop.domain.club.entity.Club;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import com.hobbyhop.domain.club.service.impl.ClubServiceImpl;
-import com.hobbyhop.domain.clubmember.entity.ClubMember;
-import com.hobbyhop.domain.clubmember.enums.MemberRole;
-import com.hobbyhop.domain.clubmember.pk.ClubMemberPK;
-import com.hobbyhop.domain.clubmember.service.ClubMemberService;
 import com.hobbyhop.domain.clubmember.service.impl.ClubMemberServiceImpl;
 import com.hobbyhop.domain.comment.dto.CommentPageRequestDTO;
 import com.hobbyhop.domain.comment.dto.CommentRequestDTO;
 import com.hobbyhop.domain.comment.dto.CommentResponseDTO;
-import com.hobbyhop.domain.comment.entity.Comment;
 import com.hobbyhop.domain.comment.repository.CommentRepository;
-import com.hobbyhop.domain.commentuser.service.CommentUserService;
 import com.hobbyhop.domain.commentuser.service.impl.CommentUserServiceImpl;
-import com.hobbyhop.domain.post.entity.Post;
-import com.hobbyhop.domain.post.service.PostService;
 import com.hobbyhop.domain.post.service.impl.PostServiceImpl;
 import com.hobbyhop.domain.user.repository.UserRepository;
-import com.hobbyhop.global.exception.comment.CommentNotFoundException;
-import com.hobbyhop.global.response.PageResponseDTO;
 import com.hobbyhop.test.CommentTest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageImpl;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class CommentServiceImplTest implements CommentTest {

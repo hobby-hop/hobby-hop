@@ -1,7 +1,6 @@
 package com.hobbyhop.test;
 
 import com.hobbyhop.domain.comment.entity.Comment;
-import com.hobbyhop.domain.post.entity.Post;
 
 public interface CommentTest extends PostTest{
 

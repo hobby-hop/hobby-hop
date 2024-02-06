@@ -1,11 +1,10 @@
 package com.hobbyhop.domain.comment.dto;
 
 import com.hobbyhop.domain.comment.entity.Comment;
+import java.sql.Timestamp;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-
-import java.sql.Timestamp;
 
 @Data
 @Builder
