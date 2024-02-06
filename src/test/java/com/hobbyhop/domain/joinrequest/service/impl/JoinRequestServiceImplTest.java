@@ -1,6 +1,5 @@
 package com.hobbyhop.domain.joinrequest.service.impl;
 
-import com.hobbyhop.domain.club.entity.Club;
 import com.hobbyhop.domain.club.service.impl.ClubServiceImpl;
 import com.hobbyhop.domain.clubmember.dto.ClubMemberResponseDTO;
 import com.hobbyhop.domain.clubmember.entity.ClubMember;
@@ -15,7 +14,6 @@ import com.hobbyhop.domain.joinrequest.repository.JoinRequestRepository;
 
 import com.hobbyhop.global.exception.clubmember.ClubMemberRoleException;
 import com.hobbyhop.test.ClubTest;
-import org.hibernate.mapping.Join;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
