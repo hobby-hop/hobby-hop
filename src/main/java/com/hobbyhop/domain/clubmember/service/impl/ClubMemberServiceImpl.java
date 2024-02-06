@@ -15,6 +15,7 @@ import com.hobbyhop.global.exception.clubmember.ClubMemberNotFoundException;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Log4j2
 public class ClubMemberServiceImpl implements ClubMemberService {
 
     private final ClubMemberRepository clubMemberRepository;

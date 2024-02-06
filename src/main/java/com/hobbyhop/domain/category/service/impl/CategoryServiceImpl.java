@@ -40,8 +40,8 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.findById(categoryId).orElseThrow(CategoryNotFoundException::new);
     }
     private void validateCategoryName(String categoryName) {
-        categoryRepository.findByCategoryName(categoryName).ifPresent(category -> {
+        if(categoryRepository.existsByCategoryName(categoryName)) {
             throw new AlreadyExistCategoryException();
-        });
+        }
     }
 }

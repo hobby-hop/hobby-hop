@@ -78,9 +78,7 @@ public class ClubServiceImpl implements ClubService {
     public void removeClubById(Long clubId, User user) {
         Club club = findClub(clubId);
         ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
-
         validateClubRolePermission(clubMember);
-
         clubRepository.deleteAllElement(club.getId());
     }
 
