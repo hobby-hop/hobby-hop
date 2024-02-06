@@ -1,9 +1,11 @@
 package com.hobbyhop.domain.clubmember.service.impl;
 
+import com.hobbyhop.domain.clubmember.dto.ClubMemberResponseDTO;
 import com.hobbyhop.domain.clubmember.entity.ClubMember;
 import com.hobbyhop.domain.clubmember.enums.MemberRole;
 import com.hobbyhop.domain.clubmember.pk.ClubMemberPK;
 import com.hobbyhop.domain.clubmember.repository.ClubMemberRepository;
+import com.hobbyhop.global.exception.clubmember.ClubMemberAlreadyJoined;
 import com.hobbyhop.test.ClubTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -55,23 +57,30 @@ class ClubMemberServiceImplTest implements ClubTest {
         // Given
         given(clubMemberRepository.save(any())).willReturn(clubMember);
         // When
-        sut.joinClub(TEST_CLUB, TEST_USER, MemberRole.MEMBER);
-
+        ClubMemberResponseDTO clubMemberResponseDTO = sut.joinClub(TEST_CLUB, TEST_USER, MemberRole.MEMBER);
         // Then
-
-//        assertThat(clubMemberResponseDTO.getClubId()).isEqualTo(TEST_CLUB_ID);
+        assertThat(clubMemberResponseDTO.getClubId()).isEqualTo(TEST_CLUB_ID);
     }
-//    @DisplayName("[Remove]")
-//    @Test
-//    void clubMember_삭제_성공() {
-//        // Given
-//        willDoNothing().given(clubMemberRepository).delete(clubMember);
-//        given(clubMemberRepository.findByClubMemberPK_Club_IdAndClubMemberPK_User_Id(TEST_CLUB_ID, TEST_USER_ID)).willReturn(Optional.of(clubMember));
-//        // When
-//        sut.removeMember(TEST_CLUB, TEST_USER);
-//        // Then
-//        verify(clubMemberRepository, times(1)).delete(clubMember);
-//    }
+    @DisplayName("[Join] [Fail]")
+    @Test
+    void clubMember_가입_이미_가입된_모임으로인한_실패() {
+        // Given
+        given(clubMemberRepository.isClubMember(TEST_CLUB_ID, TEST_USER_ID)).willReturn(true);
+
+        // When & Then
+        assertThatCode(() -> sut.joinClub(TEST_CLUB, TEST_USER, MemberRole.MEMBER)).isInstanceOf(ClubMemberAlreadyJoined.class);
+    }
+    @DisplayName("[Remove]")
+    @Test
+    void clubMember_삭제_성공() {
+        // Given
+        willDoNothing().given(clubMemberRepository).delete(clubMember);
+        given(clubMemberRepository.findByClubMemberPK_Club_IdAndClubMemberPK_User_Id(TEST_CLUB_ID, TEST_USER_ID)).willReturn(Optional.of(clubMember));
+        // When
+        sut.removeMember(TEST_CLUB, TEST_USER);
+        // Then
+        verify(clubMemberRepository, times(1)).delete(clubMember);
+    }
     @DisplayName("[FindByUserId]")
     @Test
     void clubMember_유저가_속한_클럽_리스트_조회() {
