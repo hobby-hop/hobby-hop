@@ -8,6 +8,7 @@ import com.hobbyhop.global.exception.user.MismatchedPasswordException;
 import com.hobbyhop.global.exception.user.NotAvailableUsernameException;
 import com.hobbyhop.global.exception.user.NotFoundUserException;
 import com.hobbyhop.global.security.jwt.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,6 +41,15 @@ public class UserServiceImplTest {
 
     @Mock
     private HttpServletResponse response;
+
+    @Mock
+    private HttpServletRequest httpServletRequest;
+
+    @Mock
+    private HttpServletResponse httpServletResponse;
+
+    private static final String AUTHORIZATION_HEADER = JwtUtil.AUTHORIZATION_HEADER;
+    // 아래서 이게 들어가야 하는 부분에 어떻게 넣어줘야 에러가 안 나는지 잘 모르겠음...
 
     @BeforeEach
     public void setup() {
@@ -151,9 +161,21 @@ public class UserServiceImplTest {
     }
 
 
-    @Test
-    void logout() {
-    }
+//    @Test
+//    @DisplayName("로그아웃 성공")
+//    void testUserLogout() {
+//        // Given
+//        String accessToken = "testAccessToken";
+//
+//        when(httpServletRequest.getHeader(UserServiceImpl.AUTHORIZATION_HEADER)).thenReturn(accessToken);
+//
+//        // When
+//        userService.logout(httpServletRequest, httpServletResponse);
+//
+//        // Then
+//        verify(httpServletRequest, times(1)).getHeader(UserServiceImpl.AUTHORIZATION_HEADER);
+//        verify(httpServletResponse, times(1)).setHeader(UserServiceImpl.AUTHORIZATION_HEADER, "logged-out");
+//    }
 
     @Test
     void withdraw() {
