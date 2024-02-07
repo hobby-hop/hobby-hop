@@ -2,12 +2,14 @@ package com.hobbyhop.domain.user.service.impl;
 
 import com.hobbyhop.domain.user.dto.LoginRequestDTO;
 import com.hobbyhop.domain.user.dto.SignupRequestDTO;
+import com.hobbyhop.domain.user.dto.WithdrawalRequestDTO;
 import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.domain.user.repository.UserRepository;
 import com.hobbyhop.global.exception.user.MismatchedPasswordException;
 import com.hobbyhop.global.exception.user.NotAvailableUsernameException;
 import com.hobbyhop.global.exception.user.NotFoundUserException;
 import com.hobbyhop.global.security.jwt.JwtUtil;
+import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,6 +31,9 @@ public class UserServiceImplTest {
 
     @InjectMocks
     private UserServiceImpl userService;
+
+    @Mock
+    private UserDetailsImpl userDetails;
 
     @Mock
     private PasswordEncoder passwordEncoder;
@@ -208,7 +213,21 @@ public class UserServiceImplTest {
 //    }
 
     @Test
-    void getMyProfile() {
+    @DisplayName("내 프로필 조회 성공")
+    void testUserProfileView() {
+        // Given
+        Long userId = 1L;
+        User user = new User();
+        user.setId(userId);
+
+        // When
+        when(userDetails.getUser()).thenReturn(user);
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        userService.getMyProfile(userDetails, httpServletResponse, httpServletRequest);
+
+        // Then
+        verify(userRepository, times(1)).findById(userId);
     }
 
     @Test
