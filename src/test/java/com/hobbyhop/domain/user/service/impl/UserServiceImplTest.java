@@ -49,7 +49,7 @@ public class UserServiceImplTest {
     private HttpServletResponse httpServletResponse;
 
     private static final String AUTHORIZATION_HEADER = JwtUtil.AUTHORIZATION_HEADER;
-    // 아래서 이게 들어가야 하는 부분에 어떻게 넣어줘야 에러가 안 나는지 잘 모르겠음...
+    // 아래서 이게 들어가야 하는 부분에 어떻게 넣어줘야 에러가 안 나는지 잘 모르겠음... 그리고 Claims 는 어떻게 주입해야 하는 건지도 모르겠음...
 
     @BeforeEach
     public void setup() {
@@ -177,9 +177,35 @@ public class UserServiceImplTest {
 //        verify(httpServletResponse, times(1)).setHeader(UserServiceImpl.AUTHORIZATION_HEADER, "logged-out");
 //    }
 
-    @Test
-    void withdraw() {
-    }
+//    @Test
+//    @DisplayName("회원 탈퇴 성공")
+//    void testUserWithdrawal() {
+//        // Given
+//        String accessToken = "testAccessToken";
+//        WithdrawalRequestDTO withdrawalRequestDTO = new WithdrawalRequestDTO();
+//        withdrawalRequestDTO.setPassword("password");
+//
+//        when(httpServletRequest.getHeader(UserServiceImpl.AUTHORIZATION_HEADER)).thenReturn(accessToken);
+//
+//        when(jwtUtil.validateToken(accessToken.substring(7))).thenReturn(true);
+//        Claims claims = JwtUtil.claims(); // 이걸 어떻게 넣지...?!?!
+//        claims.setSubject("testUser");
+//        when(jwtUtil.getUserInfo(accessToken.substring(7))).thenReturn(claims);
+//
+//        User user = new User();
+//        user.setUsername("testUser");
+//        when(userRepository.findByUsername("testUser")).thenReturn(Optional.of(user));
+//
+//        // When
+//        userService.withdraw(withdrawalRequestDTO, httpServletRequest, httpServletResponse);
+//
+//        // Then
+//        verify(httpServletRequest, times(1)).getHeader(UserServiceImpl.AUTHORIZATION_HEADER);
+//        verify(jwtUtil, times(1)).removeAccessToken(accessToken);
+//        verify(jwtUtil, times(1)).removeRefreshToken(accessToken);
+//        verify(userRepository, times(1)).delete(user);
+//        verify(httpServletResponse, times(1)).setHeader(UserServiceImpl.AUTHORIZATION_HEADER, "withdrawal");
+//    }
 
     @Test
     void getMyProfile() {
