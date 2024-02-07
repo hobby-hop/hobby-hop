@@ -1,9 +1,6 @@
 package com.hobbyhop.domain.user.service.impl;
 
-import com.hobbyhop.domain.user.dto.LoginRequestDTO;
-import com.hobbyhop.domain.user.dto.OtherProfileResponseDTO;
-import com.hobbyhop.domain.user.dto.SignupRequestDTO;
-import com.hobbyhop.domain.user.dto.WithdrawalRequestDTO;
+import com.hobbyhop.domain.user.dto.*;
 import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.domain.user.repository.UserRepository;
 import com.hobbyhop.global.exception.user.MismatchedPasswordException;
@@ -26,6 +23,8 @@ import static org.assertj.core.api.Assertions.*;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -265,8 +264,56 @@ public class UserServiceImplTest {
 //        assertThat(responseDTO.getInfo()).isEqualTo("다른 유저의 자기 소개");
 //    }
 
+//    @Test
+//    @DisplayName("내 프로필 수정 성공")
+//    void testProfileUpdateSuccess() {
+//        // Given
+//        UpdateProfileRequestDTO updateProfileRequestDTO = new UpdateProfileRequestDTO();
+//        updateProfileRequestDTO.setInfo("New info");
+//        updateProfileRequestDTO.setOldPassword("oldPassword");
+//        updateProfileRequestDTO.setNewPassword("newPassword");
+//        updateProfileRequestDTO.setConfirmPassword("newPassword");
+//
+//        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
+//        HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
+//
+//        User mockUser = new User();
+//        mockUser.setId(1L);
+//        mockUser.setPassword("oldPassword"); // Assuming old password matches
+//        given(userRepository.findById(any())).willReturn(Optional.of(mockUser));
+//        given(passwordEncoder.matches(any(), any())).willReturn(true);
+//        given(passwordEncoder.encode(any())).willReturn("encodedPassword");
+//
+//        // when
+//        userService.updateProfile(updateProfileRequestDTO, userDetails, httpServletResponse, httpServletRequest);
+//
+//        // then
+//        verify(userRepository).findById(any());
+//        verify(passwordEncoder).matches(any(), any());
+//        verify(passwordEncoder).encode(any());
+//    }
 
-    @Test
-    void updateProfile() {
-    }
+//    @Test
+//    @DisplayName("일치하지 않는 비밀번호")
+//    void testProfileUpdateWithMismatchedPassword() {
+//        // given
+//        UpdateProfileRequestDTO updateProfileRequestDTO = new UpdateProfileRequestDTO();
+//        updateProfileRequestDTO.setInfo("New info");
+//        updateProfileRequestDTO.setOldPassword("oldPassword");
+//        updateProfileRequestDTO.setNewPassword("newPassword");
+//        updateProfileRequestDTO.setConfirmPassword("newPassword");
+//
+//        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
+//        HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
+//
+//        User mockUser = new User();
+//        mockUser.setId(1L);
+//        mockUser.setPassword("oldPassword");
+//        given(userRepository.findById(any())).willReturn(Optional.of(mockUser));
+//        given(passwordEncoder.matches(any(), any())).willReturn(false);
+//
+//        // when, then
+//        assertThrows(MismatchedPasswordException.class,
+//                () -> userService.updateProfile(updateProfileRequestDTO, userDetails, httpServletResponse, httpServletRequest));
+//    }
 }
