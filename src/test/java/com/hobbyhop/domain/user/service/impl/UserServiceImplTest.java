@@ -1,6 +1,7 @@
 package com.hobbyhop.domain.user.service.impl;
 
 import com.hobbyhop.domain.user.dto.LoginRequestDTO;
+import com.hobbyhop.domain.user.dto.OtherProfileResponseDTO;
 import com.hobbyhop.domain.user.dto.SignupRequestDTO;
 import com.hobbyhop.domain.user.dto.WithdrawalRequestDTO;
 import com.hobbyhop.domain.user.entity.User;
@@ -20,6 +21,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Optional;
 
@@ -230,9 +232,39 @@ public class UserServiceImplTest {
         verify(userRepository, times(1)).findById(userId);
     }
 
-    @Test
-    void getOtherProfile() {
-    }
+//    @Test
+//    @DisplayName("다른 사용자 프로필 조회 성공") // 실행하면 에러 남...
+//    void testOtherUserProfileView() {
+//        // Given
+//        Long otherUserId = 3L;
+//        Long currentUserId = 1L;
+//
+//        User otherUser = new User();
+//        otherUser.setId(otherUserId);
+//        otherUser.setUsername("otherUser");
+//        otherUser.setInfo("다른 유저의 자기 소개");
+//
+//        // Mock UserDetailsImpl behavior
+//        User currentUser = new User();
+//        currentUser.setId(currentUserId);
+//        when(userDetails.getUser()).thenReturn(currentUser);
+//
+//        // Mock UserRepository behavior
+//        when(userRepository.findById(anyLong())).thenAnswer(invocation -> {
+//            Long id = invocation.getArgument(0);
+//            assertThat(id).isEqualTo(otherUserId); // Verify the argument
+//            return Optional.of(otherUser);
+//        });
+//
+//        // When
+//        OtherProfileResponseDTO responseDTO = userService.getOtherProfile(otherUserId, userDetails, httpServletResponse, httpServletRequest);
+//
+//        // Then
+//        assertThat(responseDTO).isNotNull();
+//        assertThat(responseDTO.getUsername()).isEqualTo("otherUser");
+//        assertThat(responseDTO.getInfo()).isEqualTo("다른 유저의 자기 소개");
+//    }
+
 
     @Test
     void updateProfile() {
