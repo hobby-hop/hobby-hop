@@ -27,13 +27,13 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/api/clubs/{clubId}/posts")
 @RequiredArgsConstructor
-@SecurityRequirement(name = "Bearer Authentication")
 public class PostController {
 
     private final PostService postService;
     private final S3Service s3Service;
 
     @Operation(summary = "게시글 작성")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping
     public ApiResponse<?> makePost(@PathVariable(name = "clubId") Long clubId,
             @RequestBody @Valid PostRequestDTO postRequestDTO,
@@ -43,6 +43,7 @@ public class PostController {
     }
 
     @Operation(summary = "게시글 이미지 업로드")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/{postId}")
     public ApiResponse<?> imageUploadPost(@PathVariable(name = "clubId") Long clubId, @PathVariable(name = "postId") Long postId,
             @RequestParam("file") MultipartFile file,
@@ -53,6 +54,7 @@ public class PostController {
     }
 
     @Operation(summary = "게시글 단일 조회")
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/{postId}")
     public ApiResponse<?> getPostById(@PathVariable(name = "clubId") Long clubId, @PathVariable(name = "postId") Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
@@ -67,6 +69,7 @@ public class PostController {
     }
 
     @Operation(summary = "게시글 수정")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PatchMapping("/{postId}")
     public ApiResponse<?> modifyPost(@PathVariable(name = "clubId") Long clubId, @PathVariable(name = "postId") Long postId,
             @RequestBody @Valid PostModifyRequestDTO postModifyRequestDTO, @RequestParam(required = false, value = "file") MultipartFile file,
@@ -76,6 +79,7 @@ public class PostController {
     }
 
     @Operation(summary = "게시글 삭제")
+    @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping("/{postId}")
     public ApiResponse<?> deletePost(@PathVariable(name = "clubId") Long clubId, @PathVariable(name = "postId") Long postId,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -85,6 +89,7 @@ public class PostController {
     }
 
     @Operation(summary = "게시글 좋아요")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/{postId}/likes")
     public ApiResponse<?> likePost(@PathVariable(name = "clubId") Long clubId,
             @PathVariable(name = "postId") Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
