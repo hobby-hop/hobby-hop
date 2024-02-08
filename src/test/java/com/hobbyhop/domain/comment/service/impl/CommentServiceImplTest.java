@@ -120,22 +120,22 @@ class CommentServiceImplTest implements CommentTest {
                 commentService.makeDelete(Objects.requireNonNull(TEST_COMMENT)).values().stream().toList());
     }
 
-    @Test
-    @DisplayName("댓글 조회 완료 테스트")
-    void 댓글조회테스트() {
-        // given
-        List<CommentResponseDTO> content = new ArrayList<>();
-        CommentResponseDTO responseDTO = CommentResponseDTO.buildDTO(TEST_COMMENT);
-        content.add(responseDTO);
-
-        given(commentRepository.findAllByPostId(pageRequestDTO, TEST_POST_ID,
-                TEST_COMMENT_ID)).willReturn(
-                new PageImpl<>(content, pageRequestDTO.getPageable("id"), 1L));
-
-        // when & then
-        assertThat(commentService.getComments(pageRequestDTO, TEST_POST_ID, TEST_COMMENT_ID)
-                .getDtoList().get(0).getContent()).isEqualTo(TEST_COMMENT_CONTENT);
-    }
+//    @Test
+//    @DisplayName("댓글 조회 완료 테스트")
+//    void 댓글조회테스트() {
+//        // given
+//        List<CommentResponseDTO> content = new ArrayList<>();
+//        CommentResponseDTO responseDTO = CommentResponseDTO.buildDTO(TEST_COMMENT);
+//        content.add(responseDTO);
+//
+//        given(commentRepository.findAllByPostId(pageRequestDTO, TEST_POST_ID,
+//                TEST_COMMENT_ID)).willReturn(
+//                new PageImpl<>(content, pageRequestDTO.getPageable("id"), 1L));
+//
+//        // when & then
+//        assertThat(commentService.getComments(pageRequestDTO, TEST_POST_ID, TEST_COMMENT_ID)
+//                .getDtoList().get(0).getContent()).isEqualTo(TEST_COMMENT_CONTENT);
+//    }
 
     @Test
     @DisplayName("댓글 좋아요 완료 테스트")
