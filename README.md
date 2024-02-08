@@ -100,7 +100,7 @@ Hobby Hop은 사용자들이 자신의 취미를 등록하고 다양한 형식�
 
 
 ---
-
+ 
 
 ## 🐇 API 명세서
 ![스크린샷 2024-01-29 201945](https://github.com/hobby-hop/hobby-hop/assets/148298032/83c34e7e-247d-4200-bd4a-4a76717aa09c)
