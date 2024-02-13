@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -69,6 +70,9 @@ public class WebSecurityConfig {
                                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()// resources 접근 허용 설
                                 .requestMatchers("/api/users/signup", "/api/users/login").permitAll() // 회원가입, 로그인 페이지 접근 허용
                                 .requestMatchers("/api/users/login/kakao/callback").permitAll() // 카카오 소셜 로그인 허용
+                                .requestMatchers(HttpMethod.GET, "/api/clubs").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/clubs/{clubId}").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/clubs/{clubId}/posts").permitAll()
                                 .requestMatchers("/v3/api-docs/**", "/swagger-resourcees/**",
                                         "/swagger-ui/**", "/webjars/**", "/swagger/**").permitAll() // 스웨거 허용
                                 .anyRequest().authenticated()
