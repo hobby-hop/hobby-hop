@@ -58,10 +58,8 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        // CSRF 설정
         http.csrf((csrf) -> csrf.disable());
 
-        // 기본 설정인 Session 방식은 사용하지 않고 JWT 방식을 사용하기 위한 설정
         http.sessionManagement((sessionManagement) ->
                 sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
@@ -74,11 +72,10 @@ public class WebSecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/api/clubs/{clubId}").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/clubs/{clubId}/posts").permitAll()
                                 .requestMatchers("/v3/api-docs/**", "/swagger-resourcees/**",
-                                        "/swagger-ui/**", "/webjars/**", "/swagger/**").permitAll() // 스웨거 허용
+                                        "/swagger-ui/**", "/webjars/**", "/swagger/**").permitAll()
                                 .anyRequest().authenticated()
         );
 
-        // 토큰 인증 오류 처리  --> 이거 잘 모르겠더라구요(맞지 않는 에러가 뜰 때도 있습니다 -> 개발하면서 확인하면서 고쳐가야할듯싶습니다)
         http.exceptionHandling( config -> {
             config.accessDeniedHandler(accessDeniedHandler());
             config.authenticationEntryPoint(errorPoint());
@@ -96,7 +93,7 @@ public class WebSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        // 로컬 테스트, 프론트 배포 주소
+
         corsConfiguration.setAllowedOriginPatterns(Arrays.asList("http://127.0.0.1:5500", "https://hobbyhop.site"));
         corsConfiguration.setAllowedMethods(Collections.singletonList("*"));
         corsConfiguration.setAllowedHeaders(Collections.singletonList("*"));
@@ -109,7 +106,6 @@ public class WebSecurityConfig {
         return source;
     }
 
-    // 이거 따로 customAccessDeniedHandler 구현 할 수 있습니다!
     private AccessDeniedHandler accessDeniedHandler() {
         return (request, response, ex) -> {
             ApiResponse apiResponse = ApiResponse.of(HttpStatus.FORBIDDEN,ex.getMessage());
@@ -119,7 +115,7 @@ public class WebSecurityConfig {
         };
     }
 
-    // 이거 따로 customAuthenticationEntryPoint 구현 할 수 있습니다!
+
     private AuthenticationEntryPoint errorPoint() {
         return (request, response, authException) -> {
             authException.printStackTrace();

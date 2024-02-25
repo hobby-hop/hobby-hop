@@ -24,14 +24,12 @@ public class JwtUtil {
 
     private final RedisTemplate<String, String> redisTemplate;
 
-    // Header Key 값
     public static final String AUTHORIZATION_HEADER = "Authorization";
 
-    // Token 식별자
     public static final String BEARER_PREFIX = "Bearer ";
 
-    private static final long ACCESS_TOKEN_TIME = 24 * 60 * 60 * 1000L; // 24 hours
-    private static final long REFRESH_TOKEN_TIME = 30 * 24 * 60 * 60 * 1000L; // 30 days
+    private static final long ACCESS_TOKEN_TIME = 24 * 60 * 60 * 1000L;
+    private static final long REFRESH_TOKEN_TIME = 30 * 24 * 60 * 60 * 1000L;
 
     @Value("${jwt.secret.key}")
     private String secretKey;
@@ -69,7 +67,6 @@ public class JwtUtil {
         }
     }
 
-    // HttpServletRequest 에서 JWT 가져오기
     public String getJwtFromHeader(HttpServletRequest request) {
         String tokenWithBearer = request.getHeader(AUTHORIZATION_HEADER);
         if (StringUtils.hasText(tokenWithBearer) && tokenWithBearer.startsWith(BEARER_PREFIX)) {
@@ -78,7 +75,6 @@ public class JwtUtil {
         return null;
     }
 
-    // 토큰에서 사용자 정보 가져오기
     public Claims getUserInfo(String tokenValue) {
         return Jwts.parserBuilder().setSigningKey(key)
                 .build().parseClaimsJws(tokenValue).getBody();
@@ -124,15 +120,14 @@ public class JwtUtil {
 
         Long expirationTime = info.getExpiration().getTime();
 
-        // 새로 만든 AccessToken을 redis에 저장
         redisTemplate.opsForValue()
                 .set(username, newAccessToken,
                         expirationTime, TimeUnit.MILLISECONDS);
-        // 새로 만든 AccessToken을 key로 refreshToken을 다시 DB에 저장
+
         redisTemplate.opsForValue().set(newAccessToken,
                 BEARER_PREFIX + refreshTokenValue,
                 expirationTime, TimeUnit.MILLISECONDS);
-        // 만료된 token으로 저장되어있는 refreshToken은 삭제
+
         redisTemplate.delete(accessToken);
     }
 
@@ -168,22 +163,15 @@ public class JwtUtil {
         Long expirationTime = getUserInfo(oldRefreshToken.substring(7)).getExpiration().getTime();
         String newRefreshToken = createToken(newUsername, expirationTime);
 
-        // 이전 username으로 발급된 토큰을 DB에서 삭제
         redisTemplate.delete(oldUsername);
         redisTemplate.delete(oldAccessToken);
-        // 새로 만든 username으로 된 토큰을 DB에 저장
+
         redisTemplate.opsForValue().set(newUsername, newAccessToken,
                 expirationTime, TimeUnit.MILLISECONDS);
         redisTemplate.opsForValue().set(newAccessToken, newRefreshToken,
                 expirationTime, TimeUnit.MILLISECONDS);
     }
 
-    /**
-     * createToken 메서드
-     * @param username
-     * @param tokenTime
-     * @return
-     */
     private String createToken(String username, long tokenTime) {
         Date date = new Date();
 
