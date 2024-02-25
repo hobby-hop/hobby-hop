@@ -31,7 +31,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.verify;
 
-
 @DisplayName("[Club]")
 @ExtendWith(MockitoExtension.class)
 class ClubServiceImplTest implements ClubTest {
