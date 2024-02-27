@@ -44,7 +44,7 @@ public class JwtUtil {
         key = Keys.hmacShaKeyFor(bytes);
     }
 
-    public String createAccessToken(String username) { // JWT 토큰 생성
+    public String createAccessToken(String username) {
         return createToken(username, ACCESS_TOKEN_TIME);
     }
 

@@ -35,7 +35,6 @@ import java.util.List;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig {
-
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
     private final ObjectMapper objectMapper;
@@ -65,9 +64,9 @@ public class WebSecurityConfig {
 
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                         authorizeHttpRequests
-                                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()// resources 접근 허용 설
-                                .requestMatchers("/api/users/signup", "/api/users/login").permitAll() // 회원가입, 로그인 페이지 접근 허용
-                                .requestMatchers("/api/users/login/kakao/callback").permitAll() // 카카오 소셜 로그인 허용
+                                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                                .requestMatchers("/api/users/signup", "/api/users/login").permitAll()
+                                .requestMatchers("/api/users/login/kakao/callback").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/clubs").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/clubs/{clubId}").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/clubs/{clubId}/posts").permitAll()
