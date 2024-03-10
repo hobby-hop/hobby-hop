@@ -14,8 +14,6 @@ import org.hibernate.annotations.SQLRestriction;
 
 import java.sql.Timestamp;
 
-//유저가 모임에 초대를 누르면 리퀘스트 테이블에 기록된다.
-//유저쪽과 연계해서 알람 목록에서 허락을 누르면 그 때 멤버 테이블에 기록한다.
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
