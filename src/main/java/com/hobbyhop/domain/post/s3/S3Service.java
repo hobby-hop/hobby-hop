@@ -43,7 +43,6 @@ public class S3Service {
 
         String contentDisposition = "attachment; filename=\"" +  originalFilename + "\"";
 
-        // header에 CONTENT_DISPOSITION 설정을 통해 클릭 시 다운로드 진행
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
                 .body(urlResource);

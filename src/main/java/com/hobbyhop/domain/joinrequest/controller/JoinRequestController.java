@@ -2,7 +2,6 @@ package com.hobbyhop.domain.joinrequest.controller;
 
 import com.hobbyhop.domain.joinrequest.dto.JoinPageRequestDTO;
 import com.hobbyhop.domain.joinrequest.dto.JoinRequestDTO;
-import com.hobbyhop.domain.joinrequest.dto.JoinResponseDTO;
 import com.hobbyhop.domain.joinrequest.service.JoinRequestService;
 import com.hobbyhop.global.response.ApiResponse;
 import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
@@ -11,8 +10,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

@@ -1,12 +1,10 @@
 package com.hobbyhop.domain.post.entity;
 
-
 import com.hobbyhop.domain.BaseEntity;
 import com.hobbyhop.domain.club.entity.Club;
 import com.hobbyhop.domain.comment.entity.Comment;
 import com.hobbyhop.domain.user.entity.User;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;

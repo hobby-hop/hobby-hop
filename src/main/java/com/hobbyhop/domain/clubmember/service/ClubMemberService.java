@@ -12,10 +12,8 @@ import java.util.List;
 
 public interface ClubMemberService {
 
-    // 모임에 가입한다.
     ClubMemberResponseDTO joinClub(Club club, User user, MemberRole memberRole);
 
-    //모임을 탈퇴한다.
     void removeMember(Club club, User user);
 
     ClubMember findByClubAndUser(Long clubId, Long userId);

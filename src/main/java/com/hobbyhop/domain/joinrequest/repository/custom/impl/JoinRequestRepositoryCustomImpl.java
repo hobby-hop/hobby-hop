@@ -1,6 +1,5 @@
 package com.hobbyhop.domain.joinrequest.repository.custom.impl;
 
-import com.hobbyhop.domain.club.dto.ClubResponseDTO;
 import com.hobbyhop.domain.joinrequest.dto.JoinPageRequestDTO;
 import com.hobbyhop.domain.joinrequest.dto.JoinResponseDTO;
 import com.hobbyhop.domain.joinrequest.entity.JoinRequest;

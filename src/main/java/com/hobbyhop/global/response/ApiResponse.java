@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 @Builder
 public class ApiResponse<T> {
 
-    private boolean success;            // boolean 형은 DEFAULT 값이 FALSE 입니다.
+    private boolean success;
     private HttpStatus httpStatus;
     private List<String> errorMessages;
     private T data;
