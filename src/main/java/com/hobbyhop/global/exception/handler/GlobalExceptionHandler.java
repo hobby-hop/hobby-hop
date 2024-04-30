@@ -1,5 +1,6 @@
-package com.hobbyhop.global.exception.common;
+package com.hobbyhop.global.exception.handler;
 
+import com.hobbyhop.global.exception.common.BusinessException;
 import com.hobbyhop.global.exception.jwt.JwtInvalidException;
 import com.hobbyhop.global.exception.jwt.NoJwtException;
 import com.hobbyhop.global.exception.jwt.UnsupportedGrantTypeException;
