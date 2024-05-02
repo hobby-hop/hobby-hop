@@ -113,6 +113,9 @@ Hobby Hop은 사용자들이 자신의 취미를 등록하고 다양한 형식�
 ---
 
 ## 🐇 성과
+
+[CI 시간 단축](https://github.com/hobby-hop/hobby-hop/wiki/CI-%EC%8B%9C%EA%B0%84-%EB%8B%A8%EC%B6%95)
+
 ---
 
 ## 🐇 API 명세서
