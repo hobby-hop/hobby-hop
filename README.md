@@ -55,13 +55,13 @@ Hobby Hop은 사용자들이 자신의 취미를 등록하고 다양한 형식�
 - **송지헌** : 팀원   - 와이어 프레임, 대댓글, 프론트 구조 제작
 - **정유진** : 팀원   - ERD 설계, 유저, 시큐리티, 배포
 
-  이름 | 역할 | Github | 블로그 
+이름 | 역할 | Github | 블로그 
 --|--|--|--
- 권준혁 | 팀장 | [https://github.com/jh10253267](https://github.com/jh10253267) | [https://github.com/jh10253267/TIL](https://github.com/jh10253267/TIL)
- 홍효정 | 부팀장 | [https://github.com/dearel4416](https://github.com/dearel4416) | [https://javach1p.tistory.com/](https://javach1p.tistory.com/)
- 김한준 | 팀원 | [https://velog.io/@wkdehf217/posts](https://velog.io/@wkdehf217/posts) | [https://github.com/wkdehf217](https://github.com/wkdehf217)
- 송지헌 | 팀원 | 공사중 | [https://github.com/pepsisong](https://github.com/pepsisong)
- 정유진 | 팀원 | [https://github.com/kkamjjing2](https://github.com/kkamjjing2) | [https://kkamjjing.tistory.com/](https://kkamjjing.tistory.com/)
+권준혁 | 팀장 | [https://github.com/jh10253267](https://github.com/jh10253267) | [https://github.com/jh10253267/TIL](https://github.com/jh10253267/TIL)
+홍효정 | 부팀장 | [https://github.com/dearel4416](https://github.com/dearel4416) | [https://javach1p.tistory.com/](https://javach1p.tistory.com/)
+김한준 | 팀원 | [https://velog.io/@wkdehf217/posts](https://velog.io/@wkdehf217/posts) | [https://github.com/wkdehf217](https://github.com/wkdehf217)
+송지헌 | 팀원 | 공사중 | [https://github.com/pepsisong](https://github.com/pepsisong)
+정유진 | 팀원 | [https://github.com/kkamjjing2](https://github.com/kkamjjing2) | [https://kkamjjing.tistory.com/](https://kkamjjing.tistory.com/)
 
 
 ---
