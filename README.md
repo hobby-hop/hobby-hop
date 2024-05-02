@@ -50,10 +50,10 @@ Hobby Hop은 사용자들이 자신의 취미를 등록하고 다양한 형식�
   
 ## 🐇 팀 소개 및 역할 분담
 - **권준혁** : 리더   - 그룹, 배포, 프론트
-- **홍효정** : 부리더 - API 명세서 작성, 댓글
-- **김한준** : 팀원   - API 명세서 작성, 게시글, 배포, 성능 개선
+- **홍효정** : 부리더 - 댓글, 코드 퀄리티 개선 및 컨벤션 점검
+- **김한준** : 팀원   - 게시글, 배포, 성능테스트, CI/CD
 - **송지헌** : 팀원   - 와이어 프레임, 대댓글, 프론트 구조 제작
-- **정유진** : 팀원   - API 명세서 작성, 노션, ERD, 유저, 배포
+- **정유진** : 팀원   - ERD 설계, 유저, 시큐리티, 배포
 
 
 ---
@@ -90,7 +90,7 @@ Hobby Hop은 사용자들이 자신의 취미를 등록하고 다양한 형식�
 
 ## 🐇 주요 기능
 - 모임
-
+- 게시판
 
 ---
 
@@ -100,7 +100,17 @@ Hobby Hop은 사용자들이 자신의 취미를 등록하고 다양한 형식�
 
 
 ---
- 
+
+
+## 🐇 기술적 의사결정
+[Main DB 결정](https://github.com/hobby-hop/hobby-hop/wiki/AWS-Mysql-RDS-VS-%EB%B3%84%EB%8F%84%EC%9D%98-Mysql-EC2-%EC%9D%B8%EC%8A%A4%ED%84%B4%EC%8A%A4)
+[Github Actions VS Jenkins](https://github.com/hobby-hop/hobby-hop/wiki/AWS-Mysql-RDS-VS-%EB%B3%84%EB%8F%84%EC%9D%98-Mysql-EC2-%EC%9D%B8%EC%8A%A4%ED%84%B4%EC%8A%A4)
+[복합키 사용](https://github.com/hobby-hop/hobby-hop/wiki/AWS-Mysql-RDS-VS-%EB%B3%84%EB%8F%84%EC%9D%98-Mysql-EC2-%EC%9D%B8%EC%8A%A4%ED%84%B4%EC%8A%A4](https://github.com/hobby-hop/hobby-hop/wiki/%EB%B3%B5%ED%95%A9%ED%82%A4-%EC%82%AC%EC%9A%A9)
+[복합키 사용](https://github.com/hobby-hop/hobby-hop/wiki/AWS-Mysql-RDS-VS-%EB%B3%84%EB%8F%84%EC%9D%98-Mysql-EC2-%EC%9D%B8%EC%8A%A4%ED%84%B4%EC%8A%A4](https://github.com/hobby-hop/hobby-hop/wiki/%EB%B3%B5%ED%95%A9%ED%82%A4-%EC%82%AC%EC%9A%A9)](https://github.com/hobby-hop/hobby-hop/wiki/QueryDSL-VS-JPQL)
+---
+
+## 🐇 성과
+---
 
 ## 🐇 API 명세서
 ![스크린샷 2024-01-29 201945](https://github.com/hobby-hop/hobby-hop/assets/148298032/83c34e7e-247d-4200-bd4a-4a76717aa09c)
