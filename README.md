@@ -103,10 +103,12 @@ Hobby Hop은 사용자들이 자신의 취미를 등록하고 다양한 형식�
 
 
 ## 🐇 기술적 의사결정
-[Main DB 결정](https://github.com/hobby-hop/hobby-hop/wiki/AWS-Mysql-RDS-VS-%EB%B3%84%EB%8F%84%EC%9D%98-Mysql-EC2-%EC%9D%B8%EC%8A%A4%ED%84%B4%EC%8A%A4)
-[Github Actions VS Jenkins](https://github.com/hobby-hop/hobby-hop/wiki/AWS-Mysql-RDS-VS-%EB%B3%84%EB%8F%84%EC%9D%98-Mysql-EC2-%EC%9D%B8%EC%8A%A4%ED%84%B4%EC%8A%A4)
-[복합키 사용](https://github.com/hobby-hop/hobby-hop/wiki/AWS-Mysql-RDS-VS-%EB%B3%84%EB%8F%84%EC%9D%98-Mysql-EC2-%EC%9D%B8%EC%8A%A4%ED%84%B4%EC%8A%A4](https://github.com/hobby-hop/hobby-hop/wiki/%EB%B3%B5%ED%95%A9%ED%82%A4-%EC%82%AC%EC%9A%A9)
-[복합키 사용](https://github.com/hobby-hop/hobby-hop/wiki/AWS-Mysql-RDS-VS-%EB%B3%84%EB%8F%84%EC%9D%98-Mysql-EC2-%EC%9D%B8%EC%8A%A4%ED%84%B4%EC%8A%A4](https://github.com/hobby-hop/hobby-hop/wiki/%EB%B3%B5%ED%95%A9%ED%82%A4-%EC%82%AC%EC%9A%A9)](https://github.com/hobby-hop/hobby-hop/wiki/QueryDSL-VS-JPQL)
+
+[Main DB 결정](https://github.com/hobby-hop/hobby-hop/wiki/AWS-Mysql-RDS-VS-%EB%B3%84%EB%8F%84%EC%9D%98-Mysql-EC2-%EC%9D%B8%EC%8A%A4%ED%84%B4%EC%8A%A4)  
+[Github Actions VS Jenkins](https://github.com/hobby-hop/hobby-hop/wiki/AWS-Mysql-RDS-VS-%EB%B3%84%EB%8F%84%EC%9D%98-Mysql-EC2-%EC%9D%B8%EC%8A%A4%ED%84%B4%EC%8A%A4)  
+[복합키 사용](https://github.com/hobby-hop/hobby-hop/wiki/AWS-Mysql-RDS-VS-%EB%B3%84%EB%8F%84%EC%9D%98-Mysql-EC2-%EC%9D%B8%EC%8A%A4%ED%84%B4%EC%8A%A4](https://github.com/hobby-hop/hobby-hop/wiki/%EB%B3%B5%ED%95%A9%ED%82%A4-%EC%82%AC%EC%9A%A9)  
+[복합키 사용](https://github.com/hobby-hop/hobby-hop/wiki/AWS-Mysql-RDS-VS-%EB%B3%84%EB%8F%84%EC%9D%98-Mysql-EC2-%EC%9D%B8%EC%8A%A4%ED%84%B4%EC%8A%A4](https://github.com/hobby-hop/hobby-hop/wiki/%EB%B3%B5%ED%95%A9%ED%82%A4-%EC%82%AC%EC%9A%A9)](https://github.com/hobby-hop/hobby-hop/wiki/QueryDSL-VS-JPQL)  
+
 ---
 
 ## 🐇 성과
