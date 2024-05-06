@@ -11,19 +11,16 @@ import com.hobbyhop.domain.clubmember.service.ClubMemberService;
 import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.global.exception.clubmember.ClubMemberAlreadyJoined;
 import com.hobbyhop.global.exception.clubmember.ClubMemberNotFoundException;
-
 import java.util.List;
 
+import com.hobbyhop.global.exception.clubmember.ClubMemberRoleException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
-@Log4j2
 public class ClubMemberServiceImpl implements ClubMemberService {
 
     private final ClubMemberRepository clubMemberRepository;
@@ -48,9 +45,23 @@ public class ClubMemberServiceImpl implements ClubMemberService {
 
     @Override
     @Transactional
-    public void removeMember(Club club, User user) {
-        ClubMember clubMember = findByClubAndUser(club.getId(), user.getId());
-        clubMemberRepository.delete(clubMember);
+    public void leaveMember(Long clubId, User user, Long userId) {
+        ClubMember requestMember = findByClubAndUser(clubId, user.getId());
+        ClubMember targetClubMember = findByClubAndUser(clubId, userId);
+
+        if(user.getId() != userId) {
+            if(requestMember.getMemberRole() != MemberRole.ADMIN) {
+                throw new ClubMemberRoleException();
+            } else {
+                clubMemberRepository.delete(targetClubMember);
+            }
+        } else {
+            if(requestMember.getMemberRole() != MemberRole.ADMIN) {
+                clubMemberRepository.delete(requestMember);
+            } else {
+                throw new ClubMemberRoleException();
+            }
+        }
     }
 
     @Override
