@@ -7,6 +7,7 @@ import static com.hobbyhop.domain.post.entity.QPost.post;
 import static com.hobbyhop.domain.clubmember.entity.QClubMember.clubMember;
 import static com.hobbyhop.domain.postuser.entity.QPostUser.postUser;
 import static com.querydsl.core.group.GroupBy.groupBy;
+import static com.querydsl.core.types.dsl.Expressions.numberTemplate;
 
 import com.hobbyhop.domain.club.dto.ClubElementVO;
 import com.hobbyhop.domain.club.dto.ClubPageRequestDTO;
@@ -15,11 +16,13 @@ import com.hobbyhop.domain.club.entity.Club;
 import com.hobbyhop.domain.club.repository.custom.ClubRepositoryCustom;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +31,6 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import java.util.List;
 
 public class ClubRepositoryCustomImpl extends QuerydslRepositorySupport implements ClubRepositoryCustom {
-
     private final JPAQueryFactory jpaQueryFactory;
     public ClubRepositoryCustomImpl(JPAQueryFactory jpaQueryFactory) {
         super(Club.class);
@@ -49,12 +51,24 @@ public class ClubRepositoryCustomImpl extends QuerydslRepositorySupport implemen
                                 club.modifiedAt,
                                 club.category.id.as("categoryId")))
                 .from(club)
-                .where(likeKeyword(pageRequestDTO.getKeyword()), eqCategory(pageRequestDTO.getCategoryId()));
+                .where(contains(club.title, pageRequestDTO.getKeyword()), eqCategory(pageRequestDTO.getCategoryId()));
         Pageable pageable = pageRequestDTO.getPageable("id");
         List<ClubResponseDTO> content = getQuerydsl().applyPagination(pageable, query).fetch();
         long totalCount = query.fetchCount();
 
         return new PageImpl<>(content, pageable, totalCount);
+    }
+    private BooleanExpression contains(StringPath target, String searchWord) {
+        if(searchWord == null) {
+            return null;
+        } else if (searchWord.isBlank()) {
+            return null;
+        }
+        final String formattedSearchWord = "\"" + "+" + searchWord + "\"";
+        return numberTemplate(Double.class, "function('match_against', {0}, {1})",
+                target, formattedSearchWord)
+                .gt(0);
+
     }
 
     private BooleanExpression likeKeyword(String keyword){
