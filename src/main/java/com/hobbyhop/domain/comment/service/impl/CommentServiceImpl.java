@@ -3,6 +3,7 @@ package com.hobbyhop.domain.comment.service.impl;
 import com.hobbyhop.domain.clubmember.entity.ClubMember;
 import com.hobbyhop.domain.clubmember.enums.MemberRole;
 import com.hobbyhop.domain.clubmember.service.ClubMemberService;
+import com.hobbyhop.domain.comment.dto.CommentPageRequestDTO;
 import com.hobbyhop.domain.comment.dto.CommentRequestDTO;
 import com.hobbyhop.domain.comment.dto.CommentResponseDTO;
 import com.hobbyhop.domain.comment.entity.Comment;
@@ -12,19 +13,17 @@ import com.hobbyhop.domain.commentuser.service.CommentUserService;
 import com.hobbyhop.domain.post.entity.Post;
 import com.hobbyhop.domain.post.service.PostService;
 import com.hobbyhop.domain.user.entity.User;
+import com.hobbyhop.global.exception.auth.UnAuthorizedModifyException;
 import com.hobbyhop.global.exception.clubmember.ClubMemberNotFoundException;
 import com.hobbyhop.global.exception.comment.CommentNotFoundException;
-import com.hobbyhop.global.exception.common.UnAuthorizedModifyException;
-import com.hobbyhop.global.request.PageRequestDTO;
 import com.hobbyhop.global.response.PageResponseDTO;
 import jakarta.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
@@ -46,7 +45,7 @@ public class CommentServiceImpl implements CommentService {
 
         commentRepository.save(comment);
 
-        return CommentResponseDTO.buildDTO(comment, getLike(comment));
+        return CommentResponseDTO.buildDTO(comment);
     }
 
     @Override
@@ -65,15 +64,17 @@ public class CommentServiceImpl implements CommentService {
         // 상위 댓글에 리플 추가
         comment.getReply().add(reply);
 
-        return CommentResponseDTO.buildDTO(comment, getLike(comment));
+        return CommentResponseDTO.buildDTO(comment);
     }
 
     @Override
     @Transactional
-    public void patchComment(CommentRequestDTO requestDto, Long clubId, Long postId, Long commentId, User user) {
+    public CommentResponseDTO patchComment(CommentRequestDTO requestDto, Long clubId, Long postId, Long commentId, User user) {
         Comment comment = checkAuth(clubId, postId, commentId, user);
 
         comment.changeContent(requestDto.getContent());
+
+        return CommentResponseDTO.buildDTO(comment);
     }
 
     @Override
@@ -88,8 +89,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public PageResponseDTO<CommentResponseDTO> getComments(PageRequestDTO pageRequestDTO, Long postId) {
-        Page<CommentResponseDTO> result = commentRepository.findAllByPostId(pageRequestDTO, postId);
+    public PageResponseDTO<CommentResponseDTO> getComments(CommentPageRequestDTO pageRequestDTO, Long postId, Long commentId) {
+        Page<CommentResponseDTO> result = commentRepository.findAllByPostId(pageRequestDTO, postId, commentId);
 
         return PageResponseDTO.<CommentResponseDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
@@ -111,21 +112,18 @@ public class CommentServiceImpl implements CommentService {
     private Comment buildComment(CommentRequestDTO request, Post post, User user, Comment comment){
         return Comment.builder()
                 .content(request.getContent())
-                .post(post)
                 .user(user)
+                .post(post)
+                .likeCnt(0L)
                 .parent(comment)
                 .reply(new ArrayList<>())
                 .build();
     }
 
-    private int getLike(Comment comment){
-        return commentUserService.countLike(comment);
-    }
-
-    private Map<Long, Comment> makeDelete(Comment comment){
+    Map<Long, Comment> makeDelete(Comment comment){
         Map<Long, Comment> deleteList = new HashMap<>();
 
-        if (!comment.getReply().isEmpty()){
+        if (comment.getReply() != null){
             comment.getReply().forEach((c) -> {
                 Map<Long, Comment> temp = makeDelete(c);
                 deleteList.putAll(temp);
@@ -136,7 +134,7 @@ public class CommentServiceImpl implements CommentService {
         return deleteList;
     }
 
-    private Comment checkAuth(Long clubId, Long postId, Long commentId, User user){
+    Comment checkAuth(Long clubId, Long postId, Long commentId, User user){
         ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
 
         Comment comment = findById(clubId, postId, commentId);

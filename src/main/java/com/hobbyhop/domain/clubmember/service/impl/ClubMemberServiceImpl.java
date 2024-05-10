@@ -11,7 +11,6 @@ import com.hobbyhop.domain.clubmember.service.ClubMemberService;
 import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.global.exception.clubmember.ClubMemberAlreadyJoined;
 import com.hobbyhop.global.exception.clubmember.ClubMemberNotFoundException;
-
 import java.util.List;
 
 import com.hobbyhop.global.exception.clubmember.ClubMemberRoleException;
@@ -22,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class ClubMemberServiceImpl implements ClubMemberService {
 
     private final ClubMemberRepository clubMemberRepository;
@@ -30,12 +28,10 @@ public class ClubMemberServiceImpl implements ClubMemberService {
     @Override
     @Transactional
     public ClubMemberResponseDTO joinClub(Club club, User user, MemberRole memberRole) {
-        // 클럽에 이미 가입되어있는지 확인
         if (isClubMember(club.getId(), user.getId())) {
             throw new ClubMemberAlreadyJoined();
         }
 
-        // 가입시키기
         ClubMember clubMember = ClubMember.builder()
                 .clubMemberPK(ClubMemberPK.builder()
                         .club(club)
@@ -49,9 +45,23 @@ public class ClubMemberServiceImpl implements ClubMemberService {
 
     @Override
     @Transactional
-    public void removeMember(Club club, User user) {
-        ClubMember clubMember = findByClubAndUser(club.getId(), user.getId());
-        clubMemberRepository.delete(clubMember);
+    public void leaveMember(Long clubId, User user, Long userId) {
+        ClubMember requestMember = findByClubAndUser(clubId, user.getId());
+        ClubMember targetClubMember = findByClubAndUser(clubId, userId);
+
+        if(user.getId() != userId) {
+            if(requestMember.getMemberRole() != MemberRole.ADMIN) {
+                throw new ClubMemberRoleException();
+            } else {
+                clubMemberRepository.delete(targetClubMember);
+            }
+        } else {
+            if(requestMember.getMemberRole() != MemberRole.ADMIN) {
+                clubMemberRepository.delete(requestMember);
+            } else {
+                throw new ClubMemberRoleException();
+            }
+        }
     }
 
     @Override
@@ -73,5 +83,10 @@ public class ClubMemberServiceImpl implements ClubMemberService {
     @Override
     public boolean isAdminMember(Long clubId, Long userId) {
         return clubMemberRepository.isAdminMember(clubId, userId);
+    }
+
+    @Override
+    public boolean isMemberLimitReached(Long userId) {
+        return clubMemberRepository.isMemberLimitReached(userId);
     }
 }

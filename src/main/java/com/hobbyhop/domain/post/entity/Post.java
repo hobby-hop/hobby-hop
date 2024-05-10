@@ -1,18 +1,16 @@
 package com.hobbyhop.domain.post.entity;
 
-
 import com.hobbyhop.domain.BaseEntity;
 import com.hobbyhop.domain.club.entity.Club;
 import com.hobbyhop.domain.comment.entity.Comment;
 import com.hobbyhop.domain.user.entity.User;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
@@ -21,7 +19,7 @@ import org.hibernate.annotations.Where;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLDelete(sql = "UPDATE post SET deleted_at = NOW() where id=?")
-@Where(clause = "deleted_at is NULL")
+@SQLRestriction("deleted_at is NULL")
 public class Post extends BaseEntity {
 
     @Id

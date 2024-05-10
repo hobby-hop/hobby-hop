@@ -1,10 +1,10 @@
 package com.hobbyhop.domain.post.controller;
 
 import com.hobbyhop.domain.post.dto.PostModifyRequestDTO;
+import com.hobbyhop.domain.post.dto.PostPageRequestDTO;
 import com.hobbyhop.domain.post.dto.PostRequestDTO;
 import com.hobbyhop.domain.post.s3.S3Service;
 import com.hobbyhop.domain.post.service.PostService;
-import com.hobbyhop.global.request.PageRequestDTO;
 import com.hobbyhop.global.response.ApiResponse;
 import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,13 +27,13 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/api/clubs/{clubId}/posts")
 @RequiredArgsConstructor
-@SecurityRequirement(name = "Bearer Authentication")
 public class PostController {
 
     private final PostService postService;
     private final S3Service s3Service;
 
     @Operation(summary = "게시글 작성")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping
     public ApiResponse<?> makePost(@PathVariable(name = "clubId") Long clubId,
             @RequestBody @Valid PostRequestDTO postRequestDTO,
@@ -43,6 +43,7 @@ public class PostController {
     }
 
     @Operation(summary = "게시글 이미지 업로드")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/{postId}")
     public ApiResponse<?> imageUploadPost(@PathVariable(name = "clubId") Long clubId, @PathVariable(name = "postId") Long postId,
             @RequestParam("file") MultipartFile file,
@@ -53,6 +54,7 @@ public class PostController {
     }
 
     @Operation(summary = "게시글 단일 조회")
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/{postId}")
     public ApiResponse<?> getPostById(@PathVariable(name = "clubId") Long clubId, @PathVariable(name = "postId") Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
@@ -61,12 +63,13 @@ public class PostController {
 
     @Operation(summary = "게시글 전체 조회")
     @GetMapping
-    public ApiResponse<?> getAllPost(PageRequestDTO pageRequestDTO, @PathVariable(name = "clubId") Long clubId) {
+    public ApiResponse<?> getAllPost(PostPageRequestDTO pageRequestDTO, @PathVariable(name = "clubId") Long clubId) {
 
         return ApiResponse.ok(postService.getAllPost(pageRequestDTO, clubId));
     }
 
     @Operation(summary = "게시글 수정")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PatchMapping("/{postId}")
     public ApiResponse<?> modifyPost(@PathVariable(name = "clubId") Long clubId, @PathVariable(name = "postId") Long postId,
             @RequestBody @Valid PostModifyRequestDTO postModifyRequestDTO, @RequestParam(required = false, value = "file") MultipartFile file,
@@ -76,6 +79,7 @@ public class PostController {
     }
 
     @Operation(summary = "게시글 삭제")
+    @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping("/{postId}")
     public ApiResponse<?> deletePost(@PathVariable(name = "clubId") Long clubId, @PathVariable(name = "postId") Long postId,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -85,6 +89,7 @@ public class PostController {
     }
 
     @Operation(summary = "게시글 좋아요")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/{postId}/likes")
     public ApiResponse<?> likePost(@PathVariable(name = "clubId") Long clubId,
             @PathVariable(name = "postId") Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {

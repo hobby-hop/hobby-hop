@@ -4,7 +4,7 @@ import com.hobbyhop.domain.category.dto.CategoryRequestDTO;
 import com.hobbyhop.domain.category.dto.CategoryResponseDTO;
 import com.hobbyhop.domain.category.entity.Category;
 import com.hobbyhop.domain.category.repository.CategoryRepository;
-import com.hobbyhop.domain.category.service.impl.CategoryServiceImpl;
+import com.hobbyhop.global.exception.category.AlreadyExistCategoryException;
 import com.hobbyhop.test.CategoryTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,16 +12,12 @@ import org.junit.jupiter.api.DisplayName;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("[Category]")
@@ -59,27 +55,13 @@ public class CategoryServiceImplTests implements CategoryTest {
         // When & Then
         assertThat(sut.makeCategory(categoryRequestDTO)).isEqualTo(categoryResponseDTO);
     }
-//    @DisplayName("[Create]")
-//    @Test
-//    void category_생성_실패() {
-//        // Given
-//        given(categoryRepository.save(any())).willReturn(category);
-//        given(categoryRepository.findByCategoryName(TEST_CATEGORY_NAME)).willReturn(Optional.of(TEST_CATEGORY));
-//
-//        // When & Then
-//        assertThatCode(() -> sut.makeCategory(categoryRequestDTO)).isInstanceOf(AlreadyExistCategoryException.class);
-//    }
+    @DisplayName("[Create] [Fail]")
+    @Test
+    void category_생성_실패() {
+        // Given
+        given(categoryRepository.existsByCategoryName(TEST_CATEGORY_NAME)).willReturn(true);
 
-//    @DisplayName("[Delete]")
-//    @Test
-//    void category_삭제_성공() {
-//        // Given
-//        given(categoryRepository.findById(TEST_CATEGORY_ID)).willReturn(Optional.of(TEST_CATEGORY));
-//
-//        // When
-//        sut.removeCategory(TEST_CATEGORY_ID);
-//
-//        // Then
-//        verify(categoryRepository, times(1)).delete(TEST_CATEGORY);
-//    }
+        // When & Then
+        assertThatCode(() -> sut.makeCategory(categoryRequestDTO)).isInstanceOf(AlreadyExistCategoryException.class);
+    }
 }

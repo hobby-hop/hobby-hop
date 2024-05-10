@@ -13,7 +13,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.SQLRestriction;
 
 
 @Entity
@@ -22,7 +22,7 @@ import org.hibernate.annotations.Where;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLDelete(sql = "UPDATE post_user SET deleted_at = NOW() where post_id=? and user_id=?")
-@Where(clause = "deleted_at is NULL")
+@SQLRestriction("deleted_at is NULL")
 public class PostUser {
 
     @EmbeddedId

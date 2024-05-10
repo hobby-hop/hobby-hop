@@ -6,11 +6,11 @@ import static com.hobbyhop.domain.post.entity.QPost.post;
 import static com.hobbyhop.domain.postuser.entity.QPostUser.postUser;
 import static com.hobbyhop.domain.user.entity.QUser.user;
 
+import com.hobbyhop.domain.post.dto.PostPageRequestDTO;
 import com.hobbyhop.domain.post.dto.PostPageResponseDTO;
 import com.hobbyhop.domain.post.dto.PostResponseDTO;
 import com.hobbyhop.domain.post.entity.Post;
 import com.hobbyhop.domain.post.repository.custom.PostRepositoryCustom;
-import com.hobbyhop.global.request.PageRequestDTO;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -65,7 +65,7 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
     }
 
     @Override
-    public Page<PostResponseDTO> findAllByClubIdAndKeyword(PageRequestDTO pageRequestDTO, Long clubId){
+    public Page<PostResponseDTO> findAllByClubIdAndKeyword(PostPageRequestDTO pageRequestDTO, Long clubId){
         List<PostResponseDTO> content = queryFactory
                 .select(
                         Projections.constructor(

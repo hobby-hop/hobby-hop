@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.sql.Timestamp;
 
@@ -17,7 +17,7 @@ import java.sql.Timestamp;
 @Builder
 @Getter
 @SQLDelete(sql = "UPDATE category SET deleted_at = NOW() where id=?")
-@Where(clause = "deleted_at is NULL")
+@SQLRestriction("deleted_at is NULL")
 public class Category extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -3,22 +3,29 @@ package com.hobbyhop.domain.comment.entity;
 import com.hobbyhop.domain.BaseEntity;
 import com.hobbyhop.domain.post.entity.Post;
 import com.hobbyhop.domain.user.entity.User;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import java.sql.Timestamp;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Where(clause = "deleted_at is NULL")
+@SQLRestriction("deleted_at is NULL")
 public class Comment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +40,9 @@ public class Comment extends BaseEntity {
     @ManyToOne
     private Post post;
 
+    @Column(nullable = false)
+    private Long likeCnt;
+
     @Column(name="deleted_at")
     private Timestamp deletedAt;
 
@@ -40,11 +50,14 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "parent_id")
     private Comment parent;
 
-    // 댓글 하나에 여러 개의 리플이 붙음
     @OneToMany(mappedBy = "parent")
     private List<Comment> reply;
 
     public void changeContent(String content) {
         this.content = content;
     }
+
+    public void addLike(){likeCnt++;}
+
+    public void subLike(){likeCnt--;}
 }

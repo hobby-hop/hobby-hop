@@ -1,12 +1,10 @@
 package com.hobbyhop.domain.comment.dto;
 
 import com.hobbyhop.domain.comment.entity.Comment;
+import java.sql.Timestamp;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-
-import java.sql.Timestamp;
-import java.util.List;
 
 @Data
 @Builder
@@ -14,16 +12,15 @@ import java.util.List;
 public class CommentResponseDTO {
     String content;
     String writer;
-    int like;
+    Long like;
     Timestamp createdAt;
     Long id;
-    List<CommentResponseDTO> reply;
 
-    public static CommentResponseDTO buildDTO(Comment comment, int like){
+    public static CommentResponseDTO buildDTO(Comment comment){
         return CommentResponseDTO.builder()
                 .content(comment.getContent())
                 .writer(comment.getUser().getUsername())
-                .like(like)
+                .like(comment.getLikeCnt())
                 .createdAt(comment.getCreatedAt())
                 .id(comment.getId())
                 .build();

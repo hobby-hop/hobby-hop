@@ -5,7 +5,7 @@ import com.hobbyhop.domain.category.entity.Category;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.sql.Timestamp;
 
@@ -15,11 +15,12 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Entity
 @SQLDelete(sql = "UPDATE club SET deleted_at = NOW() where id=?")
-@Where(clause = "deleted_at is NULL")
+@SQLRestriction("deleted_at is NULL")
 public class Club extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String title;
     private String content;
 

@@ -13,54 +13,41 @@ import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
+    private static final String AUTHORIZATION_HEADER = JwtUtil.AUTHORIZATION_HEADER;
 
     @Override
     public void signup(SignupRequestDTO signupRequestDTO) {
         try {
-            deletedUserVerification(signupRequestDTO);
+            withdrawnUserVerification(signupRequestDTO);
             validateExistingUser(signupRequestDTO);
-
-            User user = User.builder()
-                .username(signupRequestDTO.getUsername())
-                .password(passwordEncoder.encode(signupRequestDTO.getPassword()))
-                .email(signupRequestDTO.getEmail())
-                .info(signupRequestDTO.getInfo())
-                .role(UserRoleEnum.USER)
-                .build();
-
+            User user = signupUser(signupRequestDTO);
             userRepository.save(user);
-        }
-        catch (DataIntegrityViolationException e) {
+        } catch (DataIntegrityViolationException e) {
             throw new DuplicateEntryException();
         }
     }
 
     @Override
     public void login(LoginRequestDTO loginRequestDTO, HttpServletResponse response) {
-        String email = loginRequestDTO.getEmail();
-        String password = loginRequestDTO.getPassword();
-
-        User user = userRepository.findByEmail(email)
-            .orElseThrow(NotFoundUserException::new);
+        User user = userRepository.findByEmail(loginRequestDTO.getEmail())
+                .orElseThrow(NotFoundUserException::new);
         String username = user.getUsername();
 
-        validatePassword(user, password);
+        validatePassword(user, loginRequestDTO.getPassword());
 
         String accessToken = jwtUtil.createAccessToken(username);
-        response.setHeader("Authorization", accessToken);
+        response.setHeader(AUTHORIZATION_HEADER, accessToken);
         jwtUtil.saveAccessTokenByUsername(username, accessToken);
 
         String refreshToken = jwtUtil.createRefreshToken(username);
@@ -69,25 +56,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        String accessToken = httpServletRequest.getHeader(JwtUtil.AUTHORIZATION_HEADER);
+        String accessToken = httpServletRequest.getHeader(AUTHORIZATION_HEADER);
+        processToken(accessToken);
 
-        if (accessToken != null && jwtUtil.validateToken(accessToken.substring(7))) {
-            jwtUtil.removeAccessToken(accessToken);
-            jwtUtil.removeRefreshToken(accessToken);
-        } else {
-            String responseHeaderAccessToken = httpServletResponse.getHeader(JwtUtil.AUTHORIZATION_HEADER);
+        String responseHeaderAccessToken = httpServletResponse.getHeader(AUTHORIZATION_HEADER);
+        processToken(responseHeaderAccessToken);
 
-            if (responseHeaderAccessToken != null) {
-                jwtUtil.removeAccessToken(responseHeaderAccessToken);
-                jwtUtil.removeRefreshToken(responseHeaderAccessToken);
-            }
-        }
-        httpServletResponse.setHeader(JwtUtil.AUTHORIZATION_HEADER, "logged-out");
+        httpServletResponse.setHeader(AUTHORIZATION_HEADER, "logged-out");
     }
 
     @Override
     public void withdraw(WithdrawalRequestDTO withdrawalRequestDTO, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        String accessToken = httpServletRequest.getHeader(JwtUtil.AUTHORIZATION_HEADER);
+        String accessToken = httpServletRequest.getHeader(AUTHORIZATION_HEADER);
 
         if (accessToken == null || !jwtUtil.validateToken(accessToken.substring(7))) {
             throw new InvalidJwtException();
@@ -96,7 +76,7 @@ public class UserServiceImpl implements UserService {
         String username = claims.getSubject();
 
         User user = userRepository.findByUsername(username)
-            .orElseThrow(NotFoundUserException::new);
+                .orElseThrow(NotFoundUserException::new);
 
         validatePassword(user, withdrawalRequestDTO.getPassword());
 
@@ -104,57 +84,41 @@ public class UserServiceImpl implements UserService {
         jwtUtil.removeRefreshToken(accessToken);
         userRepository.delete(user);
 
-        httpServletResponse.setHeader(jwtUtil.AUTHORIZATION_HEADER, "withdrawal");
+        httpServletResponse.setHeader(AUTHORIZATION_HEADER, "withdrawal");
     }
 
     @Override
     public MyProfileResponseDTO getMyProfile(UserDetailsImpl userDetails, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
-        User user = userRepository.findById(userDetails.getUser().getId())
-            .orElseThrow(NotFoundUserException::new);
-
+        User user = getUserById(userDetails.getUser().getId());
         return MyProfileResponseDTO.fromEntity(user);
     }
 
     @Override
     public OtherProfileResponseDTO getOtherProfile(Long otherUserId, UserDetailsImpl userDetails, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
-        User user = userRepository.findById(otherUserId)
-            .orElseThrow(NotFoundUserException::new);
-
+        User user = getUserById(userDetails.getUser().getId());
         return OtherProfileResponseDTO.fromEntity(user);
     }
 
     @Override
     @Transactional
-    public void updateProfile(UpdateProfileRequestDTO updateProfileRequestDTO, UserDetailsImpl userDetails,
-        HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
-        User user = userRepository.findById(userDetails.getUser().getId())
-            .orElseThrow(NotFoundUserException::new);
-
+    public void updateProfile(UpdateProfileRequestDTO updateProfileRequestDTO, UserDetailsImpl userDetails, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
+        User user = getUserById(userDetails.getUser().getId());
         validatePassword(user, updateProfileRequestDTO.getOldPassword());
-        if(updateProfileRequestDTO.getNewPassword() != null) {
 
-           if (updateProfileRequestDTO.getNewPassword().equals(updateProfileRequestDTO.getOldPassword())) {
-               throw new MatchedPasswordException();
-           }
-
-           if (!updateProfileRequestDTO.getNewPassword().equals(updateProfileRequestDTO.getConfirmPassword())) {
-               throw new MismatchedNewPasswordException();
-           }
-           user.changePassword(passwordEncoder.encode(updateProfileRequestDTO.getNewPassword()));
+        if (updateProfileRequestDTO.getNewPassword() != null) {
+            validateNewPassword(updateProfileRequestDTO.getOldPassword(), updateProfileRequestDTO.getNewPassword(), updateProfileRequestDTO.getConfirmPassword());
+            user.changePassword(passwordEncoder.encode(updateProfileRequestDTO.getNewPassword()));
         }
-        if(updateProfileRequestDTO.getInfo() != null) {
+
+        if (updateProfileRequestDTO.getInfo() != null) {
             user.changeInfo(updateProfileRequestDTO.getInfo());
         }
 
-        String requestHeaderAccessToken = httpServletRequest.getHeader(JwtUtil.AUTHORIZATION_HEADER);
-        String newAccessToken = jwtUtil.createAccessToken(user.getUsername());
-        if (jwtUtil.validateToken(requestHeaderAccessToken.substring(7))) {
-            jwtUtil.rebaseToken(newAccessToken, requestHeaderAccessToken);
-        } else {
-            String responseHeaderAccessToken = httpServletResponse.getHeader(JwtUtil.AUTHORIZATION_HEADER);
-            jwtUtil.rebaseToken(newAccessToken, responseHeaderAccessToken);
-        }
-        httpServletResponse.setHeader(JwtUtil.AUTHORIZATION_HEADER, newAccessToken);
+        updateAccessToken(httpServletRequest, httpServletResponse, user);
+    }
+
+    private User getUserById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(NotFoundUserException::new);
     }
 
     private void validatePassword(User user, String password) {
@@ -163,7 +127,17 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private void deletedUserVerification (SignupRequestDTO signupRequestDTO) {
+    private User signupUser(SignupRequestDTO signupRequestDTO) {
+        return User.builder()
+                .username(signupRequestDTO.getUsername())
+                .password(passwordEncoder.encode(signupRequestDTO.getPassword()))
+                .email(signupRequestDTO.getEmail())
+                .info(signupRequestDTO.getInfo())
+                .role(UserRoleEnum.USER)
+                .build();
+    }
+
+    private void withdrawnUserVerification(SignupRequestDTO signupRequestDTO) {
         if (userRepository.existsByEmailAndDeletedAtIsNull(signupRequestDTO.getEmail())) {
             throw new AlreadyExistEmailException();
         }
@@ -181,7 +155,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private void validateExistingUser (SignupRequestDTO signupRequestDTO) {
+    private void validateExistingUser(SignupRequestDTO signupRequestDTO) {
         if (userRepository.existsByUsername(signupRequestDTO.getUsername())) {
             throw new NotAvailableUsernameException();
         }
@@ -193,5 +167,35 @@ public class UserServiceImpl implements UserService {
         if (!signupRequestDTO.getConfirmPassword().equals(signupRequestDTO.getPassword())) {
             throw new MismatchedPasswordException();
         }
+    }
+
+    private void processToken(String token) {
+        if (token != null && jwtUtil.validateToken(token.substring(7))) {
+            jwtUtil.removeAccessToken(token);
+            jwtUtil.removeRefreshToken(token);
+        }
+    }
+
+    private void validateNewPassword(String oldPassword, String newPassword, String confirmPassword) {
+        if (newPassword.equals(oldPassword)) {
+            throw new MatchedPasswordException();
+        }
+
+        if (!newPassword.equals(confirmPassword)) {
+            throw new MismatchedNewPasswordException();
+        }
+    }
+
+    private void updateAccessToken(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, User user) {
+        String requestHeaderAccessToken = httpServletRequest.getHeader(AUTHORIZATION_HEADER);
+        String newAccessToken = jwtUtil.createAccessToken(user.getUsername());
+
+        if (jwtUtil.validateToken(requestHeaderAccessToken.substring(7))) {
+            jwtUtil.rebaseToken(newAccessToken, requestHeaderAccessToken);
+        } else {
+            String responseHeaderAccessToken = httpServletResponse.getHeader(AUTHORIZATION_HEADER);
+            jwtUtil.rebaseToken(newAccessToken, responseHeaderAccessToken);
+        }
+        httpServletResponse.setHeader(AUTHORIZATION_HEADER, newAccessToken);
     }
 }

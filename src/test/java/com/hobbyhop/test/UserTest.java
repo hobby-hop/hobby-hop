@@ -1,6 +1,7 @@
 package com.hobbyhop.test;
 
 import com.hobbyhop.domain.user.entity.User;
+import com.hobbyhop.domain.user.enums.UserRoleEnum;
 
 public interface UserTest {
 
@@ -28,6 +29,7 @@ public interface UserTest {
                     .username(TEST_USER_NAME)
                     .password(TEST_USER_PASSWORD)
                     .email(TEST_USER_EMAIL)
+                    .role(UserRoleEnum.USER)
                     .build();
 
     User TEST_OTHER_USER =

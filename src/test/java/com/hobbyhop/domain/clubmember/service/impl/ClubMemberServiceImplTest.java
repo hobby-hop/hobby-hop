@@ -1,9 +1,12 @@
 package com.hobbyhop.domain.clubmember.service.impl;
 
+import com.hobbyhop.domain.clubmember.dto.ClubMemberResponseDTO;
 import com.hobbyhop.domain.clubmember.entity.ClubMember;
 import com.hobbyhop.domain.clubmember.enums.MemberRole;
 import com.hobbyhop.domain.clubmember.pk.ClubMemberPK;
 import com.hobbyhop.domain.clubmember.repository.ClubMemberRepository;
+import com.hobbyhop.global.exception.clubmember.ClubMemberAlreadyJoined;
+import com.hobbyhop.global.exception.clubmember.ClubMemberRoleException;
 import com.hobbyhop.test.ClubTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -34,6 +37,7 @@ class ClubMemberServiceImplTest implements ClubTest {
     @Mock
     private ClubMemberRepository clubMemberRepository;
     private ClubMember clubMember;
+    private ClubMember adminClubMember;
     private ClubMemberPK clubMemberPk;
 
     @BeforeEach
@@ -42,10 +46,13 @@ class ClubMemberServiceImplTest implements ClubTest {
             .club(TEST_CLUB)
             .user(TEST_USER)
             .build();
-
     clubMember = ClubMember.builder()
             .clubMemberPK(clubMemberPk)
             .memberRole(MemberRole.MEMBER)
+            .build();
+    adminClubMember = ClubMember.builder()
+            .clubMemberPK(clubMemberPk)
+            .memberRole(MemberRole.ADMIN)
             .build();
     }
 
@@ -55,20 +62,27 @@ class ClubMemberServiceImplTest implements ClubTest {
         // Given
         given(clubMemberRepository.save(any())).willReturn(clubMember);
         // When
-        sut.joinClub(TEST_CLUB, TEST_USER, MemberRole.MEMBER);
-
+        ClubMemberResponseDTO clubMemberResponseDTO = sut.joinClub(TEST_CLUB, TEST_USER, MemberRole.MEMBER);
         // Then
+        assertThat(clubMemberResponseDTO.getClubId()).isEqualTo(TEST_CLUB_ID);
+    }
+    @DisplayName("[Join] [Fail]")
+    @Test
+    void clubMember_가입_이미_가입된_모임으로인한_실패() {
+        // Given
+        given(clubMemberRepository.isClubMember(TEST_CLUB_ID, TEST_USER_ID)).willReturn(true);
 
-//        assertThat(clubMemberResponseDTO.getClubId()).isEqualTo(TEST_CLUB_ID);
+        // When & Then
+        assertThatCode(() -> sut.joinClub(TEST_CLUB, TEST_USER, MemberRole.MEMBER)).isInstanceOf(ClubMemberAlreadyJoined.class);
     }
     @DisplayName("[Remove]")
     @Test
-    void clubMember_삭제_성공() {
+    void clubMember_탈퇴_성공() {
         // Given
         willDoNothing().given(clubMemberRepository).delete(clubMember);
         given(clubMemberRepository.findByClubMemberPK_Club_IdAndClubMemberPK_User_Id(TEST_CLUB_ID, TEST_USER_ID)).willReturn(Optional.of(clubMember));
         // When
-        sut.removeMember(TEST_CLUB, TEST_USER);
+        sut.leaveMember(TEST_CLUB_ID, TEST_USER, TEST_USER_ID);
         // Then
         verify(clubMemberRepository, times(1)).delete(clubMember);
     }

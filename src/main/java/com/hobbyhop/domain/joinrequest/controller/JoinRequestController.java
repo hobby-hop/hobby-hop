@@ -1,7 +1,7 @@
 package com.hobbyhop.domain.joinrequest.controller;
 
+import com.hobbyhop.domain.joinrequest.dto.JoinPageRequestDTO;
 import com.hobbyhop.domain.joinrequest.dto.JoinRequestDTO;
-import com.hobbyhop.domain.joinrequest.dto.JoinResponseDTO;
 import com.hobbyhop.domain.joinrequest.service.JoinRequestService;
 import com.hobbyhop.global.response.ApiResponse;
 import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
@@ -10,8 +10,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,9 +27,9 @@ public class JoinRequestController {
 
     @Operation(summary = "가입 신청 조회")
     @GetMapping
-    public ApiResponse<?> getRequests(@PathVariable("clubId") Long clubId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ApiResponse<?> getAllRequests(@PathVariable("clubId") Long clubId, JoinPageRequestDTO pageRequestDTO, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        return ApiResponse.ok(joinRequestService.getRequestByClub(clubId, userDetails.getUser()));
+        return ApiResponse.ok(joinRequestService.getAllRequests(clubId,pageRequestDTO, userDetails.getUser()));
     }
 
     @Operation(summary = "가입 신청에 대한 처리")

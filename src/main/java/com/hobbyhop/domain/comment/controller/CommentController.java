@@ -1,8 +1,8 @@
 package com.hobbyhop.domain.comment.controller;
 
+import com.hobbyhop.domain.comment.dto.CommentPageRequestDTO;
 import com.hobbyhop.domain.comment.dto.CommentRequestDTO;
 import com.hobbyhop.domain.comment.service.CommentService;
-import com.hobbyhop.global.request.PageRequestDTO;
 import com.hobbyhop.global.response.ApiResponse;
 import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,7 +10,14 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,10 +40,14 @@ public class CommentController {
 
     @Operation(summary = "댓글 조회")
     @GetMapping
-    public ApiResponse<?> getComments(PageRequestDTO pageRequestDTO, @PathVariable("postId") Long postId){
-        // 호출시 ?page=보고 싶은 페이지&size=페이지에 들어갈 댓글 숫자 로 호출
-        // ex) 2페이지에서 5개씩 보고 싶다. http://localhost:8080/api/groups/{groupId}/posts/{postId}/comments/sorted/1?page=2&size=5
-        return ApiResponse.ok(commentService.getComments(pageRequestDTO, postId));
+    public ApiResponse<?> getComments(CommentPageRequestDTO pageRequestDTO, @PathVariable("clubId") Long clubId, @PathVariable("postId") Long postId){
+        return ApiResponse.ok(commentService.getComments(pageRequestDTO, postId, null));
+    }
+
+    @Operation(summary = "대댓글 조회")
+    @GetMapping("/{commentId}")
+    public ApiResponse<?> getComments(CommentPageRequestDTO pageRequestDTO, @PathVariable("clubId") Long clubId, @PathVariable("postId") Long postId, @PathVariable("commentId") Long commentId){
+        return ApiResponse.ok(commentService.getComments(pageRequestDTO, postId, commentId));
     }
 
     @Operation(summary = "댓글 수정")

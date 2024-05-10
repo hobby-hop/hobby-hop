@@ -31,4 +31,19 @@ public class ClubMemberRepositoryCustomImpl implements ClubMemberRepositoryCusto
 
         return i != null;
     }
+
+    @Override
+    public boolean isMemberLimitReached(Long userId) {
+        int limitCount = 9;
+        long i = jpaQueryFactory
+                .selectOne()
+                .from(clubMember)
+                .where(clubMember.clubMemberPK.user.id.eq(userId))
+                .fetchCount();
+
+        if (i >= limitCount) {
+            return true;
+        }
+        return false;
+    }
 }
