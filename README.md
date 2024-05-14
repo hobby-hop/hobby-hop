@@ -82,8 +82,7 @@ Hobby Hop은 사용자들이 자신의 취미를 등록하고 다양한 형식�
 
 ## 🐇 프로젝트 아키텍처
 
-![image](https://github.com/hobby-hop/hobby-hop/assets/45251507/8b773287-95aa-4088-bc2b-3b664285f79c)
-
+![hobby-hob](https://github.com/hobby-hop/hobby-hop/assets/108499717/b8923cfc-a720-464a-b0e3-6ebccb22bf36)
 
 
 ---
