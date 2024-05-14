@@ -55,13 +55,13 @@ Hobby Hop은 사용자들이 자신의 취미를 등록하고 다양한 형식�
 - **송지헌** : 팀원   - 와이어 프레임, 대댓글, 프론트 구조 제작
 - **정유진** : 팀원   - ERD 설계, 유저, 시큐리티, 배포
 
-이름 | 역할 | Github | 블로그 
---|--|--|--
-권준혁 | 팀장 | [https://github.com/jh10253267](https://github.com/jh10253267) | [https://github.com/jh10253267/TIL](https://github.com/jh10253267/TIL)
-홍효정 | 부팀장 | [https://github.com/dearel4416](https://github.com/dearel4416) | [https://javach1p.tistory.com/](https://javach1p.tistory.com/)
-김한준 | 팀원 | [https://github.com/wkdehf217](https://github.com/wkdehf217) | [https://velog.io/@wkdehf217/posts](https://velog.io/@wkdehf217/posts)
-송지헌 | 팀원 | 공사중 | [https://github.com/pepsisong](https://github.com/pepsisong)
-정유진 | 팀원 | [https://github.com/kkamjjing2](https://github.com/kkamjjing2) | [https://kkamjjing.tistory.com/](https://kkamjjing.tistory.com/)
+이름 | 역할 | Github | 블로그 | 파트
+--|--|--|--|--
+권준혁 | 팀장 | [https://github.com/jh10253267](https://github.com/jh10253267) | [https://github.com/jh10253267/TIL](https://github.com/jh10253267/TIL) | 그룹, 배포, 프론트
+홍효정 | 부팀장 | [https://github.com/dearel4416](https://github.com/dearel4416) | [https://javach1p.tistory.com/](https://javach1p.tistory.com/) | 댓글, 성능 개선, 코드 퀄리티 개선 및 컨벤션 점검
+김한준 | 팀원 | [https://github.com/wkdehf217](https://github.com/wkdehf217) | [https://velog.io/@wkdehf217/posts](https://velog.io/@wkdehf217/posts) | 게시글, 배포, 성능테스트, CI/CD
+송지헌 | 팀원 | 공사중 | [https://github.com/pepsisong](https://github.com/pepsisong) | 와이어 프레임, 대댓글, 프론트 구조 제작
+정유진 | 팀원 | [https://github.com/kkamjjing2](https://github.com/kkamjjing2) | [https://kkamjjing.tistory.com/](https://kkamjjing.tistory.com/) |  ERD 설계, 유저, 시큐리티, 배포
 
 
 ---
@@ -81,8 +81,6 @@ Hobby Hop은 사용자들이 자신의 취미를 등록하고 다양한 형식�
 - **Server** : AWS EC2, AWS S3
 - **DataBase** : AWS RDS, H2, JPQL, MySQL, Redis 7.2.4
 - **Container distribution** : Docker
-- **아이디어 회의** : Slack, Zep, Notion
-
 
 ---
 
@@ -117,6 +115,12 @@ Hobby Hop은 사용자들이 자신의 취미를 등록하고 다양한 형식�
 [복합키 사용](https://github.com/hobby-hop/hobby-hop/wiki/%EB%B3%B5%ED%95%A9%ED%82%A4-%EC%82%AC%EC%9A%A9)    
 [QueryDSL VS JPQL](https://github.com/hobby-hop/hobby-hop/wiki/QueryDSL-VS-JPQL)
 
+
+---
+
+## 트러블슈팅
+[Comment Like 기능](https://github.com/hobby-hop/hobby-hop/wiki/Comment-Like-%EA%B8%B0%EB%8A%A5)  
+[모임 카테고리 자료형 Enum VS String](https://github.com/hobby-hop/hobby-hop/wiki/%EB%AA%A8%EC%9E%84-%EC%B9%B4%ED%85%8C%EA%B3%A0%EB%A6%AC-%EC%9E%90%EB%A3%8C%ED%98%95)  
 
 ---
 
