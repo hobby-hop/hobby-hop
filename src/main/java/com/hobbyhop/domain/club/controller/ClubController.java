@@ -60,12 +60,4 @@ public class ClubController {
         clubService.removeClubById(clubId, userDetails.getUser());
         return ApiResponse.ok("삭제 성공");
     }
-
-    @Operation(summary = "모임 탈퇴")
-    @SecurityRequirement(name = "Bearer Authentication")
-    @DeleteMapping("/{clubId}/clubmembers")
-    public ApiResponse<?> leaveClub(@PathVariable("clubId") Long clubId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        clubService.removeMember(clubId, userDetails.getUser());
-        return ApiResponse.ok("탈퇴 완료");
-    }
 }

@@ -27,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class ClubServiceImpl implements ClubService {
 
     private final ClubRepository clubRepository;
@@ -54,7 +53,6 @@ public class ClubServiceImpl implements ClubService {
 
     @Override
     public Long getClubCount(Long clubId) {
-
         return clubRepository.findByClubId(clubId);
     }
 
@@ -106,11 +104,6 @@ public class ClubServiceImpl implements ClubService {
                 clubMember.getClubMemberPK().getClub())).collect(Collectors.toList());
     }
 
-    @Override
-    public void removeMember(Long clubId, User user){
-        Club club = findClub(clubId);
-        clubMemberService.removeMember(club, user);
-    }
 
     @Override
     public Club findClub(Long clubId) {
