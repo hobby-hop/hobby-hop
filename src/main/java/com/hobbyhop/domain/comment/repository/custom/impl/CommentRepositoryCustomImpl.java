@@ -14,18 +14,19 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
 public class CommentRepositoryCustomImpl extends QuerydslRepositorySupport implements CommentRepositoryCustom {
-
     private final JPAQueryFactory jpaQueryFactory;
 
     public CommentRepositoryCustomImpl(JPAQueryFactory jpaQueryFactory) {
@@ -34,7 +35,7 @@ public class CommentRepositoryCustomImpl extends QuerydslRepositorySupport imple
     }
 
     @Override
-    public Optional<Comment> findById(Long clubId, Long postId, Long commentId){
+    public Optional<Comment> findById(Long clubId, Long postId, Long commentId) {
         return Optional.ofNullable(jpaQueryFactory
                 .selectFrom(comment)
                 .join(post).fetchJoin()
@@ -45,14 +46,14 @@ public class CommentRepositoryCustomImpl extends QuerydslRepositorySupport imple
 
     @Override
     public Page<CommentResponseDTO> findAllByPostId(CommentPageRequestDTO pageRequestDTO, Long postId, Long parent) {
-            JPAQuery<CommentResponseDTO> query = jpaQueryFactory
-                    .select(
-                            Projections.constructor(
-                                    CommentResponseDTO.class,
-                                    comment.content,
-                                    user.username,
-                                    comment.likeCnt,
-                                    comment.createdAt,
+        JPAQuery<CommentResponseDTO> query = jpaQueryFactory
+                .select(
+                        Projections.constructor(
+                                CommentResponseDTO.class,
+                                comment.content,
+                                user.username,
+                                comment.likeCnt,
+                                comment.createdAt,
                                 comment.id
                         )
                 )
@@ -67,8 +68,8 @@ public class CommentRepositoryCustomImpl extends QuerydslRepositorySupport imple
         return new PageImpl<>(content, pageable, totalCount);
     }
 
-    private BooleanExpression eqParentId(Long parent){
-        if(parent == null){
+    private BooleanExpression eqParentId(Long parent) {
+        if (parent == null) {
             return null;
         }
         return comment.parent.id.eq(parent);

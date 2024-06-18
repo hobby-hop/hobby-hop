@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
+
 import java.sql.Timestamp;
 
 @Entity
@@ -19,11 +20,12 @@ import java.sql.Timestamp;
 @SQLDelete(sql = "UPDATE club_member SET deleted_at = NOW() where club_id=? and user_id=?")
 @SQLRestriction("deleted_at is NULL")
 public class ClubMember {
-
     @EmbeddedId
     private ClubMemberPK clubMemberPK;
+
     @Enumerated(EnumType.STRING)
     private MemberRole memberRole;
+
     @Column(name = "deleted_at")
     private Timestamp deletedAt;
 }

@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/clubs")
-
 public class ClubController {
     private final ClubService clubService;
 

@@ -20,25 +20,28 @@ public class Club extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(unique = true)
     private String title;
+
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @Column(name="deleted_at")
+    @Column(name = "deleted_at")
     private Timestamp deletedAt;
 
     public void changeTitle(String title) {
         this.title = title;
     }
+
     public void changeContent(String content) {
         this.content = content;
     }
+
     public void changeCategory(Category category) {
         this.category = category;
     }
-
 }

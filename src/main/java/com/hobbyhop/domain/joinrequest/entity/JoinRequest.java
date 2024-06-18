@@ -25,12 +25,15 @@ public class JoinRequest extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne
     @JoinColumn(name = "send_user_id")
     private User user;
+
     @ManyToOne
     @JoinColumn(name = "club_id")
     private Club club;
+
     @Enumerated(EnumType.STRING)
     private JoinRequestStatus status;
 
@@ -40,5 +43,4 @@ public class JoinRequest extends BaseEntity {
     public void changeStatus(JoinRequestStatus status) {
         this.status = status;
     }
-
 }

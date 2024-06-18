@@ -28,7 +28,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
-
     private final ClubService clubService;
     private final PostUserService postUserService;
     private final PostRepository postRepository;
@@ -43,7 +42,6 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public PostResponseDTO makePost(User user, Long clubId, PostRequestDTO postRequestDTO) {
-
         if(!clubMemberService.isClubMember(clubId, user.getId()))
             throw new ClubMemberNotFoundException();
 
@@ -53,7 +51,6 @@ public class PostServiceImpl implements PostService {
 
         Long postNumber = clubService.getClubCount(clubId) + 1;
 
-
         Post post = Post.builder()
                 .postTitle(postRequestDTO.getPostTitle())
                 .postContent(postRequestDTO.getPostContent())
@@ -62,7 +59,6 @@ public class PostServiceImpl implements PostService {
                 .user(user)
                 .likeCnt(0L)
                 .build();
-
         postRepository.save(post);
 
         return PostResponseDTO.fromEntity(post);
@@ -71,12 +67,10 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public void imageUploadPost(User user, Long clubId, Long postId, MultipartFile file) {
-
         if(!clubMemberService.isClubMember(clubId, user.getId()))
             throw new ClubMemberNotFoundException();
 
         Post post = findAndCheckPostAndClub(clubId, postId);
-
         if(!post.getUser().getId().equals(user.getId()))
             throw new PostNotCorrespondUser();
 
@@ -88,7 +82,6 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostResponseDTO getPostById(User user, Long clubId, Long postId) {
-
         if(!clubMemberService.isClubMember(clubId, user.getId()))
             throw new ClubMemberNotFoundException();
 
@@ -98,9 +91,7 @@ public class PostServiceImpl implements PostService {
     }
 
     public Post findAndCheckPostAndClub(Long clubId, Long postId){
-
         Club club = clubService.findClub(clubId);
-
         Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
 
         if(!club.getId().equals(post.getClub().getId())){
@@ -125,32 +116,26 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public PostResponseDTO modifyPost(User user, Long clubId, Long postId, MultipartFile file, PostModifyRequestDTO postModifyRequestDTO) {
-
         if(!clubMemberService.isClubMember(clubId, user.getId()))
             throw new ClubMemberNotFoundException();
 
         Post post = findAndCheckPostAndClub(clubId, postId);
-
         if(!post.getUser().getId().equals(user.getId()))
             throw new PostNotCorrespondUser();
 
         String originFilename = null;
         String savedFilename = null;
 
-
         if(file != null && !file.isEmpty()){
             originFilename = s3Service.saveFile(file);
             savedFilename = UUID.randomUUID() + "_" + originFilename;
         }
-
         if(postModifyRequestDTO.getPostTitle() != null) {
             post.changeTitle(postModifyRequestDTO.getPostTitle());
         }
-
         if(postModifyRequestDTO.getPostContent() != null) {
             post.changeContent(postModifyRequestDTO.getPostContent());
         }
-
         if(originFilename != null) {
             post.changeImageUrl(originFilename, savedFilename);
         }
@@ -161,12 +146,10 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public void deletePost(User user, Long clubId, Long postId){
-
         if(!clubMemberService.isClubMember(clubId, user.getId()))
             throw new ClubMemberNotFoundException();
 
         Post post = findAndCheckPostAndClub(clubId, postId);
-
         if(!post.getUser().getId().equals(user.getId()))
             throw new PostNotCorrespondUser();
 

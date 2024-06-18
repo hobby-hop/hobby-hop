@@ -33,6 +33,7 @@ public class UserServiceImpl implements UserService {
             validateExistingUser(signupRequestDTO);
             User user = signupUser(signupRequestDTO);
             userRepository.save(user);
+
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateEntryException();
         }
@@ -43,7 +44,6 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmail(loginRequestDTO.getEmail())
                 .orElseThrow(NotFoundUserException::new);
         String username = user.getUsername();
-
         validatePassword(user, loginRequestDTO.getPassword());
 
         String accessToken = jwtUtil.createAccessToken(username);
@@ -77,7 +77,6 @@ public class UserServiceImpl implements UserService {
 
         User user = userRepository.findByUsername(username)
                 .orElseThrow(NotFoundUserException::new);
-
         validatePassword(user, withdrawalRequestDTO.getPassword());
 
         jwtUtil.removeAccessToken(accessToken);
@@ -90,12 +89,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public MyProfileResponseDTO getMyProfile(UserDetailsImpl userDetails, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
         User user = getUserById(userDetails.getUser().getId());
+
         return MyProfileResponseDTO.fromEntity(user);
     }
 
     @Override
     public OtherProfileResponseDTO getOtherProfile(Long otherUserId, UserDetailsImpl userDetails, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
         User user = getUserById(userDetails.getUser().getId());
+
         return OtherProfileResponseDTO.fromEntity(user);
     }
 
@@ -196,6 +197,7 @@ public class UserServiceImpl implements UserService {
             String responseHeaderAccessToken = httpServletResponse.getHeader(AUTHORIZATION_HEADER);
             jwtUtil.rebaseToken(newAccessToken, responseHeaderAccessToken);
         }
+
         httpServletResponse.setHeader(AUTHORIZATION_HEADER, newAccessToken);
     }
 }

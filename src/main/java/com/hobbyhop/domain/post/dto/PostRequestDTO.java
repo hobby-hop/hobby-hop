@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class PostRequestDTO {
-
     @NotBlank
     @Size(min = 3, max = 50, message = "최소 3자 이상이여야 합니다.")
     private String postTitle;

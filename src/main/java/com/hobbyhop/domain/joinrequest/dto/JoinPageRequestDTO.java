@@ -5,10 +5,11 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Pageable;
 
 @NoArgsConstructor
-public class JoinPageRequestDTO  extends PageRequestDTO {
+public class JoinPageRequestDTO extends PageRequestDTO {
     public JoinPageRequestDTO(int page, int size, boolean isDesc) {
         super(page, size, isDesc);
     }
+
     @Override
     public int getPage() {
         return super.getPage();
@@ -38,6 +39,7 @@ public class JoinPageRequestDTO  extends PageRequestDTO {
     public void setDesc(boolean isDesc) {
         super.setDesc(isDesc);
     }
+
     @Override
     public Pageable getPageable(String... props) {
         return super.getPageable(props);

@@ -21,21 +21,14 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @RequiredArgsConstructor
 public class JwtUtil {
-
     private final RedisTemplate<String, String> redisTemplate;
-
     public static final String AUTHORIZATION_HEADER = "Authorization";
-
     public static final String BEARER_PREFIX = "Bearer ";
-
     private static final long ACCESS_TOKEN_TIME = 24 * 60 * 60 * 1000L;
     private static final long REFRESH_TOKEN_TIME = 30 * 24 * 60 * 60 * 1000L;
-
     @Value("${jwt.secret.key}")
     private String secretKey;
-
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
-
     private Key key;
 
     @PostConstruct
@@ -110,6 +103,7 @@ public class JwtUtil {
     public String createAccessTokenByRefreshToken(String refreshTokenValue) {
         Claims info = getUserInfo(refreshTokenValue);
         String username = info.getSubject();
+
         return createAccessToken(username);
     }
 
@@ -144,6 +138,7 @@ public class JwtUtil {
         if (!redisTemplate.hasKey(accessToken)) {
             throw new InvalidRefreshTokenException();
         }
+
         redisTemplate.delete(accessToken);
     }
 
@@ -153,6 +148,7 @@ public class JwtUtil {
         if (!redisTemplate.hasKey(username)) {
             throw new InvalidJwtException();
         }
+
         redisTemplate.delete(username);
     }
 

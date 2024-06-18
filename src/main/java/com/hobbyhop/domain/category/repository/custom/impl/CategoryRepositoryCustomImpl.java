@@ -12,16 +12,17 @@ import com.hobbyhop.domain.category.dto.CategoryElementVO;
 import com.hobbyhop.domain.category.repository.custom.CategoryRepositoryCustom;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
-
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override

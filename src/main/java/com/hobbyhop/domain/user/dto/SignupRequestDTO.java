@@ -7,7 +7,6 @@ import lombok.Data;
 
 @Data
 public class SignupRequestDTO {
-
 	@NotBlank(message = "username : 이름을 입력해주세요.")
 	@Pattern(regexp = "^[a-zA-Z0-9가-힣]+$",
 			message = "username : 한글, 영어, 숫자만 입력해야 합니다.")

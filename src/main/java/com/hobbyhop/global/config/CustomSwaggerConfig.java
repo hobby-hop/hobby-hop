@@ -23,10 +23,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class CustomSwaggerConfig {
-
     @Bean
     public GroupedOpenApi restOpenApi() {
-
         return GroupedOpenApi.builder()
                 .group("Hobby Hop API")
                 .pathsToMatch("/api/**")

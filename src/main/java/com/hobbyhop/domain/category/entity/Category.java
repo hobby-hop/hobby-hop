@@ -28,6 +28,6 @@ public class Category extends BaseEntity {
 
     private String description;
 
-    @Column(name="deleted_at")
+    @Column(name = "deleted_at")
     private Timestamp deletedAt;
 }

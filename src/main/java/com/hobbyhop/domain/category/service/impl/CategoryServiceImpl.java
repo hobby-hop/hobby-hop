@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
+
     @Override
     @Transactional
     public CategoryResponseDTO makeCategory(CategoryRequestDTO categoryRequestDTO) {
@@ -39,8 +40,9 @@ public class CategoryServiceImpl implements CategoryService {
     public Category findCategory(Long categoryId) {
         return categoryRepository.findById(categoryId).orElseThrow(CategoryNotFoundException::new);
     }
+
     private void validateCategoryName(String categoryName) {
-        if(categoryRepository.existsByCategoryName(categoryName)) {
+        if (categoryRepository.existsByCategoryName(categoryName)) {
             throw new AlreadyExistCategoryException();
         }
     }
