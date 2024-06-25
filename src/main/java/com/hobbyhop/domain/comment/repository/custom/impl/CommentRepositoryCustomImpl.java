@@ -30,7 +30,7 @@ public class CommentRepositoryCustomImpl extends QuerydslRepositorySupport imple
     private final JPAQueryFactory jpaQueryFactory;
 
     public CommentRepositoryCustomImpl(JPAQueryFactory jpaQueryFactory) {
-        super(Post.class);
+        super(Comment.class);
         this.jpaQueryFactory = jpaQueryFactory;
     }
 
@@ -60,7 +60,7 @@ public class CommentRepositoryCustomImpl extends QuerydslRepositorySupport imple
                 .from(comment)
                 .where(comment.post.id.eq(postId), eqParentId(parent));
 
-        Pageable pageable = pageRequestDTO.getPageable(pageRequestDTO.getStandard());
+        Pageable pageable = pageRequestDTO.getPageable(pageRequestDTO.getSortBy());
 
         List<CommentResponseDTO> content = getQuerydsl().applyPagination(pageable, query).fetch();
         long totalCount = query.fetchCount();
