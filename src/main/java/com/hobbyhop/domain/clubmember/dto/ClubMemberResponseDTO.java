@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ClubMemberResponseDTO {
-
     private Long userId;
     private Long clubId;
 

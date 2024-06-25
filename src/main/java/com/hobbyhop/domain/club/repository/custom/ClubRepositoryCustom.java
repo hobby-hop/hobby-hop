@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 
 public interface ClubRepositoryCustom {
     Page<ClubResponseDTO> findAll(ClubPageRequestDTO pageRequestDTO);
+
     void deleteAllElement(Long clubId);
 
 }

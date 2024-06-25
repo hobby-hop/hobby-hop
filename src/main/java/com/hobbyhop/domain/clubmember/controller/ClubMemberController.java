@@ -29,6 +29,7 @@ public class ClubMemberController {
     public ApiResponse<?> checkClubMember(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable("clubId") Long clubId) {
         return ApiResponse.ok(clubMemberService.isClubMember(clubId, userDetails.getUser().getId()));
     }
+
     @Operation(summary = "모임 탈퇴")
     @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping("/clubmembers/{userId}")

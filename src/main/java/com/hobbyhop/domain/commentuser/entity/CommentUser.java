@@ -6,7 +6,9 @@ import com.hobbyhop.domain.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+
 import java.sql.Timestamp;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,7 +31,7 @@ public class CommentUser {
     @Column
     private Timestamp deletedAt;
 
-    public static CommentUser buildCommentUser(Comment comment, User user){
+    public static CommentUser buildCommentUser(Comment comment, User user) {
         return CommentUser.builder()
                 .commentUserPK(CommentUserPK.builder()
                         .user(user)
@@ -38,7 +40,7 @@ public class CommentUser {
                 .build();
     }
 
-    public void restore(){
+    public void restore() {
         deletedAt = null;
     }
 }

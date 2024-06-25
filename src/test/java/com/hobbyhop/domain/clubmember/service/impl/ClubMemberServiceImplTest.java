@@ -46,10 +46,12 @@ class ClubMemberServiceImplTest implements ClubTest {
             .club(TEST_CLUB)
             .user(TEST_USER)
             .build();
+
     clubMember = ClubMember.builder()
             .clubMemberPK(clubMemberPk)
             .memberRole(MemberRole.MEMBER)
             .build();
+
     adminClubMember = ClubMember.builder()
             .clubMemberPK(clubMemberPk)
             .memberRole(MemberRole.ADMIN)
@@ -61,8 +63,10 @@ class ClubMemberServiceImplTest implements ClubTest {
     void clubMember_가입_성공() {
         // Given
         given(clubMemberRepository.save(any())).willReturn(clubMember);
+
         // When
         ClubMemberResponseDTO clubMemberResponseDTO = sut.joinClub(TEST_CLUB, TEST_USER, MemberRole.MEMBER);
+
         // Then
         assertThat(clubMemberResponseDTO.getClubId()).isEqualTo(TEST_CLUB_ID);
     }
@@ -81,8 +85,10 @@ class ClubMemberServiceImplTest implements ClubTest {
         // Given
         willDoNothing().given(clubMemberRepository).delete(clubMember);
         given(clubMemberRepository.findByClubMemberPK_Club_IdAndClubMemberPK_User_Id(TEST_CLUB_ID, TEST_USER_ID)).willReturn(Optional.of(clubMember));
+
         // When
         sut.leaveMember(TEST_CLUB_ID, TEST_USER, TEST_USER_ID);
+
         // Then
         verify(clubMemberRepository, times(1)).delete(clubMember);
     }

@@ -8,6 +8,5 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PostUserRepository extends JpaRepository<PostUser, PostUserPK> {
-
     Optional<PostUser> findByPostUserPK_UserAndPostUserPK_Post(User user, Post post);
 }

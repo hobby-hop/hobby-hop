@@ -14,10 +14,12 @@ import com.hobbyhop.domain.comment.repository.CommentRepository;
 import com.hobbyhop.domain.commentuser.service.impl.CommentUserServiceImpl;
 import com.hobbyhop.domain.post.service.impl.PostServiceImpl;
 import com.hobbyhop.test.CommentTest;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,10 +30,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class CommentServiceImplTest implements CommentTest {
-
     @InjectMocks
     private CommentServiceImpl commentService;
-
     @Mock
     private CommentRepository commentRepository;
     @Mock
@@ -40,14 +40,12 @@ class CommentServiceImplTest implements CommentTest {
     private CommentUserServiceImpl commentUserService;
     @Mock
     private ClubMemberServiceImpl clubMemberService;
-
     private CommentRequestDTO requestDTO;
     private CommentRequestDTO modifyDTO;
     private CommentPageRequestDTO pageRequestDTO;
 
     @BeforeEach
     public void setup() {
-
         requestDTO = CommentRequestDTO.builder()
                 .content(TEST_COMMENT_CONTENT)
                 .build();
@@ -148,6 +146,5 @@ class CommentServiceImplTest implements CommentTest {
         // then
         verify(commentUserService).modifyCommentUser(
                 Objects.requireNonNull(TEST_COMMENT), TEST_USER);
-
     }
 }

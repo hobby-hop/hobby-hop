@@ -5,9 +5,11 @@ import com.hobbyhop.domain.club.entity.Club;
 import com.hobbyhop.domain.comment.entity.Comment;
 import com.hobbyhop.domain.user.entity.User;
 import jakarta.persistence.*;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
@@ -21,15 +23,17 @@ import org.hibernate.annotations.SQLRestriction;
 @SQLDelete(sql = "UPDATE post SET deleted_at = NOW() where id=?")
 @SQLRestriction("deleted_at is NULL")
 public class Post extends BaseEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String postTitle;
+
     private String postContent;
 
     @Column(length = 1000)
     private String originImageUrl;
+
     @Column(length = 1000)
     private String savedImageUrl;
 

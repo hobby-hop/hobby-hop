@@ -11,11 +11,9 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class PostUserServiceImpl implements PostUserService {
-
     private final PostUserRepository postUserRepository;
 
     public void postUser(User user, Post post) {
-
         PostUser postUser = postUserRepository.findByPostUserPK_UserAndPostUserPK_Post(user, post)
                 .orElseGet(() -> savePostUser(user, post));
 
@@ -24,7 +22,6 @@ public class PostUserServiceImpl implements PostUserService {
     }
 
     public PostUser savePostUser(User user, Post post) {
-
         return postUserRepository.save(PostUser.PostUserBuilder(user, post));
     }
 }

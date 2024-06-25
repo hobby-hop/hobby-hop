@@ -6,7 +6,9 @@ import com.hobbyhop.domain.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+
 import java.sql.Timestamp;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,7 +26,6 @@ import org.hibernate.annotations.SQLRestriction;
 @SQLDelete(sql = "UPDATE post_user SET deleted_at = NOW() where post_id=? and user_id=?")
 @SQLRestriction("deleted_at is NULL")
 public class PostUser {
-
     @EmbeddedId
     private PostUserPK postUserPK;
 
@@ -35,7 +36,6 @@ public class PostUser {
     private Timestamp deletedAt;
 
     public static PostUser PostUserBuilder(User user, Post post) {
-
         return PostUser.builder()
                 .postUserPK(PostUserPK.builder()
                         .user(user)

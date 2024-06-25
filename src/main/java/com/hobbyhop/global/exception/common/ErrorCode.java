@@ -4,7 +4,6 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
-
     // JWT
     INVALID_JWT_SIGNATURE_EXCEPTION(401, "잘못된 JWT 서명입니다."),
     EXPIRED_JWT_TOKEN_EXCEPTION(401, "만료된 JWT 토큰입니다."),
@@ -14,7 +13,6 @@ public enum ErrorCode {
     NOT_MISMATCHED_REFRESH_TOKEN_EXCEPTION(401, "DB의 리프레쉬 토큰 값과 다릅니다."),
     NO_JWT_EXCEPTION(401, "이 요청은 JWT가 필요합니다."),
     NOT_SUPPORTED_GRANT_TYPE_EXCEPTION(401, "지원하지 않는 권한 부여 유형입니다."),
-
 
     // 회원
     DUPLICATE_ENTRY_EXCEPTION(401, "중복된 사용자입니다. 다른 이름 또는 이메일을 입력해주세요."),
@@ -68,7 +66,6 @@ public enum ErrorCode {
     ALREADY_EXIST_CATEGORY_NAME_EXCEPTION(400, "이미 존재하는 카테고리입니다.");
 
     private final int status;
-
     private final String message;
 
     ErrorCode(int status, String message) {

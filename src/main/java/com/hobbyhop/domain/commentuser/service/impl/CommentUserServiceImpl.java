@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class CommentUserServiceImpl implements CommentUserService {
-
     private final CommentUserRepository commentUserRepository;
 
     @Transactional

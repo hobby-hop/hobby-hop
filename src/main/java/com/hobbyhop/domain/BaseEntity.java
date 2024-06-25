@@ -14,7 +14,6 @@ import java.sql.Timestamp;
 @EntityListeners(value = {AuditingEntityListener.class})
 @Getter
 public abstract class BaseEntity {
-
     @CreatedDate
     @Column(updatable = false)
     private Timestamp createdAt;

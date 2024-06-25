@@ -1,6 +1,7 @@
 package com.hobbyhop.domain.club.dto;
 
 import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

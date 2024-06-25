@@ -8,12 +8,10 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class UserRepositoryCustomImpl implements UserRepositoryCustom {
-
     private final JPAQueryFactory queryFactory;
 
     @Override
     public boolean existsByUsername(String username) {
-
         Integer fetchFirst = queryFactory
                 .selectOne()
                 .from(user)
@@ -24,7 +22,6 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
     }
 
     public boolean existsByEmail(String email) {
-
         Integer fetchFirst = queryFactory
                 .selectOne()
                 .from(user)

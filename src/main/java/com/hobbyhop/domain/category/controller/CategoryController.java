@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/category")
 @SecurityRequirement(name = "Bearer Authentication")
 public class CategoryController {
-
     private final CategoryService categoryService;
 
     @Operation(summary = "카테고리 생성")

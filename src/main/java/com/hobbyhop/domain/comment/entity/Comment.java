@@ -12,8 +12,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+
 import java.sql.Timestamp;
 import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,7 +45,7 @@ public class Comment extends BaseEntity {
     @Column(nullable = false)
     private Long likeCnt;
 
-    @Column(name="deleted_at")
+    @Column(name = "deleted_at")
     private Timestamp deletedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -57,7 +59,11 @@ public class Comment extends BaseEntity {
         this.content = content;
     }
 
-    public void addLike(){likeCnt++;}
+    public void addLike() {
+        likeCnt++;
+    }
 
-    public void subLike(){likeCnt--;}
+    public void subLike() {
+        likeCnt--;
+    }
 }

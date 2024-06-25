@@ -25,7 +25,6 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.data.support.PageableExecutionUtils;
 
 public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implements PostRepositoryCustom{
-
     private final JPAQueryFactory queryFactory;
 
     public PostRepositoryCustomImpl(JPAQueryFactory queryFactory) {
@@ -56,7 +55,6 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
             BooleanExpression titleContainsKeyword = post.postTitle.containsIgnoreCase(keyword);
             query.where(titleContainsKeyword);
         }
-
 
         List<PostPageResponseDTO> content = getQuerydsl().applyPagination(pageable, query).fetch();
         long totalCount = query.fetchCount();

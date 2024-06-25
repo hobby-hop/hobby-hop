@@ -34,7 +34,6 @@ import static org.mockito.Mockito.verify;
 @DisplayName("[Club]")
 @ExtendWith(MockitoExtension.class)
 class ClubServiceImplTest implements ClubTest {
-
     @InjectMocks
     private ClubServiceImpl sut;
     @Mock
@@ -64,6 +63,7 @@ class ClubServiceImplTest implements ClubTest {
                 .memberRole(MemberRole.ADMIN)
                 .clubMemberPK(clubMemberPK)
                 .build();
+
         normalClubMember = ClubMember.builder()
                 .memberRole(MemberRole.MEMBER)
                 .clubMemberPK(clubMemberPK)
@@ -87,11 +87,13 @@ class ClubServiceImplTest implements ClubTest {
                 .content(TEST_OTHER_CLUB_CONTENT)
                 .categoryId(TEST_OTHER_CATEGORY_ID)
                 .build();
+
         clubModifyDTO = ClubModifyDTO.builder()
                 .title(TEST_OTHER_CLUB_TITLE)
                 .content(TEST_OTHER_CLUB_CONTENT)
                 .categoryId(TEST_OTHER_CATEGORY_ID)
                 .build();
+
         int page = 1;
         int size = 10;
         pageRequestDTO = new ClubPageRequestDTO(page, size, true);
@@ -122,6 +124,7 @@ class ClubServiceImplTest implements ClubTest {
         assertThat(sut.makeClub(clubRequestDTO, TEST_USER).getContent()).isEqualTo(TEST_CLUB_CONTENT);
         assertThat(sut.makeClub(clubRequestDTO, TEST_USER).getCategoryId()).isEqualTo(TEST_CATEGORY_ID);
     }
+
     @DisplayName("[Make] [Fail]")
     @Test
     void club_생성_중복된이름으로인한_실패() {
@@ -131,6 +134,7 @@ class ClubServiceImplTest implements ClubTest {
         // When & Then
         assertThatCode(() -> sut.makeClub(clubRequestDTO, TEST_USER)).isInstanceOf(AlreadyExistClubTitle.class);
     }
+
     @DisplayName("[Make] [Fail]")
     @Test
     void club_생성_가입한_모임갯수_초과로인한_실패() {
@@ -171,6 +175,7 @@ class ClubServiceImplTest implements ClubTest {
         // Then
         verify(clubRepository, atLeastOnce()).deleteAllElement(TEST_CLUB_ID);
     }
+
     @DisplayName("[GetMyClubs]")
     @Test
     void club_내가_속한_클럽_리스트_조회() {
@@ -178,6 +183,7 @@ class ClubServiceImplTest implements ClubTest {
         List<ClubMember> list = List.of(clubMember);
         List<ClubResponseDTO> result = List.of(ClubResponseDTO.fromEntity(clubMember.getClubMemberPK().getClub()));
         given(clubMemberService.findByUserId(TEST_USER)).willReturn(list);
+
         // When & Then
         assertThat(sut.getMyClubs(TEST_USER)).isEqualTo(result);
     }
@@ -187,7 +193,6 @@ class ClubServiceImplTest implements ClubTest {
     void club_모든_모임_리스트_조회() {
         // Given
         long totalCount = 1L;
-
         List<ClubResponseDTO> list = List.of(clubResponseDTO);
         given(clubRepository.findAll(pageRequestDTO)).willReturn(new PageImpl<>(list, pageRequestDTO.getPageable("id"), totalCount));
 

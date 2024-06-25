@@ -22,10 +22,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
     @ExceptionHandler(NoJwtException.class)
     protected ResponseEntity<ApiResponse<?>> handleNoJwtException(NoJwtException e) {
-
         log.error("NoJwtException", e);
 
         ApiResponse<?> apiResponse = ApiResponse.of(HttpStatus.BAD_REQUEST,
@@ -37,7 +35,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UnsupportedGrantTypeException.class)
     protected ResponseEntity<ApiResponse<?>> handleUnSupportedGrantTypeException(
             UnsupportedGrantTypeException e) {
-
         log.error("UnSupportedGrantTypeException", e);
 
         ApiResponse<?> apiResponse = ApiResponse.of(HttpStatus.BAD_REQUEST,
@@ -48,7 +45,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(JwtInvalidException.class)
     protected ResponseEntity<ApiResponse<?>> handleJwtInvalidException(JwtInvalidException e) {
-
         log.error("JwtInvalidException", e);
 
         ApiResponse<?> apiResponse = ApiResponse.of(HttpStatus.BAD_REQUEST,
@@ -59,7 +55,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BindException.class)
     protected ResponseEntity<ApiResponse<?>> handleBindException(BindException e) {
-
         log.error("handleBindException", e);
 
         BindingResult bindingResult = e.getBindingResult();
@@ -76,7 +71,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     protected ResponseEntity<ApiResponse<?>> handleHttpRequestMethodNotSupportedException(
             HttpRequestMethodNotSupportedException e) {
-
         log.error("handleHttpRequestMethodNotSupportedException", e);
 
         ApiResponse<?> apiResponse = ApiResponse.of(HttpStatus.METHOD_NOT_ALLOWED,
@@ -87,7 +81,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
     protected ResponseEntity<ApiResponse<?>> handleConflict(BusinessException e) {
-
         log.error("BusinessException", e);
 
         HttpStatus httpStatus = HttpStatus.valueOf(e.getStatus());
@@ -99,7 +92,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageConversionException.class)
     protected ResponseEntity<ApiResponse<?>> handleHttpMessageConversionException(
             HttpMessageConversionException e) {
-
         log.error("HttpMessageConversionException", e);
 
         ApiResponse<?> apiResponse = ApiResponse.of(HttpStatus.BAD_REQUEST,
@@ -111,7 +103,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     protected ResponseEntity<ApiResponse<?>> handleHttpMediaTypeNotSupportedException(
             HttpMediaTypeNotSupportedException e) {
-
         log.error("HttpMediaTypeNotSupportedException", e);
 
         ApiResponse<?> apiResponse = ApiResponse.of(HttpStatus.BAD_REQUEST,
@@ -122,7 +113,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<ApiResponse<?>> handleException(Exception e) {
-
         log.error("Exception", e);
 
         ApiResponse<?> apiResponse = ApiResponse.of(HttpStatus.INTERNAL_SERVER_ERROR,
@@ -130,5 +120,4 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiResponse);
     }
-
 }

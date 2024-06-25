@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 @Getter
 @Builder
 public class ApiResponse<T> {
-
     private boolean success;
     private HttpStatus httpStatus;
     private List<String> errorMessages;

@@ -34,10 +34,8 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 @DisplayName("[JoinRequest]")
 class JoinRequestServiceImplTest implements ClubTest {
-
     @InjectMocks
     private JoinRequestServiceImpl sut;
-
     @Mock
     private ClubServiceImpl clubService;
     @Mock
@@ -51,7 +49,6 @@ class JoinRequestServiceImplTest implements ClubTest {
     private ClubMemberPK clubMemberPk;
     private JoinPageRequestDTO pageRequestDTO;
 
-
     @BeforeEach
     void setUp() {
         joinRequest = JoinRequest.builder()
@@ -59,6 +56,7 @@ class JoinRequestServiceImplTest implements ClubTest {
                 .user(TEST_USER)
                 .status(JoinRequestStatus.PENDING)
                 .build();
+
         clubMemberPk = ClubMemberPK.builder()
                 .club(TEST_CLUB)
                 .user(TEST_USER)
@@ -68,11 +66,14 @@ class JoinRequestServiceImplTest implements ClubTest {
                 .memberRole(MemberRole.ADMIN)
                 .clubMemberPK(clubMemberPk)
                 .build();
+
         normalClubMember = ClubMember.builder()
                 .memberRole(MemberRole.MEMBER)
                 .clubMemberPK(clubMemberPk)
                 .build();
+
         joinResponseDTO = JoinResponseDTO.fromEntity(joinRequest);
+
         int page = 1;
         int size = 1;
         pageRequestDTO = new JoinPageRequestDTO(page, size, true);
@@ -82,10 +83,12 @@ class JoinRequestServiceImplTest implements ClubTest {
     @DisplayName("[Send]")
     @Test
     void joinRequest_요청_보내기_성공() {
+        // Given
         given(clubService.findClub(TEST_CLUB_ID)).willReturn(TEST_CLUB);
         given(clubMemberService.isClubMember(TEST_CLUB_ID, TEST_USER_ID)).willReturn(false);
         given(joinRequestRepository.save(any())).willReturn(joinRequest);
 
+        // When&Then
         assertThat(sut.sendRequest(TEST_CLUB_ID, TEST_USER)).isEqualTo(joinResponseDTO);
     }
     @DisplayName("[Get]")
@@ -95,6 +98,7 @@ class JoinRequestServiceImplTest implements ClubTest {
         given(clubMemberService.findByClubAndUser(TEST_CLUB_ID, TEST_USER_ID)).willReturn(clubMember);
         given(joinRequestRepository.findByClub_IdAndStatus(TEST_CLUB_ID, JoinRequestStatus.PENDING)).willReturn(List.of(joinRequest));
 
+        // When & Then
         assertThat(sut.getRequestByClub(TEST_CLUB_ID, TEST_USER).get(0).getId()).isEqualTo(joinResponseDTO.getId());
         assertThat(sut.getRequestByClub(TEST_CLUB_ID, TEST_USER).get(0).getUsername()).isEqualTo(joinResponseDTO.getUsername());
         assertThat(sut.getRequestByClub(TEST_CLUB_ID, TEST_USER).get(0).getRecvClubId()).isEqualTo(joinResponseDTO.getRecvClubId());
@@ -110,6 +114,7 @@ class JoinRequestServiceImplTest implements ClubTest {
         long totalCount = list.stream().count();
         given(clubMemberService.findByClubAndUser(TEST_CLUB_ID, TEST_USER_ID)).willReturn(clubMember);
         given(joinRequestRepository.findAllByClubId(TEST_CLUB_ID, pageRequestDTO)).willReturn(new PageImpl<>(list, pageRequestDTO.getPageable("id"), totalCount));
+
         // When & Then
         assertThat(sut.getAllRequests(TEST_CLUB_ID, pageRequestDTO, TEST_USER).getDtoList()).isEqualTo(list);
         assertThat(sut.getAllRequests(TEST_CLUB_ID, pageRequestDTO, TEST_USER).getTotal()).isEqualTo(totalCount);
@@ -119,6 +124,7 @@ class JoinRequestServiceImplTest implements ClubTest {
     void JoinRequest_페이징_조회_권한이없어서_실패() {
         // Given
         given(clubMemberService.findByClubAndUser(TEST_CLUB_ID, TEST_USER_ID)).willReturn(normalClubMember);
+
         // When & Then
         assertThatCode(() -> sut.getAllRequests(TEST_CLUB_ID, pageRequestDTO, TEST_USER)).isInstanceOf(ClubMemberRoleException.class);
     }

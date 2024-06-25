@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class PostResponseDTO {
-
     private Long clubId;
     private Long postId;
     private String writer;

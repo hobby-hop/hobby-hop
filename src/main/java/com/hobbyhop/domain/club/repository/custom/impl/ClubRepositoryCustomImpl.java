@@ -17,12 +17,15 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -59,7 +62,7 @@ public class ClubRepositoryCustomImpl implements ClubRepositoryCustom {
     }
 
     private BooleanExpression contains(StringPath target, String searchWord) {
-        if(searchWord == null || searchWord.isBlank()) {
+        if (searchWord == null || searchWord.isBlank()) {
             return null;
         } else {
             final String formattedSearchWord = "\"" + "+" + searchWord + "\"";
@@ -69,15 +72,15 @@ public class ClubRepositoryCustomImpl implements ClubRepositoryCustom {
         }
     }
 
-    private BooleanExpression eqCategory(Long categoryId){
-        if(categoryId == null){
+    private BooleanExpression eqCategory(Long categoryId) {
+        if (categoryId == null) {
             return null;
         }
         return club.category.id.eq(categoryId);
     }
 
     @Override
-    public void deleteAllElement(Long clubId){
+    public void deleteAllElement(Long clubId) {
         List<ClubElementVO> ids = jpaQueryFactory.select(post.id, comment.id)
                 .from(post)
                 .join(comment)
@@ -86,18 +89,22 @@ public class ClubRepositoryCustomImpl implements ClubRepositoryCustom {
                 .transform(
                         groupBy(post.id).list(
                                 Projections.constructor(
-                                ClubElementVO.class,
-                                post.id,
-                                Projections.list(
-                                        comment.id
-                                ))
+                                        ClubElementVO.class,
+                                        post.id,
+                                        Projections.list(
+                                                comment.id
+                                        ))
                         )
                 );
         List<Long> postIds = new ArrayList<>();
         List<Long> commentIds = new ArrayList<>();
 
-        ids.forEach((id) -> { postIds.add(id.getPostId()); });
-        ids.forEach((id) -> { commentIds.addAll(id.getCommentId()); });
+        ids.forEach((id) -> {
+            postIds.add(id.getPostId());
+        });
+        ids.forEach((id) -> {
+            commentIds.addAll(id.getCommentId());
+        });
 
         Timestamp now = Timestamp.valueOf(LocalDateTime.now());
 

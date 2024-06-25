@@ -18,8 +18,10 @@ import com.hobbyhop.global.exception.club.ClubNotFoundException;
 import com.hobbyhop.global.exception.clubmember.ClubMemberRoleException;
 import com.hobbyhop.global.exception.joinrequest.JoiningClubCountExceed;
 import com.hobbyhop.global.response.PageResponseDTO;
+
 import java.util.List;
 import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -28,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class ClubServiceImpl implements ClubService {
-
     private final ClubRepository clubRepository;
     private final ClubMemberService clubMemberService;
     private final CategoryService categoryService;
@@ -59,7 +60,7 @@ public class ClubServiceImpl implements ClubService {
     @Override
     @Transactional
     public ClubResponseDTO makeClub(ClubRequestDTO clubRequestDTO, User user) {
-        if(clubMemberService.isMemberLimitReached(user.getId())) {
+        if (clubMemberService.isMemberLimitReached(user.getId())) {
             throw new JoiningClubCountExceed();
         }
         validateClubTitle(clubRequestDTO.getTitle());
@@ -88,7 +89,7 @@ public class ClubServiceImpl implements ClubService {
 
         validateClubRolePermission(clubMember);
 
-        if(clubModifyDTO.getTitle() != null) {
+        if (clubModifyDTO.getTitle() != null) {
             validateClubTitle(clubModifyDTO.getTitle());
         }
         applyChanges(clubModifyDTO, club);
@@ -111,15 +112,17 @@ public class ClubServiceImpl implements ClubService {
     }
 
     private void validateClubTitle(String clubTitle) {
-        if(clubRepository.existsClubByTitle(clubTitle)) {
+        if (clubRepository.existsClubByTitle(clubTitle)) {
             throw new AlreadyExistClubTitle();
         }
     }
+
     private void validateClubRolePermission(ClubMember clubMember) {
         if (clubMember.getMemberRole() != MemberRole.ADMIN) {
             throw new ClubMemberRoleException();
         }
     }
+
     private void applyChanges(ClubModifyDTO clubModifyDTO, Club club) {
         if (clubModifyDTO.getTitle() != null) {
             club.changeTitle(clubModifyDTO.getTitle());
