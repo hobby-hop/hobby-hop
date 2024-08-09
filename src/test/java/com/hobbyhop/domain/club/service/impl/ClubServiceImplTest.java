@@ -96,7 +96,10 @@ class ClubServiceImplTest implements ClubTest {
 
         int page = 1;
         int size = 10;
-        pageRequestDTO = new ClubPageRequestDTO(page, size, true);
+        pageRequestDTO = ClubPageRequestDTO.builder()
+                .page(1)
+                .size(9)
+                .build();
 
     }
 

@@ -73,10 +73,7 @@ class JoinRequestServiceImplTest implements ClubTest {
                 .build();
 
         joinResponseDTO = JoinResponseDTO.fromEntity(joinRequest);
-
-        int page = 1;
-        int size = 1;
-        pageRequestDTO = new JoinPageRequestDTO(page, size, true);
+        pageRequestDTO = JoinPageRequestDTO.builder().build();
     }
 
 
