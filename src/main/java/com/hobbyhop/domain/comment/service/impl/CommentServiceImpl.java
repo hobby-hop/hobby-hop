@@ -41,9 +41,7 @@ public class CommentServiceImpl implements CommentService {
             throw new ClubMemberNotFoundException();
 
         Post post = postService.findPost(postId);
-
         Comment comment = buildComment(request, post, user, null);
-
         commentRepository.save(comment);
 
         return CommentResponseDTO.buildDTO(comment);
@@ -57,8 +55,7 @@ public class CommentServiceImpl implements CommentService {
         Post post = postService.findPost(postId);
         Comment comment = findById(clubId, postId, commentId);
         Comment reply = buildComment(request, post, user, comment);
-        commentRepository.save(comment);
-
+        commentRepository.save(reply);
         comment.getReply().add(reply);
 
         return CommentResponseDTO.buildDTO(comment);
