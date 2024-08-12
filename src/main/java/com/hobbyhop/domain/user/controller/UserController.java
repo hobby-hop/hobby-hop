@@ -63,50 +63,33 @@ public class UserController {
         return ApiResponse.ok("회원 탈퇴 성공");
     }
 
-    @Operation(summary = "내 프로필 조회")
-    @GetMapping("/profile")
+    @Operation(summary = "프로필 조회")
+    @GetMapping("/profiles/{userId}")
     @SecurityRequirement(name = "Bearer Authentication")
-    public ApiResponse<?> getMyProfile(
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
-            HttpServletResponse httpServletResponse,
-            HttpServletRequest httpServletRequest) {
-        MyProfileResponseDTO myProfileResponseDTO = userService.getMyProfile(userDetails, httpServletResponse, httpServletRequest);
+    public ApiResponse<?> getMyProfile(@PathVariable Long userId,
+                                       HttpServletResponse httpServletResponse,
+                                       HttpServletRequest httpServletRequest) {
+        ProfileResponseDTO profileResponseDTO = userService.getProfile(userId, httpServletResponse, httpServletRequest);
 
-        return ApiResponse.ok(myProfileResponseDTO);
-    }
-
-    @Operation(summary = "다른 유저 프로필 조회")
-    @GetMapping("/profile/{otherUserId}")
-    @SecurityRequirement(name = "Bearer Authentication")
-    public ApiResponse<?> getOtherProfile(
-            @PathVariable Long otherUserId,
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
-            HttpServletResponse httpServletResponse,
-            HttpServletRequest httpServletRequest) {
-        OtherProfileResponseDTO otherProfileResponseDTO = userService.getOtherProfile(otherUserId, userDetails, httpServletResponse, httpServletRequest);
-
-        return ApiResponse.ok(otherProfileResponseDTO);
+        return ApiResponse.ok(profileResponseDTO);
     }
 
     @Operation(summary = "내 프로필 수정")
-    @PatchMapping("/update")
+    @PatchMapping("/profiles")
     @SecurityRequirement(name = "Bearer Authentication")
-    public ApiResponse<?> update(
-            @Valid @RequestBody UpdateProfileRequestDTO updateProfileRequestDTO,
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
-            HttpServletResponse httpServletResponse,
-            HttpServletRequest httpServletRequest) {
-        userService.updateProfile(updateProfileRequestDTO, userDetails, httpServletResponse,
-                httpServletRequest);
+    public ApiResponse<?> update(@Valid @RequestBody UpdateProfileRequestDTO updateProfileRequestDTO,
+                                @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                HttpServletResponse httpServletResponse,
+                                HttpServletRequest httpServletRequest) {
+        userService.updateProfile(updateProfileRequestDTO, userDetails, httpServletResponse, httpServletRequest);
 
         return ApiResponse.ok("사용자 정보 수정 성공");
     }
 
     @Operation(summary = "카카오 로그인")
     @GetMapping("/login/kakao/callback")
-    public ApiResponse<?> kakaoLogin(
-            @RequestParam String code,
-            HttpServletResponse response) {
+    public ApiResponse<?> kakaoLogin(@RequestParam String code,
+                                     HttpServletResponse response) {
         kakaoService.kakaoLogin(code, response);
 
         return ApiResponse.ok("카카오 로그인 성공");
