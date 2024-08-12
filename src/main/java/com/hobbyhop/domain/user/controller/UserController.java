@@ -1,7 +1,7 @@
 package com.hobbyhop.domain.user.controller;
 
 import com.hobbyhop.domain.user.dto.*;
-import com.hobbyhop.domain.user.service.KakaoService;
+import com.hobbyhop.domain.user.service.SocialService;
 import com.hobbyhop.domain.user.service.UserService;
 import com.hobbyhop.global.response.ApiResponse;
 import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-    private final KakaoService kakaoService;
+    private final SocialService socialService;
 
     @Operation(summary = "회원가입")
     @PostMapping("/signup")
@@ -32,9 +32,8 @@ public class UserController {
 
     @Operation(summary = "로그인")
     @PostMapping("/login")
-    public ApiResponse<?> login(
-            @Valid @RequestBody LoginRequestDTO loginRequestDTO,
-            HttpServletResponse response) {
+    public ApiResponse<?> login(@Valid @RequestBody LoginRequestDTO loginRequestDTO,
+                                HttpServletResponse response) {
         userService.login(loginRequestDTO, response);
 
         return ApiResponse.ok("로그인 성공");
@@ -43,9 +42,8 @@ public class UserController {
     @Operation(summary = "로그아웃")
     @PostMapping("/logout")
     @SecurityRequirement(name = "Bearer Authentication")
-    public ApiResponse<?> logout(
-            HttpServletRequest httpServletRequest,
-            HttpServletResponse httpServletResponse) {
+    public ApiResponse<?> logout(HttpServletRequest httpServletRequest,
+                                 HttpServletResponse httpServletResponse) {
         userService.logout(httpServletRequest, httpServletResponse);
 
         return ApiResponse.ok("로그아웃 성공");
@@ -54,10 +52,9 @@ public class UserController {
     @Operation(summary = "회원 탈퇴")
     @PostMapping("/withdrawal")
     @SecurityRequirement(name = "Bearer Authentication")
-    public ApiResponse<?> withdrawal(
-            @Valid @RequestBody WithdrawalRequestDTO withdrawalRequestDTO,
-            HttpServletRequest httpServletRequest,
-            HttpServletResponse httpServletResponse) {
+    public ApiResponse<?> withdrawal(@Valid @RequestBody WithdrawalRequestDTO withdrawalRequestDTO,
+                                     HttpServletRequest httpServletRequest,
+                                     HttpServletResponse httpServletResponse) {
         userService.withdraw(withdrawalRequestDTO, httpServletRequest, httpServletResponse);
 
         return ApiResponse.ok("회원 탈퇴 성공");
@@ -90,7 +87,7 @@ public class UserController {
     @GetMapping("/login/kakao/callback")
     public ApiResponse<?> kakaoLogin(@RequestParam String code,
                                      HttpServletResponse response) {
-        kakaoService.kakaoLogin(code, response);
+        socialService.socialLogin(code, response);
 
         return ApiResponse.ok("카카오 로그인 성공");
     }

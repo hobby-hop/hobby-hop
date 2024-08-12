@@ -6,7 +6,7 @@ import com.hobbyhop.domain.user.dto.KakaoUserInfoDTO;
 import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.domain.user.enums.UserRoleEnum;
 import com.hobbyhop.domain.user.repository.UserRepository;
-import com.hobbyhop.domain.user.service.KakaoService;
+import com.hobbyhop.domain.user.service.SocialService;
 import com.hobbyhop.global.exception.user.JsonProcessException;
 import com.hobbyhop.global.security.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,13 +28,13 @@ import java.util.UUID;
 @Slf4j(topic = "KAKAO Login")
 @Service
 @RequiredArgsConstructor
-public class KakaoServiceImpl implements KakaoService {
+public class KaKaoSocialServiceImpl implements SocialService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final RestTemplate restTemplate;
     private final JwtUtil jwtUtil;
 
-    public void kakaoLogin(String code, HttpServletResponse response) {
+    public void socialLogin(String code, HttpServletResponse response) {
         String accessToken = getToken(code);
         KakaoUserInfoDTO kakaoUserInfo = getKakaoUserInfo(accessToken);
         User kakaoUser = registerKakaoUserIfNeeded(kakaoUserInfo);
