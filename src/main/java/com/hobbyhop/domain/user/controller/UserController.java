@@ -66,7 +66,7 @@ public class UserController {
     @Operation(summary = "프로필 조회")
     @GetMapping("/profiles/{userId}")
     @SecurityRequirement(name = "Bearer Authentication")
-    public ApiResponse<?> getMyProfile(@PathVariable Long userId,
+    public ApiResponse<?> getMyProfile(@PathVariable("userId") Long userId,
                                        HttpServletResponse httpServletResponse,
                                        HttpServletRequest httpServletRequest) {
         ProfileResponseDTO profileResponseDTO = userService.getProfile(userId, httpServletResponse, httpServletRequest);
