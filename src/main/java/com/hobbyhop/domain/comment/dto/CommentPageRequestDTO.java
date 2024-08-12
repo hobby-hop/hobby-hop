@@ -8,9 +8,9 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.domain.Pageable;
 
-@Data
 @NoArgsConstructor
 @SuperBuilder
+@Getter
+@Setter
 public class CommentPageRequestDTO extends PageRequestDTO {
-    private String sortBy;
 }

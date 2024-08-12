@@ -76,7 +76,8 @@ class PostServiceImplTest implements PostTest, UserTest, CategoryTest, ClubTest 
                 .postContent(TEST_POST_CONTENT)
                 .build();
 
-        postPageRequestDTO = new PostPageRequestDTO(1, 1, true);
+        postPageRequestDTO = PostPageRequestDTO.builder()
+                .build();
     }
 
     @Test
@@ -195,7 +196,7 @@ class PostServiceImplTest implements PostTest, UserTest, CategoryTest, ClubTest 
         // when - then
         assertThat(
                 postServiceImpl.getAllPost(postPageRequestDTO, TEST_CLUB_ID).getSize()).isEqualTo(
-                1);
+                10);
     }
 }
 
