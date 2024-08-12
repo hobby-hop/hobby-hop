@@ -13,6 +13,7 @@ import com.hobbyhop.domain.joinrequest.enums.JoinRequestStatus;
 import com.hobbyhop.domain.joinrequest.repository.JoinRequestRepository;
 
 import com.hobbyhop.global.exception.clubmember.ClubMemberRoleException;
+import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
 import com.hobbyhop.test.ClubTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -103,9 +104,9 @@ class JoinRequestServiceImplTest implements ClubTest {
     }
 
 
-    @DisplayName("[GetAllRequests]")
+    @DisplayName("[Get] [AllRequests] [Success]")
     @Test
-    void JoinRequest_페이징_조회() {
+    void JoinRequest_리스트_조회() {
         // Given
         List<JoinResponseDTO> list = List.of(joinResponseDTO);
         long totalCount = list.stream().count();
@@ -116,7 +117,7 @@ class JoinRequestServiceImplTest implements ClubTest {
         assertThat(sut.getAllRequests(TEST_CLUB_ID, pageRequestDTO, TEST_USER).getDtoList()).isEqualTo(list);
         assertThat(sut.getAllRequests(TEST_CLUB_ID, pageRequestDTO, TEST_USER).getTotal()).isEqualTo(totalCount);
     }
-    @DisplayName("[GetAllRequests]")
+    @DisplayName("[Get] [AllRequests] [Fail]")
     @Test
     void JoinRequest_페이징_조회_권한이없어서_실패() {
         // Given
@@ -127,17 +128,28 @@ class JoinRequestServiceImplTest implements ClubTest {
     }
 
 
-    @DisplayName("[Process]")
+    @DisplayName("[Process] [Success]")
     @Test
-    void joinRequest_처리() {
+    void joinRequest_처리_성공() {
         // Given
+        given(clubMemberService.findByClubAndUser(1L, 1L)).willReturn(clubMember);
         given(joinRequestRepository.findById(1L)).willReturn(Optional.of(joinRequest));
-        given(clubMemberService.joinClub(TEST_CLUB, TEST_USER, MemberRole.MEMBER)).willReturn(ClubMemberResponseDTO.builder()
-                .clubId(TEST_CLUB_ID)
-                .userId(TEST_USER_ID)
-                .build());
+
         // When
-        sut.processRequest(1L, JoinRequestStatus.APPROVED);
+        sut.processRequest(1L, 1L, JoinRequestStatus.APPROVED, TEST_USER);
+
+        // Then
+        verify(clubMemberService).joinClub(TEST_CLUB, TEST_USER, MemberRole.MEMBER);
+    }
+    @DisplayName("[Process] [Fail]")
+    @Test
+    void joinRequest_처리_권한이없어서실패() {
+        // Given
+        given(clubMemberService.findByClubAndUser(1L, 1L)).willReturn(clubMember);
+        given(joinRequestRepository.findById(1L)).willReturn(Optional.of(joinRequest));
+
+        // When
+        sut.processRequest(1L, 1L, JoinRequestStatus.APPROVED, TEST_USER);
 
         // Then
         verify(clubMemberService).joinClub(TEST_CLUB, TEST_USER, MemberRole.MEMBER);

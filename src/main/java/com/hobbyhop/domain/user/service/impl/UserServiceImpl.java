@@ -33,7 +33,6 @@ public class UserServiceImpl implements UserService {
             validateExistingUser(signupRequestDTO);
             User user = signupUser(signupRequestDTO);
             userRepository.save(user);
-
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateEntryException();
         }
@@ -87,23 +86,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public MyProfileResponseDTO getMyProfile(UserDetailsImpl userDetails, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
-        User user = getUserById(userDetails.getUser().getId());
+    public ProfileResponseDTO getProfile(Long userId, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
+        User user = userRepository.findById(userId).orElseThrow(NotFoundUserException::new);
 
-        return MyProfileResponseDTO.fromEntity(user);
-    }
-
-    @Override
-    public OtherProfileResponseDTO getOtherProfile(Long otherUserId, UserDetailsImpl userDetails, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
-        User user = getUserById(userDetails.getUser().getId());
-
-        return OtherProfileResponseDTO.fromEntity(user);
+        return ProfileResponseDTO.fromEntity(user);
     }
 
     @Override
     @Transactional
     public void updateProfile(UpdateProfileRequestDTO updateProfileRequestDTO, UserDetailsImpl userDetails, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
-        User user = getUserById(userDetails.getUser().getId());
+        User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(NotFoundUserException::new);
         validatePassword(user, updateProfileRequestDTO.getOldPassword());
 
         if (updateProfileRequestDTO.getNewPassword() != null) {
@@ -116,10 +108,6 @@ public class UserServiceImpl implements UserService {
         }
 
         updateAccessToken(httpServletRequest, httpServletResponse, user);
-    }
-
-    private User getUserById(Long userId) {
-        return userRepository.findById(userId).orElseThrow(NotFoundUserException::new);
     }
 
     private void validatePassword(User user, String password) {

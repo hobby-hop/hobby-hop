@@ -63,12 +63,14 @@ public class ClubServiceImpl implements ClubService {
         if (clubMemberService.isMemberLimitReached(user.getId())) {
             throw new JoiningClubCountExceed();
         }
+
         validateClubTitle(clubRequestDTO.getTitle());
         Category category = categoryService.findCategory(clubRequestDTO.getCategoryId());
         Club club = Club.builder().title(clubRequestDTO.getTitle())
                 .content(clubRequestDTO.getContent()).category(category).build();
         Club savedClub = clubRepository.save(club);
         clubMemberService.joinClub(club, user, MemberRole.ADMIN);
+
         return ClubResponseDTO.fromEntity(savedClub);
     }
 
@@ -78,6 +80,7 @@ public class ClubServiceImpl implements ClubService {
         Club club = findClub(clubId);
         ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
         validateClubRolePermission(clubMember);
+
         clubRepository.deleteAllElement(club.getId());
     }
 
@@ -86,7 +89,6 @@ public class ClubServiceImpl implements ClubService {
     public ClubResponseDTO modifyClub(Long clubId, ClubModifyDTO clubModifyDTO, User user) {
         Club club = findClub(clubId);
         ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
-
         validateClubRolePermission(clubMember);
 
         if (clubModifyDTO.getTitle() != null) {

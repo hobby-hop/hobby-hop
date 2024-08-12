@@ -39,7 +39,6 @@ public class PostController {
     public ApiResponse<?> makePost(@PathVariable(name = "clubId") Long clubId,
                                    @RequestBody @Valid PostRequestDTO postRequestDTO,
                                    @AuthenticationPrincipal UserDetailsImpl userDetails) {
-
         return ApiResponse.ok(postService.makePost(userDetails.getUser(), clubId, postRequestDTO));
     }
 
@@ -70,8 +69,10 @@ public class PostController {
     @Operation(summary = "게시글 수정")
     @SecurityRequirement(name = "Bearer Authentication")
     @PatchMapping("/{postId}")
-    public ApiResponse<?> modifyPost(@PathVariable(name = "clubId") Long clubId, @PathVariable(name = "postId") Long postId,
-                                     @RequestBody @Valid PostModifyRequestDTO postModifyRequestDTO, @RequestParam(required = false, value = "file") MultipartFile file,
+    public ApiResponse<?> modifyPost(@PathVariable(name = "clubId") Long clubId,
+                                     @PathVariable(name = "postId") Long postId,
+                                     @RequestBody @Valid PostModifyRequestDTO postModifyRequestDTO,
+                                     @RequestParam(required = false, value = "file") MultipartFile file,
                                      @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         return ApiResponse.ok(postService.modifyPost(userDetails.getUser(), clubId, postId, file, postModifyRequestDTO));
     }
@@ -79,7 +80,8 @@ public class PostController {
     @Operation(summary = "게시글 삭제")
     @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping("/{postId}")
-    public ApiResponse<?> deletePost(@PathVariable(name = "clubId") Long clubId, @PathVariable(name = "postId") Long postId,
+    public ApiResponse<?> deletePost(@PathVariable(name = "clubId") Long clubId,
+                                     @PathVariable(name = "postId") Long postId,
                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
         postService.deletePost(userDetails.getUser(), clubId, postId);
 
@@ -90,7 +92,8 @@ public class PostController {
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/{postId}/likes")
     public ApiResponse<?> likePost(@PathVariable(name = "clubId") Long clubId,
-                                   @PathVariable(name = "postId") Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+                                   @PathVariable(name = "postId") Long postId,
+                                   @AuthenticationPrincipal UserDetailsImpl userDetails) {
         postService.makePostUser(userDetails.getUser(), clubId, postId);
 
         return ApiResponse.ok("좋아요 성공");
