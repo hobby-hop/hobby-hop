@@ -26,7 +26,6 @@ public interface PostTest extends ClubTest{
                     .user(TEST_USER)
                     .club(TEST_CLUB)
                     .likeCnt(TEST_POST_LIKE)
-                    .postNumber(TEST_POST_NUMBER)
                     .postTitle(TEST_POST_TITLE)
                     .postContent(TEST_POST_CONTENT)
                     .build();
