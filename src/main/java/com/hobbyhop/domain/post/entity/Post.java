@@ -2,21 +2,16 @@ package com.hobbyhop.domain.post.entity;
 
 import com.hobbyhop.domain.BaseEntity;
 import com.hobbyhop.domain.club.entity.Club;
-import com.hobbyhop.domain.comment.entity.Comment;
 import com.hobbyhop.domain.user.entity.User;
 import jakarta.persistence.*;
-
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
 import lombok.*;
+
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
-@Setter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -27,21 +22,20 @@ public class Post extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(length = 50)
     private String postTitle;
 
+    @Column(length = 1000)
     private String postContent;
 
-    @Column(length = 1000)
+    @Column(length = 500)
     private String originImageUrl;
 
-    @Column(length = 1000)
+    @Column(length = 500)
     private String savedImageUrl;
 
     @Column(nullable = false)
     private Long likeCnt;
-
-    @Column(nullable = false)
-    private Long postNumber;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -50,10 +44,6 @@ public class Post extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "club_id")
     private Club club;
-
-    @OneToMany(mappedBy = "post")
-    @Builder.Default
-    private List<Comment> commentList = new ArrayList<>();
 
     @Column(name = "deleted_at")
     private Timestamp deletedAt;

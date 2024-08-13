@@ -9,9 +9,5 @@ import org.springframework.data.repository.query.Param;
 
 
 public interface ClubRepository extends JpaRepository<Club, Long>, ClubRepositoryCustom {
-
-    @Query(value = "SELECT COUNT(*) FROM post WHERE club_id = :clubId", nativeQuery = true)
-    Long findByClubId(@Param("clubId") Long clubId);
-
     boolean existsClubByTitle(String title);
 }
