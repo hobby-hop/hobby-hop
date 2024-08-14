@@ -22,6 +22,6 @@ public class PostUserServiceImpl implements PostUserService {
     }
 
     public PostUser savePostUser(User user, Post post) {
-        return postUserRepository.save(PostUser.PostUserBuilder(user, post));
+        return postUserRepository.save(PostUser.buildPostUser(user, post));
     }
 }
