@@ -1,5 +1,6 @@
 package com.hobbyhop.domain.post.repository.custom.impl;
 
+import static com.hobbyhop.domain.club.entity.QClub.club;
 import static com.hobbyhop.domain.comment.entity.QComment.comment;
 import static com.hobbyhop.domain.commentuser.entity.QCommentUser.commentUser;
 import static com.hobbyhop.domain.post.entity.QPost.post;
@@ -46,20 +47,23 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
                         )
                 )
                 .from(post)
-                .where(post.club.id.eq(clubId));
+                .where(post.club.id.eq(clubId),
+                        eqKeyword(pageRequestDTO.getKeyword()));
 
-        if (pageRequestDTO.getKeyword() != null) {
-            BooleanExpression titleContainsKeyword = post.postTitle.containsIgnoreCase(pageRequestDTO.getKeyword());
-            query.where(titleContainsKeyword);
-        }
         Pageable pageable = pageRequestDTO.getPageable(pageRequestDTO.getSortBy());
-
         List<PostPageResponseDTO> content = getQuerydsl().applyPagination(pageable, query).fetch();
         long totalCount = query.fetchCount();
 
         return new PageImpl<>(content, pageable, totalCount);
     }
 
+    private BooleanExpression eqKeyword(String keyword) {
+        if (keyword == null || keyword.isBlank()) {
+            return null;
+        }
+
+        return post.postTitle.containsIgnoreCase(keyword);
+    }
     @Override
     public void deleteAllElement(Long postId) {
         List<Long> ids = queryFactory
