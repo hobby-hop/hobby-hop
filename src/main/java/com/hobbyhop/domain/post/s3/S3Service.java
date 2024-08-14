@@ -34,6 +34,7 @@ public class S3Service {
         } catch (Exception e) {
             throw new ImageSaveException();
         }
+
         return amazonS3.getUrl(bucket, savedFilename).toString();
     }
 
