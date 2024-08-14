@@ -2,12 +2,11 @@ package com.hobbyhop.domain.post.dto;
 
 import com.hobbyhop.domain.post.entity.Post;
 import java.sql.Timestamp;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
+import lombok.*;
+
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
