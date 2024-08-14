@@ -43,7 +43,7 @@ import org.springframework.mock.web.MockMultipartFile;
 @ExtendWith(MockitoExtension.class)
 class PostServiceImplTest implements PostTest, UserTest, CategoryTest, ClubTest {
     @InjectMocks
-    private PostServiceImpl postServiceImpl;
+    private PostServiceImpl sut;
     @Mock
     private PostRepository postRepository;
     @Mock
@@ -89,9 +89,9 @@ class PostServiceImplTest implements PostTest, UserTest, CategoryTest, ClubTest 
         given(postRepository.save(any())).willReturn(TEST_POST);
 
         // When & Then
-        assertThat(postServiceImpl.makePost(TEST_USER, TEST_CLUB_ID, postRequestDTO)
+        assertThat(sut.makePost(TEST_USER, TEST_CLUB_ID, postRequestDTO)
                 .getPostTitle()).isEqualTo(TEST_POST_TITLE);
-        assertThat(postServiceImpl.makePost(TEST_USER, TEST_CLUB_ID, postRequestDTO)
+        assertThat(sut.makePost(TEST_USER, TEST_CLUB_ID, postRequestDTO)
                 .getPostContent()).isEqualTo(TEST_POST_CONTENT);
 
     }
@@ -118,11 +118,11 @@ class PostServiceImplTest implements PostTest, UserTest, CategoryTest, ClubTest 
         given(postRepository.findById(TEST_POST_ID)).willReturn(Optional.of(TEST_POST));
 
         // When & Then
-        assertThat(postServiceImpl.findPost(TEST_POST_ID).getId()).isEqualTo(
+        assertThat(sut.findPost(TEST_POST_ID).getId()).isEqualTo(
                 postResponseDTO.getPostId());
-        assertThat(postServiceImpl.findPost(TEST_POST_ID).getPostTitle()).isEqualTo(
+        assertThat(sut.findPost(TEST_POST_ID).getPostTitle()).isEqualTo(
                 postResponseDTO.getPostTitle());
-        assertThat(postServiceImpl.findPost(TEST_POST_ID).getPostContent()).isEqualTo(
+        assertThat(sut.findPost(TEST_POST_ID).getPostContent()).isEqualTo(
                 postResponseDTO.getPostContent());
     }
 
@@ -144,7 +144,7 @@ class PostServiceImplTest implements PostTest, UserTest, CategoryTest, ClubTest 
                         fileResource.getInputStream());
 
         // When - Then
-        assertThat(postServiceImpl.modifyPost(TEST_USER, TEST_CLUB_ID, TEST_POST_ID, multipartFile,
+        assertThat(sut.modifyPost(TEST_USER, TEST_CLUB_ID, TEST_POST_ID, multipartFile,
                 postModifyRequestDTO).getPostTitle()).isEqualTo(postResponseDTO.getPostTitle());
 
     }
@@ -158,7 +158,7 @@ class PostServiceImplTest implements PostTest, UserTest, CategoryTest, ClubTest 
         given(postRepository.findById(TEST_POST_ID)).willReturn(Optional.of(TEST_POST));
 
         // When
-        postServiceImpl.deletePost(TEST_USER, TEST_CLUB_ID, TEST_POST_ID);
+        sut.deletePost(TEST_USER, TEST_CLUB_ID, TEST_POST_ID);
 
         // Then
         verify(postRepository, times(1)).deleteAllElement(TEST_POST_ID);
@@ -172,7 +172,7 @@ class PostServiceImplTest implements PostTest, UserTest, CategoryTest, ClubTest 
         given(postRepository.findById(TEST_POST_ID)).willReturn(Optional.of(TEST_POST));
 
         // When
-        postServiceImpl.makePostUser(TEST_USER, TEST_CLUB_ID, TEST_POST_ID);
+        sut.likePost(TEST_USER, TEST_CLUB_ID, TEST_POST_ID);
 
         // Then
         assertThat(TEST_POST.getLikeCnt().equals(1L));
@@ -192,7 +192,7 @@ class PostServiceImplTest implements PostTest, UserTest, CategoryTest, ClubTest 
                 new PageImpl<>(content, postPageRequestDTO.getPageable("id"), 10L));
 
         // When & Then
-        assertThat(postServiceImpl.getAllPost(postPageRequestDTO, TEST_CLUB_ID).getSize()).isEqualTo(
+        assertThat(sut.getAllPost(postPageRequestDTO, TEST_CLUB_ID).getSize()).isEqualTo(
                 10);
     }
 }

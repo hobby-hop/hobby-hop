@@ -2,6 +2,7 @@ package com.hobbyhop.domain.post.entity;
 
 import com.hobbyhop.domain.BaseEntity;
 import com.hobbyhop.domain.club.entity.Club;
+import com.hobbyhop.domain.post.dto.PostRequestDTO;
 import com.hobbyhop.domain.user.entity.User;
 import jakarta.persistence.*;
 import java.sql.Timestamp;
@@ -67,5 +68,15 @@ public class Post extends BaseEntity {
             return;
         }
         this.likeCnt--;
+    }
+    public static Post buildPost(PostRequestDTO postRequestDTO, Club club, User user) {
+        return Post.builder()
+                .postTitle(postRequestDTO.getPostTitle())
+                .postContent(postRequestDTO.getPostContent())
+                .club(club)
+                .user(user)
+                .likeCnt(0L)
+                .build();
+
     }
 }
