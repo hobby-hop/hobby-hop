@@ -48,13 +48,7 @@ public class PostServiceImpl implements PostService {
         Club club = clubService.findClub(clubId);
         clubMemberService.findByClubAndUser(clubId, user.getId());
 
-        Post post = Post.builder()
-                .postTitle(postRequestDTO.getPostTitle())
-                .postContent(postRequestDTO.getPostContent())
-                .club(club)
-                .user(user)
-                .likeCnt(0L)
-                .build();
+        Post post = Post.buildPost(postRequestDTO, club, user);
         postRepository.save(post);
 
         return PostResponseDTO.fromEntity(post);
@@ -138,7 +132,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public void makePostUser(User user, Long clubId, Long postId){
+    public void likePost(User user, Long clubId, Long postId){
         Post post = findAndCheckPostAndClub(clubId, postId);
 
         postUserService.postUser(user, post);
