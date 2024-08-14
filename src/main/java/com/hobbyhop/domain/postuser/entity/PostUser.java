@@ -15,6 +15,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 
 @Entity
@@ -22,6 +24,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@SQLDelete(sql = "UPDATE post_user SET deleted_at = NOW() where post_id=? and user_id=?")
+@SQLRestriction("deleted_at is NULL")
 public class PostUser extends BaseEntity {
     @EmbeddedId
     private PostUserPK postUserPK;
@@ -29,12 +33,15 @@ public class PostUser extends BaseEntity {
     @Column(nullable = false)
     private Boolean isLiked;
 
+    @Column
+    private Timestamp deletedAt;
+
     public static PostUser buildPostUser(User user, Post post) {
         return PostUser.builder()
                 .postUserPK(PostUserPK.builder()
-                .user(user)
-                .post(post)
-                .build())
+                        .user(user)
+                        .post(post)
+                        .build())
                 .isLiked(false)
                 .build();
     }
