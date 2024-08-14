@@ -45,7 +45,8 @@ public class PostController {
     @Operation(summary = "게시글 이미지 업로드")
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/{postId}")
-    public ApiResponse<?> imageUploadPost(@PathVariable(name = "clubId") Long clubId, @PathVariable(name = "postId") Long postId,
+    public ApiResponse<?> imageUploadPost(@PathVariable(name = "clubId") Long clubId,
+                                          @PathVariable(name = "postId") Long postId,
                                           @RequestParam("file") MultipartFile file,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         postService.imageUploadPost(userDetails.getUser(), clubId, postId, file);
