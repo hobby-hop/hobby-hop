@@ -1,5 +1,6 @@
 package com.hobbyhop.domain.postuser.entity;
 
+import com.hobbyhop.domain.BaseEntity;
 import com.hobbyhop.domain.post.entity.Post;
 import com.hobbyhop.domain.postuser.pk.PostUserPK;
 import com.hobbyhop.domain.user.entity.User;
@@ -14,33 +15,26 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
 
 
 @Entity
 @Getter
 @Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE post_user SET deleted_at = NOW() where post_id=? and user_id=?")
-@SQLRestriction("deleted_at is NULL")
-public class PostUser {
+@NoArgsConstructor
+@AllArgsConstructor
+public class PostUser extends BaseEntity {
     @EmbeddedId
     private PostUserPK postUserPK;
 
     @Column(nullable = false)
     private Boolean isLiked;
 
-    @Column
-    private Timestamp deletedAt;
-
-    public static PostUser PostUserBuilder(User user, Post post) {
+    public static PostUser buildPostUser(User user, Post post) {
         return PostUser.builder()
                 .postUserPK(PostUserPK.builder()
-                        .user(user)
-                        .post(post)
-                        .build())
+                .user(user)
+                .post(post)
+                .build())
                 .isLiked(false)
                 .build();
     }
