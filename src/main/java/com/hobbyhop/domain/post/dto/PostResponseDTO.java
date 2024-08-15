@@ -14,8 +14,8 @@ public class PostResponseDTO {
     private Long clubId;
     private Long postId;
     private String writer;
-    private String postTitle;
-    private String postContent;
+    private String title;
+    private String content;
     private String originImageUrl;
     private String savedImageUrl;
     private Long likeCnt;
@@ -27,8 +27,8 @@ public class PostResponseDTO {
                 .clubId(savedPost.getClub().getId())
                 .postId(savedPost.getId())
                 .writer(savedPost.getUser().getUsername())
-                .postTitle(savedPost.getPostTitle())
-                .postContent(savedPost.getPostContent())
+                .title(savedPost.getTitle())
+                .content(savedPost.getContent())
                 .originImageUrl(savedPost.getOriginImageUrl())
                 .savedImageUrl(savedPost.getSavedImageUrl())
                 .likeCnt(savedPost.getLikeCnt())

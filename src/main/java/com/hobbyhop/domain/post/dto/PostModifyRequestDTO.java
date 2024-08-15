@@ -10,8 +10,8 @@ import lombok.*;
 @Builder
 public class PostModifyRequestDTO {
     @Size(min = 3, max = 50, message = "최소 3자 이상이여야 합니다.")
-    private String postTitle;
+    private String title;
 
     @Size(max = 500, message = "최대 500자 입니다.")
-    private String postContent;
+    private String content;
 }

@@ -65,15 +65,15 @@ class PostServiceImplTest implements PostTest, UserTest, CategoryTest, ClubTest 
     @BeforeEach
     public void setup() {
         postRequestDTO = PostRequestDTO.builder()
-                .postTitle(TEST_POST_TITLE)
-                .postContent(TEST_POST_CONTENT)
+                .title(TEST_POST_TITLE)
+                .content(TEST_POST_CONTENT)
                 .build();
 
         postResponseDTO = PostResponseDTO.fromEntity(TEST_POST);
 
         postModifyRequestDTO = PostModifyRequestDTO.builder()
-                .postTitle(TEST_POST_TITLE)
-                .postContent(TEST_POST_CONTENT)
+                .title(TEST_POST_TITLE)
+                .content(TEST_POST_CONTENT)
                 .build();
 
         postPageRequestDTO = PostPageRequestDTO.builder()
@@ -90,9 +90,9 @@ class PostServiceImplTest implements PostTest, UserTest, CategoryTest, ClubTest 
 
         // When & Then
         assertThat(sut.makePost(TEST_USER, TEST_CLUB_ID, postRequestDTO)
-                .getPostTitle()).isEqualTo(TEST_POST_TITLE);
+                .getTitle()).isEqualTo(TEST_POST_TITLE);
         assertThat(sut.makePost(TEST_USER, TEST_CLUB_ID, postRequestDTO)
-                .getPostContent()).isEqualTo(TEST_POST_CONTENT);
+                .getContent()).isEqualTo(TEST_POST_CONTENT);
 
     }
 
@@ -120,10 +120,10 @@ class PostServiceImplTest implements PostTest, UserTest, CategoryTest, ClubTest 
         // When & Then
         assertThat(sut.findPost(TEST_POST_ID).getId()).isEqualTo(
                 postResponseDTO.getPostId());
-        assertThat(sut.findPost(TEST_POST_ID).getPostTitle()).isEqualTo(
-                postResponseDTO.getPostTitle());
-        assertThat(sut.findPost(TEST_POST_ID).getPostContent()).isEqualTo(
-                postResponseDTO.getPostContent());
+        assertThat(sut.findPost(TEST_POST_ID).getTitle()).isEqualTo(
+                postResponseDTO.getTitle());
+        assertThat(sut.findPost(TEST_POST_ID).getContent()).isEqualTo(
+                postResponseDTO.getContent());
     }
 
     @Test
@@ -143,9 +143,9 @@ class PostServiceImplTest implements PostTest, UserTest, CategoryTest, ClubTest 
                         IMAGE_JPEG.getType(),
                         fileResource.getInputStream());
 
-        // When - Then
+        // When & Then
         assertThat(sut.modifyPost(TEST_USER, TEST_CLUB_ID, TEST_POST_ID, multipartFile,
-                postModifyRequestDTO).getPostTitle()).isEqualTo(postResponseDTO.getPostTitle());
+                postModifyRequestDTO).getTitle()).isEqualTo(postResponseDTO.getTitle());
 
     }
 

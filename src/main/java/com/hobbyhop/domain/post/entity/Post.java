@@ -24,10 +24,10 @@ public class Post extends BaseEntity {
     private Long id;
 
     @Column(length = 50)
-    private String postTitle;
+    private String title;
 
     @Column(length = 1000)
-    private String postContent;
+    private String content;
 
     @Column(length = 500)
     private String originImageUrl;
@@ -49,12 +49,12 @@ public class Post extends BaseEntity {
     @Column(name = "deleted_at")
     private Timestamp deletedAt;
 
-    public void changeTitle(String postTitle) {
-        this.postTitle = postTitle;
+    public void changeTitle(String title) {
+        this.title = title;
     }
 
-    public void changeContent(String postContent) {
-        this.postContent = postContent;
+    public void changeContent(String content) {
+        this.content = content;
     }
 
     public void changeImageUrl(String originImageUrl, String savedImageUrl) {
@@ -71,8 +71,8 @@ public class Post extends BaseEntity {
     }
     public static Post buildPost(PostRequestDTO postRequestDTO, Club club, User user) {
         return Post.builder()
-                .postTitle(postRequestDTO.getPostTitle())
-                .postContent(postRequestDTO.getPostContent())
+                .title(postRequestDTO.getTitle())
+                .content(postRequestDTO.getContent())
                 .club(club)
                 .user(user)
                 .likeCnt(0L)

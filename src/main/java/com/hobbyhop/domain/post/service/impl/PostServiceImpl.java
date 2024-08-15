@@ -145,11 +145,11 @@ public class PostServiceImpl implements PostService {
             originFilename = s3Service.saveFile(file);
             savedFilename = UUID.randomUUID() + "_" + originFilename;
         }
-        if(postModifyRequestDTO.getPostTitle() != null) {
-            post.changeTitle(postModifyRequestDTO.getPostTitle());
+        if(postModifyRequestDTO.getTitle() != null) {
+            post.changeTitle(postModifyRequestDTO.getTitle());
         }
-        if(postModifyRequestDTO.getPostContent() != null) {
-            post.changeContent(postModifyRequestDTO.getPostContent());
+        if(postModifyRequestDTO.getContent() != null) {
+            post.changeContent(postModifyRequestDTO.getContent());
         }
         if(originFilename != null) {
             post.changeImageUrl(originFilename, savedFilename);

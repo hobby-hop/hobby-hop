@@ -15,7 +15,7 @@ public class PostPageResponseDTO {
     private Long clubId;
     private Long postId;
     private String writer;
-    private String postTitle;
+    private String title;
     private Long likeCnt;
     private Timestamp createdAt;
     private Timestamp modifiedAt;
@@ -25,7 +25,7 @@ public class PostPageResponseDTO {
                 .clubId(savedPost.getClub().getId())
                 .postId(savedPost.getId())
                 .writer(savedPost.getUser().getUsername())
-                .postTitle(savedPost.getPostTitle())
+                .title(savedPost.getTitle())
                 .likeCnt(savedPost.getLikeCnt())
                 .createdAt(savedPost.getCreatedAt())
                 .modifiedAt(savedPost.getModifiedAt())

@@ -1,7 +1,6 @@
 package com.hobbyhop.test;
 
 import com.hobbyhop.domain.post.entity.Post;
-import jakarta.persistence.Column;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
@@ -26,8 +25,8 @@ public interface PostTest extends ClubTest{
                     .user(TEST_USER)
                     .club(TEST_CLUB)
                     .likeCnt(TEST_POST_LIKE)
-                    .postTitle(TEST_POST_TITLE)
-                    .postContent(TEST_POST_CONTENT)
+                    .title(TEST_POST_TITLE)
+                    .content(TEST_POST_CONTENT)
                     .build();
 
     Post TEST_OTHER_POST =
@@ -36,7 +35,7 @@ public interface PostTest extends ClubTest{
                     .user(TEST_OTHER_USER)
                     .club(TEST_OTHER_CLUB)
                     .likeCnt(TEST_OTHER_POST_LIKE)
-                    .postTitle(TEST_OTHER_POST_TITLE)
-                    .postContent(TEST_OTHER_POST_CONTENT)
+                    .title(TEST_OTHER_POST_TITLE)
+                    .content(TEST_OTHER_POST_CONTENT)
                     .build();
 }
