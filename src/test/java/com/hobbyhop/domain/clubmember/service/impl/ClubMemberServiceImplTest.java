@@ -84,7 +84,7 @@ class ClubMemberServiceImplTest implements ClubTest {
     void clubMember_탈퇴_성공() {
         // Given
         willDoNothing().given(clubMemberRepository).delete(clubMember);
-        given(clubMemberRepository.findByClubMemberPK_Club_IdAndClubMemberPK_User_Id(TEST_CLUB_ID, TEST_USER_ID)).willReturn(Optional.of(clubMember));
+        given(clubMemberRepository.findClubMember(TEST_CLUB_ID, TEST_USER_ID)).willReturn(Optional.of(clubMember));
 
         // When
         sut.leaveMember(TEST_CLUB_ID, TEST_USER, TEST_USER_ID);
