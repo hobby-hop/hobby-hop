@@ -10,6 +10,7 @@ import com.hobbyhop.domain.clubmember.repository.ClubMemberRepository;
 import com.hobbyhop.domain.clubmember.service.ClubMemberService;
 import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.global.exception.clubmember.ClubMemberAlreadyJoined;
+import com.hobbyhop.global.exception.clubmember.ClubMemberLeaveFailException;
 import com.hobbyhop.global.exception.clubmember.ClubMemberNotFoundException;
 import java.util.List;
 
@@ -59,14 +60,14 @@ public class ClubMemberServiceImpl implements ClubMemberService {
             if(requestMember.getMemberRole() != MemberRole.ADMIN) {
                 clubMemberRepository.delete(requestMember);
             } else {
-                throw new ClubMemberRoleException();
+                throw new ClubMemberLeaveFailException();
             }
         }
     }
 
     @Override
     public ClubMember findByClubAndUser(Long clubId, Long userId) {
-        return clubMemberRepository.findByClubMemberPK_Club_IdAndClubMemberPK_User_Id(clubId, userId)
+        return clubMemberRepository.findClubMember(clubId, userId)
                 .orElseThrow(ClubMemberNotFoundException::new);
     }
 
