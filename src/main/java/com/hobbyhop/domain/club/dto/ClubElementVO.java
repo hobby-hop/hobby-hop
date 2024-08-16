@@ -8,6 +8,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ClubElementVO {
-    Long postId;
-    List<Long> commentId;
+    private Long postId;
+    private List<Long> commentId;
 }
