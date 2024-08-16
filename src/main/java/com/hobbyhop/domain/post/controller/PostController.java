@@ -45,7 +45,8 @@ public class PostController {
     @Operation(summary = "게시글 이미지 업로드")
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/{postId}")
-    public ApiResponse<?> imageUploadPost(@PathVariable(name = "clubId") Long clubId, @PathVariable(name = "postId") Long postId,
+    public ApiResponse<?> imageUploadPost(@PathVariable(name = "clubId") Long clubId,
+                                          @PathVariable(name = "postId") Long postId,
                                           @RequestParam("file") MultipartFile file,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         postService.imageUploadPost(userDetails.getUser(), clubId, postId, file);
@@ -94,7 +95,7 @@ public class PostController {
     public ApiResponse<?> likePost(@PathVariable(name = "clubId") Long clubId,
                                    @PathVariable(name = "postId") Long postId,
                                    @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        postService.makePostUser(userDetails.getUser(), clubId, postId);
+        postService.likePost(userDetails.getUser(), clubId, postId);
 
         return ApiResponse.ok("좋아요 성공");
     }

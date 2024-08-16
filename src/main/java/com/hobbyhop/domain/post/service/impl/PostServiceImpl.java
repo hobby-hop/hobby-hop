@@ -46,19 +46,9 @@ public class PostServiceImpl implements PostService {
             throw new ClubMemberNotFoundException();
 
         Club club = clubService.findClub(clubId);
-
         clubMemberService.findByClubAndUser(clubId, user.getId());
 
-        Long postNumber = clubService.getClubCount(clubId) + 1;
-
-        Post post = Post.builder()
-                .postTitle(postRequestDTO.getPostTitle())
-                .postContent(postRequestDTO.getPostContent())
-                .postNumber(postNumber)
-                .club(club)
-                .user(user)
-                .likeCnt(0L)
-                .build();
+        Post post = Post.buildPost(postRequestDTO, club, user);
         postRepository.save(post);
 
         return PostResponseDTO.fromEntity(post);
@@ -90,7 +80,7 @@ public class PostServiceImpl implements PostService {
         return PostResponseDTO.fromEntity(post);
     }
 
-    public Post findAndCheckPostAndClub(Long clubId, Long postId){
+    private Post findAndCheckPostAndClub(Long clubId, Long postId){
         Club club = clubService.findClub(clubId);
         Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
 
@@ -103,8 +93,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PageResponseDTO<PostPageResponseDTO> getAllPost(PostPageRequestDTO pageRequestDTO, Long clubId) {
-        Page<PostPageResponseDTO> result = postRepository.findAllByClubId(pageRequestDTO.getPageable("id"), clubId,
-                pageRequestDTO.getKeyword());
+        Page<PostPageResponseDTO> result = postRepository.findAllByClubId(pageRequestDTO, clubId);
 
         return PageResponseDTO.<PostPageResponseDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
@@ -123,22 +112,7 @@ public class PostServiceImpl implements PostService {
         if(!post.getUser().getId().equals(user.getId()))
             throw new PostNotCorrespondUser();
 
-        String originFilename = null;
-        String savedFilename = null;
-
-        if(file != null && !file.isEmpty()){
-            originFilename = s3Service.saveFile(file);
-            savedFilename = UUID.randomUUID() + "_" + originFilename;
-        }
-        if(postModifyRequestDTO.getPostTitle() != null) {
-            post.changeTitle(postModifyRequestDTO.getPostTitle());
-        }
-        if(postModifyRequestDTO.getPostContent() != null) {
-            post.changeContent(postModifyRequestDTO.getPostContent());
-        }
-        if(originFilename != null) {
-            post.changeImageUrl(originFilename, savedFilename);
-        }
+        applyChanges(post, postModifyRequestDTO, file);
 
         return PostResponseDTO.fromEntity(post);
     }
@@ -158,9 +132,27 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public void makePostUser(User user, Long clubId, Long postId){
+    public void likePost(User user, Long clubId, Long postId){
         Post post = findAndCheckPostAndClub(clubId, postId);
 
         postUserService.postUser(user, post);
+    }
+    private void applyChanges(Post post, PostModifyRequestDTO postModifyRequestDTO, MultipartFile file) {
+        String originFilename = null;
+        String savedFilename = null;
+
+        if(file != null && !file.isEmpty()){
+            originFilename = s3Service.saveFile(file);
+            savedFilename = UUID.randomUUID() + "_" + originFilename;
+        }
+        if(postModifyRequestDTO.getTitle() != null) {
+            post.changeTitle(postModifyRequestDTO.getTitle());
+        }
+        if(postModifyRequestDTO.getContent() != null) {
+            post.changeContent(postModifyRequestDTO.getContent());
+        }
+        if(originFilename != null) {
+            post.changeImageUrl(originFilename, savedFilename);
+        }
     }
 }
