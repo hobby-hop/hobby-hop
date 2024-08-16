@@ -1,5 +1,6 @@
 package com.hobbyhop.domain.clubmember.entity;
 
+import com.hobbyhop.domain.BaseEntity;
 import com.hobbyhop.domain.clubmember.enums.MemberRole;
 import com.hobbyhop.domain.clubmember.pk.ClubMemberPK;
 import jakarta.persistence.*;
@@ -19,7 +20,7 @@ import java.sql.Timestamp;
 @Builder
 @SQLDelete(sql = "UPDATE club_member SET deleted_at = NOW() where club_id=? and user_id=?")
 @SQLRestriction("deleted_at is NULL")
-public class ClubMember {
+public class ClubMember extends BaseEntity {
     @EmbeddedId
     private ClubMemberPK clubMemberPK;
 
