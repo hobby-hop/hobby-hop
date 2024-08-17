@@ -1,6 +1,7 @@
 package com.hobbyhop.domain.clubmember.service.impl;
 
 
+import com.hobbyhop.domain.club.dto.ClubResponseDTO;
 import com.hobbyhop.domain.club.entity.Club;
 import com.hobbyhop.domain.clubmember.dto.ClubMemberResponseDTO;
 import com.hobbyhop.domain.clubmember.entity.ClubMember;
@@ -23,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class ClubMemberServiceImpl implements ClubMemberService {
-
     private final ClubMemberRepository clubMemberRepository;
 
     @Override
@@ -72,8 +72,8 @@ public class ClubMemberServiceImpl implements ClubMemberService {
     }
 
     @Override
-    public List<ClubMember> findByUserId(User user){
-        return clubMemberRepository.findByClubMemberPK_User_Id(user.getId());
+    public List<ClubResponseDTO> findClubsByUserId(User user){
+        return clubMemberRepository.findClubsByUserId(user.getId());
     }
 
     @Override
@@ -88,6 +88,6 @@ public class ClubMemberServiceImpl implements ClubMemberService {
 
     @Override
     public boolean isMemberLimitReached(Long userId) {
-        return clubMemberRepository.isMemberLimitReached(userId);
+        return clubMemberRepository.isClubLimitReached(userId);
     }
 }
