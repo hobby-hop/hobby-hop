@@ -57,13 +57,16 @@ public class PostController {
     @Operation(summary = "게시글 단일 조회")
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/{postId}")
-    public ApiResponse<?> getPostById(@PathVariable(name = "clubId") Long clubId, @PathVariable(name = "postId") Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ApiResponse<?> getPostById(@PathVariable(name = "clubId") Long clubId,
+                                      @PathVariable(name = "postId") Long postId,
+                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ApiResponse.ok(postService.getPostById(userDetails.getUser(), clubId, postId));
     }
 
     @Operation(summary = "게시글 전체 조회")
     @GetMapping
-    public ApiResponse<?> getAllPost(PostPageRequestDTO pageRequestDTO, @PathVariable(name = "clubId") Long clubId) {
+    public ApiResponse<?> getAllPost(PostPageRequestDTO pageRequestDTO,
+                                     @PathVariable(name = "clubId") Long clubId) {
         return ApiResponse.ok(postService.getAllPost(pageRequestDTO, clubId));
     }
 
