@@ -47,7 +47,6 @@ public class ClubMemberRepositoryCustomImpl implements ClubMemberRepositoryCusto
                 .fetch();
     }
 
-
     @Override
     public boolean isClubMember(Long clubId, Long userId) {
         Integer i = jpaQueryFactory
