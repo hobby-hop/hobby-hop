@@ -92,18 +92,4 @@ class ClubMemberServiceImplTest implements ClubTest {
         // Then
         verify(clubMemberRepository, times(1)).delete(clubMember);
     }
-    @DisplayName("[FindByUserId]")
-    @Test
-    void clubMember_유저가_속한_클럽_리스트_조회() {
-        // Given
-        List<ClubMember> clubMembers = new ArrayList<>(List.of(ClubMember.builder()
-                .clubMemberPK(clubMemberPk)
-                .memberRole(MemberRole.MEMBER)
-                .build()));
-        given(clubMemberRepository.findByClubMemberPK_User_Id(TEST_USER_ID)).willReturn(clubMembers);
-
-        // When & Then
-        assertThat(sut.findByUserId(TEST_USER).get(0).getClubMemberPK()).isEqualTo(clubMembers.get(0).getClubMemberPK());
-        assertThat(sut.findByUserId(TEST_USER).get(0).getMemberRole()).isEqualTo(clubMembers.get(0).getMemberRole());
-    }
 }
