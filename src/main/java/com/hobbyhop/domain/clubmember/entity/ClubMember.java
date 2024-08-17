@@ -1,6 +1,8 @@
 package com.hobbyhop.domain.clubmember.entity;
 
 import com.hobbyhop.domain.BaseEntity;
+import com.hobbyhop.domain.club.entity.Club;
+import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.domain.clubmember.enums.MemberRole;
 import com.hobbyhop.domain.clubmember.pk.ClubMemberPK;
 import jakarta.persistence.*;
@@ -29,4 +31,13 @@ public class ClubMember extends BaseEntity {
 
     @Column(name = "deleted_at")
     private Timestamp deletedAt;
+
+    public static ClubMember buildClubMember(Club club, User user, MemberRole memberRole) {
+        return ClubMember.builder()
+                .clubMemberPK(ClubMemberPK.builder()
+                        .club(club)
+                        .user(user)
+                        .build())
+                .memberRole(memberRole).build();
+    }
 }
