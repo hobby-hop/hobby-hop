@@ -48,10 +48,11 @@ public class ClubRepositoryCustomImpl extends QuerydslRepositorySupport implemen
                                 club.id,
                                 club.title,
                                 club.content,
+                                club.category.id.as("categoryId"),
                                 club.category.categoryName,
                                 club.createdAt,
-                                club.modifiedAt,
-                                club.category.id.as("categoryId")))
+                                club.modifiedAt
+                        ))
                 .from(club)
                 .where(contains(club.title, pageRequestDTO.getKeyword()),
                         eqCategory(pageRequestDTO.getCategoryId()));
