@@ -46,8 +46,6 @@ public class PostServiceImpl implements PostService {
             throw new ClubMemberNotFoundException();
 
         Club club = clubService.findClub(clubId);
-        clubMemberService.findByClubAndUser(clubId, user.getId());
-
         Post post = Post.buildPost(postRequestDTO, club, user);
         postRepository.save(post);
 
