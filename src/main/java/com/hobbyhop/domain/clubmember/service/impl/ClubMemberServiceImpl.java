@@ -33,15 +33,9 @@ public class ClubMemberServiceImpl implements ClubMemberService {
             throw new ClubMemberAlreadyJoined();
         }
 
-        ClubMember clubMember = ClubMember.builder()
-                .clubMemberPK(ClubMemberPK.builder()
-                        .club(club)
-                        .user(user)
-                        .build())
-                .memberRole(memberRole).build();
-        ClubMember savedClubMember = clubMemberRepository.save(clubMember);
+        ClubMember clubMember = ClubMember.buildClubMember(club, user, memberRole);
 
-        return ClubMemberResponseDTO.fromEntity(savedClubMember);
+        return ClubMemberResponseDTO.fromEntity(clubMemberRepository.save(clubMember));
     }
 
     @Override
