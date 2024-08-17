@@ -96,10 +96,7 @@ public class ClubServiceImpl implements ClubService {
 
     @Override
     public List<ClubResponseDTO> getMyClubs(User user) {
-        List<ClubMember> list = clubMemberService.findByUserId(user);
-
-        return list.stream().map(clubMember -> ClubResponseDTO.fromEntity(
-                clubMember.getClubMemberPK().getClub())).collect(Collectors.toList());
+        return clubMemberService.findClubsByUserId(user);
     }
 
 
