@@ -38,13 +38,13 @@ public enum ErrorCode {
 
     // Club
     NOT_FOUND_CLUB_EXCEPTION(404, "해당 클럽을 찾을 수 없습니다."),
-    ALREADY_USER_OF_CLUB_EXCEPTION(404, "이미 클럽에 유저가 있습니다."),
-    ALREADY_CLUB_TITLE_EXIST_EXCEPTION(404, "이미 존재하는 클럽 명입니다."),
+    ALREADY_CLUB_TITLE_EXIST_EXCEPTION(409, "이미 존재하는 클럽 명입니다."),
 
     // ClubMember
     NOT_FOUND_CLUB_MEMBER_EXCEPTION(404, "해당 멤버를 찾을 수 없습니다."),
     NO_PERMISSION_EXCEPTION(403, "수행할 권한이 없습니다."),
     CLUB_MEMBER_ALREADY_JOINED_EXCEPTION(409, "이미 가입된 유저입니다."),
+    CLUB_MEMBER_LEAVE_FAIL_EXCEPTION(401, "모임의 관리자는 탈퇴할 수 없습니다."),
 
     // JoinReqeust
     NO_SUCH_REQUEST_EXCEPTION(404, "존재하지 않는 요청입니다."),

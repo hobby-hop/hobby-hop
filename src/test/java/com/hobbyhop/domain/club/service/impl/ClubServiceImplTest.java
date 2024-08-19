@@ -183,12 +183,11 @@ class ClubServiceImplTest implements ClubTest {
     @Test
     void club_내가_속한_클럽_리스트_조회() {
         // Given
-        List<ClubMember> list = List.of(clubMember);
-        List<ClubResponseDTO> result = List.of(ClubResponseDTO.fromEntity(clubMember.getClubMemberPK().getClub()));
-        given(clubMemberService.findByUserId(TEST_USER)).willReturn(list);
+        List<ClubResponseDTO> list = List.of(clubResponseDTO);
+        given(clubMemberService.findClubsByUserId(TEST_USER)).willReturn(list);
 
         // When & Then
-        assertThat(sut.getMyClubs(TEST_USER)).isEqualTo(result);
+        assertThat(sut.getMyClubs(TEST_USER)).isEqualTo(list);
     }
 
     @DisplayName("[GetAllClubs]")

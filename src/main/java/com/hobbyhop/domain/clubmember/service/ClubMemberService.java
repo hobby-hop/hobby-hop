@@ -1,5 +1,6 @@
 package com.hobbyhop.domain.clubmember.service;
 
+import com.hobbyhop.domain.club.dto.ClubResponseDTO;
 import com.hobbyhop.domain.club.entity.Club;
 import com.hobbyhop.domain.clubmember.dto.ClubMemberResponseDTO;
 import com.hobbyhop.domain.clubmember.entity.ClubMember;
@@ -16,7 +17,7 @@ public interface ClubMemberService {
 
     ClubMember findByClubAndUser(Long clubId, Long userId);
 
-    List<ClubMember> findByUserId(User user);
+    List<ClubResponseDTO> findClubsByUserId(User user);
 
     boolean isClubMember(Long clubId, Long userId);
 
