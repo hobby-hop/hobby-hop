@@ -189,7 +189,7 @@ class PostServiceImplTest implements PostTest, UserTest, CategoryTest, ClubTest 
                 TEST_MODIFIED_AT);
         content.add(postPageResponseDTO1);
         given(postRepository.findAllByClubId(postPageRequestDTO, TEST_CLUB_ID)).willReturn(
-                new PageImpl<>(content, postPageRequestDTO.getPageable("id"), 10L));
+                new PageImpl<>(content, postPageRequestDTO.getPageable(), 10L));
 
         // When & Then
         assertThat(sut.getAllPost(postPageRequestDTO, TEST_CLUB_ID).getSize()).isEqualTo(
