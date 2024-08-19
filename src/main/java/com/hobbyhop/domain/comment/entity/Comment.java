@@ -1,6 +1,7 @@
 package com.hobbyhop.domain.comment.entity;
 
 import com.hobbyhop.domain.BaseEntity;
+import com.hobbyhop.domain.comment.dto.CommentRequestDTO;
 import com.hobbyhop.domain.post.entity.Post;
 import com.hobbyhop.domain.user.entity.User;
 import jakarta.persistence.Column;
@@ -14,6 +15,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -65,5 +67,15 @@ public class Comment extends BaseEntity {
 
     public void subLike() {
         likeCnt--;
+    }
+    public static Comment buildComment(CommentRequestDTO request, Post post, User user, Comment comment) {
+        return Comment.builder()
+                .content(request.getContent())
+                .user(user)
+                .post(post)
+                .likeCnt(0L)
+                .parent(comment)
+                .reply(new ArrayList<>())
+                .build();
     }
 }
