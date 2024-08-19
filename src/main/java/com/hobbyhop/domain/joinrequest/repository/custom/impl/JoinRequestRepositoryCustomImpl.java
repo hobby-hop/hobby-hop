@@ -52,9 +52,13 @@ public class JoinRequestRepositoryCustomImpl extends QuerydslRepositorySupport i
                         .and(joinRequest.status.eq(JoinRequestStatus.PENDING))
                 );
 
-        Pageable pageable = pageRequestDTO.getPageable();
+        Pageable pageable = pageRequestDTO.getPageable(pageRequestDTO.getSortBy());
         List<JoinResponseDTO> content = getQuerydsl().applyPagination(pageable, query).fetch();
-        long totalCount = query.fetchCount();
+        long totalCount = jpaQueryFactory.select(joinRequest.count())
+                .from(joinRequest)
+                .where(joinRequest.club.id.eq(clubId)
+                        .and(joinRequest.status.eq(JoinRequestStatus.PENDING)))
+                .fetchOne();
 
         return new PageImpl<>(content, pageable, totalCount);
     }
