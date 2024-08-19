@@ -52,7 +52,7 @@ public class JoinRequestRepositoryCustomImpl extends QuerydslRepositorySupport i
                         .and(joinRequest.status.eq(JoinRequestStatus.PENDING))
                 );
 
-        Pageable pageable = pageRequestDTO.getPageable();
+        Pageable pageable = pageRequestDTO.getPageable(pageRequestDTO.getSortBy());
         List<JoinResponseDTO> content = getQuerydsl().applyPagination(pageable, query).fetch();
         long totalCount = jpaQueryFactory.select(joinRequest.count())
                 .from(joinRequest)

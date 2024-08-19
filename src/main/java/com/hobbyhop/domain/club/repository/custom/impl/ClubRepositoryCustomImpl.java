@@ -57,7 +57,7 @@ public class ClubRepositoryCustomImpl extends QuerydslRepositorySupport implemen
                 .where(contains(club.title, pageRequestDTO.getKeyword()),
                         eqCategory(pageRequestDTO.getCategoryId()));
 
-        Pageable pageable = pageRequestDTO.getPageable();
+        Pageable pageable = pageRequestDTO.getPageable(pageRequestDTO.getSortBy());
         List<ClubResponseDTO> content = getQuerydsl().applyPagination(pageable, query).fetch();
         long totalCount = jpaQueryFactory
                 .select(club.count())

@@ -49,7 +49,7 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
                 .where(post.club.id.eq(clubId),
                         eqKeyword(pageRequestDTO.getKeyword()));
 
-        Pageable pageable = pageRequestDTO.getPageable();
+        Pageable pageable = pageRequestDTO.getPageable(pageRequestDTO.getSortBy());
         List<PostPageResponseDTO> content = getQuerydsl().applyPagination(pageable, query).fetch();
         long totalCount = jpaQueryFactory
                 .select(post.count())

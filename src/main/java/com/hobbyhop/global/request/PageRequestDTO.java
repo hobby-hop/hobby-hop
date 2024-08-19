@@ -23,11 +23,11 @@ public class PageRequestDTO {
     @Builder.Default
     private String sortBy = "createdAt";
 
-    public Pageable getPageable() {
+    public Pageable getPageable(String props) {
         if(!isDesc) {
-            return PageRequest.of(this.page - 1, this.size, Sort.by(this.sortBy).ascending());
+            return PageRequest.of(this.page - 1, this.size, Sort.by(props).ascending());
         } else {
-            return PageRequest.of(this.page - 1, this.size, Sort.by(this.sortBy).descending());
+            return PageRequest.of(this.page - 1, this.size, Sort.by(props).descending());
         }
     }
 }
