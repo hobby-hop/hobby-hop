@@ -8,6 +8,5 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 public class HobbyHopApplication {
     public static void main(String[] args) {
         SpringApplication.run(HobbyHopApplication.class, args);
-
     }
 }
