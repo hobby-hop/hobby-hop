@@ -196,7 +196,7 @@ class ClubServiceImplTest implements ClubTest {
         // Given
         long totalCount = 1L;
         List<ClubResponseDTO> list = List.of(clubResponseDTO);
-        given(clubRepository.findAll(pageRequestDTO)).willReturn(new PageImpl<>(list, pageRequestDTO.getPageable(), totalCount));
+        given(clubRepository.findAll(pageRequestDTO)).willReturn(new PageImpl<>(list, pageRequestDTO.getPageable(pageRequestDTO.getSortBy()), totalCount));
 
         // When
         sut.getAllClubs(pageRequestDTO);
