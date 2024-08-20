@@ -96,7 +96,7 @@ public class PostServiceImpl implements PostService {
         return PageResponseDTO.<PostPageResponseDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
                 .dtoList(result.toList())
-                .total(Long.valueOf(result.getTotalElements()).intValue())
+                .total(result.getTotalElements())
                 .build();
     }
 

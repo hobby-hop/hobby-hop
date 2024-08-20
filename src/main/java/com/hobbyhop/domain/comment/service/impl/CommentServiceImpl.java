@@ -19,7 +19,6 @@ import com.hobbyhop.global.exception.comment.CommentNotFoundException;
 import com.hobbyhop.global.response.PageResponseDTO;
 import jakarta.transaction.Transactional;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,25 +35,25 @@ public class CommentServiceImpl implements CommentService {
     private final ClubMemberService clubMemberService;
 
     @Override
-    public CommentResponseDTO postComment(CommentRequestDTO request, Long clubId, Long postId, User user) {
+    public CommentResponseDTO writeComment(CommentRequestDTO request, Long clubId, Long postId, User user) {
         if (!clubMemberService.isClubMember(clubId, user.getId()))
             throw new ClubMemberNotFoundException();
 
         Post post = postService.findPost(postId);
-        Comment comment = buildComment(request, post, user, null);
+        Comment comment = Comment.buildComment(request, post, user, null);
         commentRepository.save(comment);
 
         return CommentResponseDTO.buildDTO(comment);
     }
 
     @Override
-    public CommentResponseDTO postComment(CommentRequestDTO request, Long clubId, Long postId, Long commentId, User user) {
+    public CommentResponseDTO writeReply(CommentRequestDTO request, Long clubId, Long postId, Long commentId, User user) {
         if (!clubMemberService.isClubMember(clubId, user.getId()))
             throw new ClubMemberNotFoundException();
 
         Post post = postService.findPost(postId);
         Comment comment = findById(clubId, postId, commentId);
-        Comment reply = buildComment(request, post, user, comment);
+        Comment reply = Comment.buildComment(request, post, user, comment);
         commentRepository.save(reply);
         comment.getReply().add(reply);
 
@@ -63,7 +62,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public CommentResponseDTO patchComment(CommentRequestDTO requestDto, Long clubId, Long postId, Long commentId, User user) {
+    public CommentResponseDTO editComment(CommentRequestDTO requestDto, Long clubId, Long postId, Long commentId, User user) {
         Comment comment = checkAuth(clubId, postId, commentId, user);
         comment.changeContent(requestDto.getContent());
 
@@ -74,7 +73,7 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     public void deleteComment(Long clubId, Long postId, Long commentId, User user) {
         Comment comment = checkAuth(clubId, postId, commentId, user);
-        Map<Long, Comment> deleteList = makeDelete(comment);
+        Map<Long, Comment> deleteList = makeDeleteList(comment);
 
         commentRepository.deleteList(deleteList.values().stream().toList());
     }
@@ -86,7 +85,7 @@ public class CommentServiceImpl implements CommentService {
         return PageResponseDTO.<CommentResponseDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
                 .dtoList(result.toList())
-                .total(Long.valueOf(result.getTotalElements()).intValue())
+                .total(result.getTotalElements())
                 .build();
     }
 
@@ -96,27 +95,16 @@ public class CommentServiceImpl implements CommentService {
         commentUserService.modifyCommentUser(comment, user);
     }
 
-    private Comment findById(Long clubId, Long postId, Long commentId) {
+    public Comment findById(Long clubId, Long postId, Long commentId) {
         return commentRepository.findById(clubId, postId, commentId).orElseThrow(CommentNotFoundException::new);
     }
 
-    private Comment buildComment(CommentRequestDTO request, Post post, User user, Comment comment) {
-        return Comment.builder()
-                .content(request.getContent())
-                .user(user)
-                .post(post)
-                .likeCnt(0L)
-                .parent(comment)
-                .reply(new ArrayList<>())
-                .build();
-    }
-
-    Map<Long, Comment> makeDelete(Comment comment) {
+    Map<Long, Comment> makeDeleteList(Comment comment) {
         Map<Long, Comment> deleteList = new HashMap<>();
 
         if (comment.getReply() != null) {
             comment.getReply().forEach((c) -> {
-                Map<Long, Comment> temp = makeDelete(c);
+                Map<Long, Comment> temp = makeDeleteList(c);
                 deleteList.putAll(temp);
             });
         }

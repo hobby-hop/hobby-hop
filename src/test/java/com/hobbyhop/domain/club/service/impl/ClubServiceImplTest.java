@@ -97,13 +97,13 @@ class ClubServiceImplTest implements ClubTest {
         int page = 1;
         int size = 10;
         pageRequestDTO = ClubPageRequestDTO.builder()
-                .page(1)
-                .size(9)
+                .page(page)
+                .size(size)
                 .build();
 
     }
 
-    @DisplayName("[GetClub]")
+    @DisplayName("모임 단건 조회")
     @Test
     void club_단일_조회() {
         given(clubRepository.findById(TEST_CLUB_ID)).willReturn(Optional.of(TEST_CLUB));
@@ -113,7 +113,7 @@ class ClubServiceImplTest implements ClubTest {
         assertThat(sut.findClub(TEST_CLUB_ID).getContent()).isEqualTo(clubResponseDTO.getContent());
     }
 
-    @DisplayName("[Make]")
+    @DisplayName("모임 생성")
     @Test
     void club_생성() {
         // Given
@@ -128,7 +128,7 @@ class ClubServiceImplTest implements ClubTest {
         assertThat(sut.makeClub(clubRequestDTO, TEST_USER).getCategoryId()).isEqualTo(TEST_CATEGORY_ID);
     }
 
-    @DisplayName("[Make] [Fail]")
+    @DisplayName("중복된 이름의 모임 생성 실패")
     @Test
     void club_생성_중복된이름으로인한_실패() {
         // Given
@@ -138,7 +138,7 @@ class ClubServiceImplTest implements ClubTest {
         assertThatCode(() -> sut.makeClub(clubRequestDTO, TEST_USER)).isInstanceOf(AlreadyExistClubTitle.class);
     }
 
-    @DisplayName("[Make] [Fail]")
+    @DisplayName("모임 최대 갯수 초과로 인한 생성 실패")
     @Test
     void club_생성_가입한_모임갯수_초과로인한_실패() {
         // Given
@@ -148,7 +148,7 @@ class ClubServiceImplTest implements ClubTest {
         assertThatCode(() -> sut.makeClub(clubRequestDTO, TEST_USER)).isInstanceOf(JoiningClubCountExceed.class);
     }
 
-    @DisplayName("[Modify]")
+    @DisplayName("모임 정보 수정")
     @Test
     void club_수정() {
         // Given
@@ -165,7 +165,7 @@ class ClubServiceImplTest implements ClubTest {
         assertThat(clubResponseDTO.getCategoryId()).isEqualTo(TEST_OTHER_CATEGORY_ID);
     }
 
-    @DisplayName("[Remove]")
+    @DisplayName("모임 삭제")
     @Test
     void club_삭제() {
         // Given
@@ -179,9 +179,9 @@ class ClubServiceImplTest implements ClubTest {
         verify(clubRepository, atLeastOnce()).deleteAllElement(TEST_CLUB_ID);
     }
 
-    @DisplayName("[GetMyClubs]")
+    @DisplayName("내가 속한 모임 리스트 조회")
     @Test
-    void club_내가_속한_클럽_리스트_조회() {
+    void club_내가_속한_모임_리스트_조회() {
         // Given
         List<ClubResponseDTO> list = List.of(clubResponseDTO);
         given(clubMemberService.findClubsByUserId(TEST_USER)).willReturn(list);
@@ -190,7 +190,7 @@ class ClubServiceImplTest implements ClubTest {
         assertThat(sut.getMyClubs(TEST_USER)).isEqualTo(list);
     }
 
-    @DisplayName("[GetAllClubs]")
+    @DisplayName("모든 모임 리스트 조회")
     @Test
     void club_모든_모임_리스트_조회() {
         // Given

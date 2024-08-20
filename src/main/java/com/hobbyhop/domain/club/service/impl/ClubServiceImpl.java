@@ -20,7 +20,6 @@ import com.hobbyhop.global.exception.joinrequest.JoiningClubCountExceed;
 import com.hobbyhop.global.response.PageResponseDTO;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -41,7 +40,7 @@ public class ClubServiceImpl implements ClubService {
         return PageResponseDTO.<ClubResponseDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
                 .dtoList(result.toList())
-                .total(Long.valueOf(result.getTotalElements()).intValue())
+                .total(result.getTotalElements())
                 .build();
     }
 

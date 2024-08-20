@@ -46,7 +46,7 @@ public class CategoryServiceImplTests implements CategoryTest {
         categoryResponseDTO = CategoryResponseDTO.fromEntity(category);
     }
 
-    @DisplayName("[Create]")
+    @DisplayName("카테고리 생성 성공")
     @Test
     void category_생성_성공() {
         // Given
@@ -55,7 +55,7 @@ public class CategoryServiceImplTests implements CategoryTest {
         // When & Then
         assertThat(sut.makeCategory(categoryRequestDTO)).isEqualTo(categoryResponseDTO);
     }
-    @DisplayName("[Create] [Fail]")
+    @DisplayName("카테고리 생성 실패")
     @Test
     void category_생성_실패() {
         // Given
