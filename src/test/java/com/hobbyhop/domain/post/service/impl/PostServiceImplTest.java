@@ -41,6 +41,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.mock.web.MockMultipartFile;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("[Post]")
 class PostServiceImplTest implements PostTest, UserTest, CategoryTest, ClubTest {
     @InjectMocks
     private PostServiceImpl sut;

@@ -78,7 +78,7 @@ class JoinRequestServiceImplTest implements ClubTest {
     }
 
 
-    @DisplayName("[Send]")
+    @DisplayName("가입신청 성공")
     @Test
     void joinRequest_요청_보내기_성공() {
         // Given
@@ -89,7 +89,7 @@ class JoinRequestServiceImplTest implements ClubTest {
         // When&Then
         assertThat(sut.sendRequest(TEST_CLUB_ID, TEST_USER)).isEqualTo(joinResponseDTO);
     }
-    @DisplayName("[Get]")
+    @DisplayName("가입신청 단건 조회")
     @Test
     void joinRequest_조회() {
         // Given
@@ -104,7 +104,7 @@ class JoinRequestServiceImplTest implements ClubTest {
     }
 
 
-    @DisplayName("[Get] [AllRequests] [Success]")
+    @DisplayName("가입신청 리스트 조회 성공")
     @Test
     void JoinRequest_리스트_조회() {
         // Given
@@ -117,7 +117,7 @@ class JoinRequestServiceImplTest implements ClubTest {
         assertThat(sut.getAllRequests(TEST_CLUB_ID, pageRequestDTO, TEST_USER).getDtoList()).isEqualTo(list);
         assertThat(sut.getAllRequests(TEST_CLUB_ID, pageRequestDTO, TEST_USER).getTotal()).isEqualTo(totalCount);
     }
-    @DisplayName("[Get] [AllRequests] [Fail]")
+    @DisplayName("권한이 없는 유저의 가입신청 페이징 조회 실패")
     @Test
     void JoinRequest_페이징_조회_권한이없어서_실패() {
         // Given
@@ -128,7 +128,7 @@ class JoinRequestServiceImplTest implements ClubTest {
     }
 
 
-    @DisplayName("[Process] [Success]")
+    @DisplayName("가입신청에 대한 처리 성공")
     @Test
     void joinRequest_처리_성공() {
         // Given
@@ -141,7 +141,7 @@ class JoinRequestServiceImplTest implements ClubTest {
         // Then
         verify(clubMemberService).joinClub(TEST_CLUB, TEST_USER, MemberRole.MEMBER);
     }
-    @DisplayName("[Process] [Fail]")
+    @DisplayName("권한이 없는 유저의 가입신청 처리 실패")
     @Test
     void joinRequest_처리_권한이없어서실패() {
         // Given

@@ -77,7 +77,7 @@ public class ClubRepositoryCustomImpl extends QuerydslRepositorySupport implemen
         if (searchWord.length() == 1) {
             return target.containsIgnoreCase(searchWord);
         } else {
-            final String formattedSearchWord = "\"" +  searchWord + "*" + "\"";
+            final String formattedSearchWord = "\"" +  searchWord + "\"";
             return numberTemplate(Double.class, "function('match_against', {0}, {1})",
                     target, formattedSearchWord)
                     .gt(0);

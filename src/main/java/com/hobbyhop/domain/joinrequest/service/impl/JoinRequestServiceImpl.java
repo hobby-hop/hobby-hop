@@ -85,7 +85,7 @@ public class JoinRequestServiceImpl implements JoinRequestService {
         return PageResponseDTO.<JoinResponseDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
                 .dtoList(result.toList())
-                .total(Long.valueOf(result.getTotalElements()).intValue())
+                .total(result.getTotalElements())
                 .build();
     }
 

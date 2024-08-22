@@ -28,21 +28,21 @@ public class CommentController {
 
     @Operation(summary = "댓글 작성")
     @PostMapping
-    public ApiResponse<?> postComment(@RequestBody CommentRequestDTO request,
+    public ApiResponse<?> writeComment(@RequestBody CommentRequestDTO request,
                                       @PathVariable("clubId") Long clubId,
                                       @PathVariable("postId") Long postId,
                                       @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return ApiResponse.ok(commentService.postComment(request, clubId, postId, userDetails.getUser()));
+        return ApiResponse.ok(commentService.writeComment(request, clubId, postId, userDetails.getUser()));
     }
 
     @Operation(summary = "대댓글 작성")
     @PostMapping("/{commentId}")
-    public ApiResponse<?> postComment(@RequestBody CommentRequestDTO request,
+    public ApiResponse<?> writeReply(@RequestBody CommentRequestDTO request,
                                       @PathVariable("clubId") Long clubId,
                                       @PathVariable("postId") Long postId,
                                       @PathVariable("commentId") Long commentId,
                                       @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return ApiResponse.ok(commentService.postComment(request, clubId, postId, commentId, userDetails.getUser()));
+        return ApiResponse.ok(commentService.writeReply(request, clubId, postId, commentId, userDetails.getUser()));
     }
 
     @Operation(summary = "댓글 조회")
@@ -64,12 +64,12 @@ public class CommentController {
 
     @Operation(summary = "댓글 수정")
     @PatchMapping("/{commentId}")
-    public ApiResponse<?> patchComment(@Valid @RequestBody CommentRequestDTO requestDto,
+    public ApiResponse<?> editComment(@Valid @RequestBody CommentRequestDTO requestDto,
                                        @PathVariable("clubId") Long clubId,
                                        @PathVariable("postId") Long postId,
                                        @PathVariable("commentId") Long commentId,
                                        @AuthenticationPrincipal UserDetailsImpl userDetails){
-        commentService.patchComment(requestDto, clubId, postId, commentId, userDetails.getUser());
+        commentService.editComment(requestDto, clubId, postId, commentId, userDetails.getUser());
 
         return ApiResponse.ok("수정 성공");
     }

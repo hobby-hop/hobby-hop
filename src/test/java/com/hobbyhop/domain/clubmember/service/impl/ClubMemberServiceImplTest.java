@@ -58,7 +58,7 @@ class ClubMemberServiceImplTest implements ClubTest {
             .build();
     }
 
-    @DisplayName("[Join]")
+    @DisplayName("모임 가입 성공")
     @Test
     void clubMember_가입_성공() {
         // Given
@@ -70,7 +70,7 @@ class ClubMemberServiceImplTest implements ClubTest {
         // Then
         assertThat(clubMemberResponseDTO.getClubId()).isEqualTo(TEST_CLUB_ID);
     }
-    @DisplayName("[Join] [Fail]")
+    @DisplayName("이미 가입되어있는 모임에 가입신청 실패")
     @Test
     void clubMember_가입_이미_가입된_모임으로인한_실패() {
         // Given
@@ -79,7 +79,7 @@ class ClubMemberServiceImplTest implements ClubTest {
         // When & Then
         assertThatCode(() -> sut.joinClub(TEST_CLUB, TEST_USER, MemberRole.MEMBER)).isInstanceOf(ClubMemberAlreadyJoined.class);
     }
-    @DisplayName("[Remove]")
+    @DisplayName("모임 탈퇴 성공")
     @Test
     void clubMember_탈퇴_성공() {
         // Given
