@@ -60,13 +60,20 @@ public class UserController {
         return ApiResponse.ok("회원 탈퇴 성공");
     }
 
-    @Operation(summary = "프로필 조회")
+    @Operation(summary = "자신 프로필 조회")
+    @GetMapping("/profiles/my")
+    @SecurityRequirement(name = "Bearer Authentication")
+    public ApiResponse<?> getMyProfile(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        ProfileResponseDTO profileResponseDTO = userService.getMyProfile(userDetails);
+
+        return ApiResponse.ok(profileResponseDTO);
+    }
+
+    @Operation(summary = "다른 유저 프로필 조회")
     @GetMapping("/profiles/{userId}")
     @SecurityRequirement(name = "Bearer Authentication")
-    public ApiResponse<?> getMyProfile(@PathVariable("userId") Long userId,
-                                       HttpServletResponse httpServletResponse,
-                                       HttpServletRequest httpServletRequest) {
-        ProfileResponseDTO profileResponseDTO = userService.getProfile(userId, httpServletResponse, httpServletRequest);
+    public ApiResponse<?> getMyProfile(@PathVariable("userId") Long userId) {
+        ProfileResponseDTO profileResponseDTO = userService.getOtherProfile(userId);
 
         return ApiResponse.ok(profileResponseDTO);
     }
