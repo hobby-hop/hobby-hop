@@ -86,7 +86,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ProfileResponseDTO getProfile(Long userId, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
+    public ProfileResponseDTO getMyProfile(UserDetailsImpl userDetails) {
+        return ProfileResponseDTO.fromEntity(userDetails.getUser());
+
+    }
+
+    @Override
+    public ProfileResponseDTO getOtherProfile(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(NotFoundUserException::new);
 
         return ProfileResponseDTO.fromEntity(user);
@@ -109,6 +115,8 @@ public class UserServiceImpl implements UserService {
 
         updateAccessToken(httpServletRequest, httpServletResponse, user);
     }
+
+
 
     private void validatePassword(User user, String password) {
         if (!passwordEncoder.matches(password, user.getPassword())) {
