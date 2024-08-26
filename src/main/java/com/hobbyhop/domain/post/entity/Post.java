@@ -68,7 +68,6 @@ public class Post extends BaseEntity {
             this.likeCnt++;
             return;
         }
-
         this.likeCnt--;
     }
     public static Post buildPost(PostRequestDTO postRequestDTO, Club club, User user) {
