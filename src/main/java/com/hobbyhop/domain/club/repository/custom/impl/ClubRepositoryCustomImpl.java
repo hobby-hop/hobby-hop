@@ -120,8 +120,7 @@ public class ClubRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 
         Timestamp now = Timestamp.valueOf(LocalDateTime.now());
 
-        jpaQueryFactory.update(commentUser)
-                .set(commentUser.deletedAt, now)
+        jpaQueryFactory.delete(commentUser)
                 .where(commentUser.commentUserPK.comment.id.in(commentIds))
                 .execute();
 
@@ -130,8 +129,7 @@ public class ClubRepositoryCustomImpl extends QuerydslRepositorySupport implemen
                 .where(comment.id.in(commentIds))
                 .execute();
 
-        jpaQueryFactory.update(postUser)
-                .set(postUser.deletedAt, now)
+        jpaQueryFactory.delete(postUser)
                 .where(postUser.postUserPK.post.id.in(postIds))
                 .execute();
 

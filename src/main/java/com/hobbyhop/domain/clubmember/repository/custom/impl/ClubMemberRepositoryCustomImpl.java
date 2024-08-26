@@ -20,7 +20,8 @@ public class ClubMemberRepositoryCustomImpl implements ClubMemberRepositoryCusto
 
     @Override
     public Optional<ClubMember> findClubMember(Long clubId, Long userId) {
-        return Optional.ofNullable(jpaQueryFactory.selectFrom(clubMember)
+        return Optional.ofNullable(
+                jpaQueryFactory.selectFrom(clubMember)
                 .where(clubMember.clubMemberPK.club.id.eq(clubId)
                         .and(clubMember.clubMemberPK.user.id.eq(userId)))
                 .fetchOne()

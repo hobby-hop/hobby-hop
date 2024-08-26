@@ -9,11 +9,11 @@ import org.hibernate.annotations.SQLRestriction;
 
 import java.sql.Timestamp;
 
+@Entity
 @Getter
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@Entity
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLDelete(sql = "UPDATE club SET deleted_at = NOW() where id=?")
 @SQLRestriction("deleted_at is NULL")
 public class Club extends BaseEntity {

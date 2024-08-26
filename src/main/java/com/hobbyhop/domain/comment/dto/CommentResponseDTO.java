@@ -12,7 +12,7 @@ import lombok.Data;
 public class CommentResponseDTO {
     String content;
     String writer;
-    Long like;
+    Long likeCnt;
     Timestamp createdAt;
     Long id;
 
@@ -20,7 +20,7 @@ public class CommentResponseDTO {
         return CommentResponseDTO.builder()
                 .content(comment.getContent())
                 .writer(comment.getUser().getUsername())
-                .like(comment.getLikeCnt())
+                .likeCnt(comment.getLikeCnt())
                 .createdAt(comment.getCreatedAt())
                 .id(comment.getId())
                 .build();

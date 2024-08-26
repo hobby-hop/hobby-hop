@@ -85,11 +85,12 @@ public class CommentRepositoryCustomImpl extends QuerydslRepositorySupport imple
         });
 
         Timestamp ts = Timestamp.valueOf(LocalDateTime.now());
-        jpaQueryFactory.update(comment).set(comment.deletedAt, ts)
+        jpaQueryFactory.update(comment)
+                .set(comment.deletedAt, ts)
                 .where(comment.id.in(deleteId)).execute();
 
 
-        jpaQueryFactory.update(commentUser).set(commentUser.deletedAt, ts)
+        jpaQueryFactory.delete(commentUser)
                 .where(commentUser.commentUserPK.comment.id.in(deleteId)).execute();
     }
 }
