@@ -18,17 +18,14 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLRestriction("deleted_at is NULL")
 public class Comment extends BaseEntity {
     @Id
@@ -61,13 +58,6 @@ public class Comment extends BaseEntity {
         this.content = content;
     }
 
-    public void addLike() {
-        likeCnt++;
-    }
-
-    public void subLike() {
-        likeCnt--;
-    }
     public static Comment buildComment(CommentRequestDTO request, Post post, User user, Comment comment) {
         return Comment.builder()
                 .content(request.getContent())
@@ -77,5 +67,13 @@ public class Comment extends BaseEntity {
                 .parent(comment)
                 .reply(new ArrayList<>())
                 .build();
+    }
+    public void updateLikeCnt(Boolean updated) {
+        if (updated) {
+            this.likeCnt++;
+            return;
+        }
+
+        this.likeCnt--;
     }
 }
