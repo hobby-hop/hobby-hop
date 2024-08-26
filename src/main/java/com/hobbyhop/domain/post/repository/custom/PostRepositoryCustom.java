@@ -7,11 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface PostRepositoryCustom {
-
-    Page<PostPageResponseDTO> findAllByClubId(Pageable pageable, Long clubId, String keyword);
+    Page<PostPageResponseDTO> findAllByClubId(PostPageRequestDTO pageRequestDTO, Long clubId);
 
     void deleteAllElement(Long postId);
-
-    Page<PostResponseDTO> findAllByClubIdAndKeyword(PostPageRequestDTO pageRequestDTO, Long clubId);
 }
 

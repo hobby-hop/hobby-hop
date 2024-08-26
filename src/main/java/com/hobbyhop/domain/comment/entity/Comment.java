@@ -1,6 +1,7 @@
 package com.hobbyhop.domain.comment.entity;
 
 import com.hobbyhop.domain.BaseEntity;
+import com.hobbyhop.domain.comment.dto.CommentRequestDTO;
 import com.hobbyhop.domain.post.entity.Post;
 import com.hobbyhop.domain.user.entity.User;
 import jakarta.persistence.Column;
@@ -12,19 +13,19 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLRestriction("deleted_at is NULL")
 public class Comment extends BaseEntity {
     @Id
@@ -43,7 +44,7 @@ public class Comment extends BaseEntity {
     @Column(nullable = false)
     private Long likeCnt;
 
-    @Column(name="deleted_at")
+    @Column(name = "deleted_at")
     private Timestamp deletedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -57,7 +58,22 @@ public class Comment extends BaseEntity {
         this.content = content;
     }
 
-    public void addLike(){likeCnt++;}
+    public static Comment buildComment(CommentRequestDTO request, Post post, User user, Comment comment) {
+        return Comment.builder()
+                .content(request.getContent())
+                .user(user)
+                .post(post)
+                .likeCnt(0L)
+                .parent(comment)
+                .reply(new ArrayList<>())
+                .build();
+    }
+    public void updateLikeCnt(Boolean updated) {
+        if (updated) {
+            this.likeCnt++;
+            return;
+        }
 
-    public void subLike(){likeCnt--;}
+        this.likeCnt--;
+    }
 }

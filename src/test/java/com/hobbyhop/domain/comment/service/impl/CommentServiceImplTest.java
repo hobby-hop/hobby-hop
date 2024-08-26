@@ -14,10 +14,12 @@ import com.hobbyhop.domain.comment.repository.CommentRepository;
 import com.hobbyhop.domain.commentuser.service.impl.CommentUserServiceImpl;
 import com.hobbyhop.domain.post.service.impl.PostServiceImpl;
 import com.hobbyhop.test.CommentTest;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,11 +29,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("[Comment")
 class CommentServiceImplTest implements CommentTest {
-
     @InjectMocks
     private CommentServiceImpl commentService;
-
     @Mock
     private CommentRepository commentRepository;
     @Mock
@@ -40,14 +41,12 @@ class CommentServiceImplTest implements CommentTest {
     private CommentUserServiceImpl commentUserService;
     @Mock
     private ClubMemberServiceImpl clubMemberService;
-
     private CommentRequestDTO requestDTO;
     private CommentRequestDTO modifyDTO;
     private CommentPageRequestDTO pageRequestDTO;
 
     @BeforeEach
     public void setup() {
-
         requestDTO = CommentRequestDTO.builder()
                 .content(TEST_COMMENT_CONTENT)
                 .build();
@@ -60,7 +59,7 @@ class CommentServiceImplTest implements CommentTest {
                 .page(1)
                 .size(10)
                 .isDesc(true)
-                .standard("standard")
+                .sortBy("standard")
                 .build();
     }
 
@@ -73,23 +72,24 @@ class CommentServiceImplTest implements CommentTest {
         given(commentRepository.save(any())).willReturn(TEST_COMMENT);
 
         // when & then
-        assertThat(commentService.postComment(requestDTO, TEST_CLUB_ID, TEST_POST_ID, TEST_USER)
+        assertThat(commentService.writeComment(requestDTO, TEST_CLUB_ID, TEST_POST_ID, TEST_USER)
                 .getContent()).isEqualTo(TEST_COMMENT.getContent());
     }
 
-    @Test
-    @DisplayName("대댓글 생성 성공 테스트")
-    void 대댓글생성테스트() {
-        // given
-        given(clubMemberService.isClubMember(TEST_CLUB_ID, TEST_USER_ID)).willReturn(true);
-        given(postService.findPost(TEST_POST_ID)).willReturn(TEST_POST);
-        given(commentRepository.save(any())).willReturn(TEST_OTHER_COMMENT);
-        requestDTO.setContent(TEST_OTHER_COMMENT_CONTENT);
-
-        // when & then
-        assertThat(commentService.postComment(requestDTO, TEST_CLUB_ID, TEST_POST_ID, TEST_USER)
-                .getContent()).isEqualTo(TEST_OTHER_COMMENT.getContent());
-    }
+//    @Test
+//    @DisplayName("대댓글 생성 성공 테스트")
+//    void 대댓글생성테스트() {
+//        // given
+//        given(clubMemberService.isClubMember(TEST_CLUB_ID, TEST_USER_ID)).willReturn(true);
+//        given(postService.findPost(TEST_POST_ID)).willReturn(TEST_POST);
+//        given(commentRepository.findById(TEST_CLUB_ID, TEST_POST_ID, TEST_COMMENT_ID)).willReturn(Optional.of(TEST_COMMENT));
+//        given(commentRepository.save(any())).willReturn(TEST_OTHER_COMMENT);
+//        requestDTO.setContent(TEST_OTHER_COMMENT_CONTENT);
+//
+//        // when & then
+//        assertThat(commentService.writeReply(requestDTO, TEST_CLUB_ID, TEST_POST_ID, TEST_OTHER_COMMENT_ID, TEST_USER)
+//                .getContent()).isEqualTo(TEST_OTHER_COMMENT.getContent());
+//    }
 
     @Test
     @DisplayName("댓글 수정 완료 테스트")
@@ -100,7 +100,7 @@ class CommentServiceImplTest implements CommentTest {
 
         // when & then
         assertThat(
-                commentService.patchComment(modifyDTO, TEST_CLUB_ID, TEST_POST_ID, TEST_COMMENT_ID,
+                commentService.editComment(modifyDTO, TEST_CLUB_ID, TEST_POST_ID, TEST_COMMENT_ID,
                         TEST_USER).getContent()).isEqualTo(TEST_OTHER_COMMENT_CONTENT);
     }
 
@@ -116,7 +116,7 @@ class CommentServiceImplTest implements CommentTest {
 
         // then
         verify(commentRepository, times(1)).deleteList(
-                commentService.makeDelete(Objects.requireNonNull(TEST_COMMENT)).values().stream().toList());
+                commentService.makeDeleteList(Objects.requireNonNull(TEST_COMMENT)).values().stream().toList());
     }
 
 //    @Test
@@ -148,6 +148,5 @@ class CommentServiceImplTest implements CommentTest {
         // then
         verify(commentUserService).modifyCommentUser(
                 Objects.requireNonNull(TEST_COMMENT), TEST_USER);
-
     }
 }

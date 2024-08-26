@@ -2,20 +2,17 @@ package com.hobbyhop.domain.category.entity;
 
 import com.hobbyhop.domain.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.sql.Timestamp;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 @Getter
+@Builder
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLDelete(sql = "UPDATE category SET deleted_at = NOW() where id=?")
 @SQLRestriction("deleted_at is NULL")
 public class Category extends BaseEntity {
@@ -28,6 +25,6 @@ public class Category extends BaseEntity {
 
     private String description;
 
-    @Column(name="deleted_at")
+    @Column(name = "deleted_at")
     private Timestamp deletedAt;
 }

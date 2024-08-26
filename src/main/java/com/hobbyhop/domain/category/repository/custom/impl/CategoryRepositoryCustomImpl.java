@@ -12,16 +12,17 @@ import com.hobbyhop.domain.category.dto.CategoryElementVO;
 import com.hobbyhop.domain.category.repository.custom.CategoryRepositoryCustom;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
-
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
@@ -56,8 +57,7 @@ public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
 
         Timestamp now = Timestamp.valueOf(LocalDateTime.now());
 
-        jpaQueryFactory.update(commentUser)
-                .set(commentUser.deletedAt, now)
+        jpaQueryFactory.delete(commentUser)
                 .where(commentUser.commentUserPK.comment.id.in(commentIds))
                 .execute();
 
@@ -66,8 +66,7 @@ public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
                 .where(comment.id.in(commentIds))
                 .execute();
 
-        jpaQueryFactory.update(postUser)
-                .set(postUser.deletedAt, now)
+        jpaQueryFactory.delete(postUser)
                 .where(postUser.postUserPK.post.id.in(postIds))
                 .execute();
 

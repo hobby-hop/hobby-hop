@@ -3,10 +3,7 @@ package com.hobbyhop.domain.user.entity;
 import com.hobbyhop.domain.BaseEntity;
 import com.hobbyhop.domain.user.enums.UserRoleEnum;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
@@ -14,9 +11,9 @@ import java.sql.Timestamp;
 
 @Entity
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "users")
 @SQLDelete(sql = "UPDATE users SET deleted_at = NOW() where id=?")
 @SQLRestriction("deleted_at is NULL")
@@ -45,10 +42,6 @@ public class User extends BaseEntity {
 
     private Long kakaoId;
 
-    public void updateProfile (String updateInfo, String updatePassword) {
-            this.info = updateInfo;
-            this.password = updatePassword;
-    }
     public void changeInfo(String updateInfo) {
         this.info = updateInfo;
     }

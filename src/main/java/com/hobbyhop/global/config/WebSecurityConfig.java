@@ -63,19 +63,19 @@ public class WebSecurityConfig {
                 sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.authorizeHttpRequests((authorizeHttpRequests) ->
-                        authorizeHttpRequests
-                                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                                .requestMatchers("/api/users/signup", "/api/users/login").permitAll()
-                                .requestMatchers("/api/users/login/kakao/callback").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/clubs").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/clubs/{clubId}").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/clubs/{clubId}/posts").permitAll()
-                                .requestMatchers("/v3/api-docs/**", "/swagger-resourcees/**",
-                                        "/swagger-ui/**", "/webjars/**", "/swagger/**").permitAll()
-                                .anyRequest().authenticated()
+                authorizeHttpRequests
+                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                        .requestMatchers("/api/users/signup", "/api/users/login").permitAll()
+                        .requestMatchers("/api/users/login/kakao/callback").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/clubs").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/clubs/{clubId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/clubs/{clubId}/posts").permitAll()
+                        .requestMatchers("/v3/api-docs/**", "/swagger-resourcees/**",
+                                "/swagger-ui/**", "/webjars/**", "/swagger/**").permitAll()
+                        .anyRequest().authenticated()
         );
 
-        http.exceptionHandling( config -> {
+        http.exceptionHandling(config -> {
             config.accessDeniedHandler(accessDeniedHandler());
             config.authenticationEntryPoint(errorPoint());
         });
@@ -107,13 +107,12 @@ public class WebSecurityConfig {
 
     private AccessDeniedHandler accessDeniedHandler() {
         return (request, response, ex) -> {
-            ApiResponse apiResponse = ApiResponse.of(HttpStatus.FORBIDDEN,ex.getMessage());
+            ApiResponse apiResponse = ApiResponse.of(HttpStatus.FORBIDDEN, ex.getMessage());
             response.setStatus(HttpStatus.FORBIDDEN.value());
             response.setContentType("application/json; charset=UTF-8");
             response.getWriter().write(objectMapper.writeValueAsString(apiResponse));
         };
     }
-
 
     private AuthenticationEntryPoint errorPoint() {
         return (request, response, authException) -> {

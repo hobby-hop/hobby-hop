@@ -9,36 +9,39 @@ import org.hibernate.annotations.SQLRestriction;
 
 import java.sql.Timestamp;
 
+@Entity
 @Getter
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@Entity
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLDelete(sql = "UPDATE club SET deleted_at = NOW() where id=?")
 @SQLRestriction("deleted_at is NULL")
 public class Club extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
+
+    @Column(unique = true, length = 30)
     private String title;
+
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @Column(name="deleted_at")
+    @Column(name = "deleted_at")
     private Timestamp deletedAt;
 
     public void changeTitle(String title) {
         this.title = title;
     }
+
     public void changeContent(String content) {
         this.content = content;
     }
+
     public void changeCategory(Category category) {
         this.category = category;
     }
-
 }

@@ -16,14 +16,14 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/clubs")
-
 public class ClubController {
     private final ClubService clubService;
 
     @Operation(summary = "새로운 모임 생성")
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping
-    public ApiResponse<?> makeClub(@Valid @RequestBody ClubRequestDTO clubRequestDTO, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ApiResponse<?> makeClub(@Valid @RequestBody ClubRequestDTO clubRequestDTO,
+                                   @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ApiResponse.ok(clubService.makeClub(clubRequestDTO, userDetails.getUser()));
     }
 
@@ -49,15 +49,19 @@ public class ClubController {
     @Operation(summary = "모임 정보 수정")
     @SecurityRequirement(name = "Bearer Authentication")
     @PatchMapping("/{clubId}")
-    public ApiResponse<?> modifyClub(@PathVariable("clubId") Long clubId, @Valid @RequestBody ClubModifyDTO clubModifyDTO, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ApiResponse<?> modifyClub(@PathVariable("clubId") Long clubId,
+                                     @Valid @RequestBody ClubModifyDTO clubModifyDTO,
+                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ApiResponse.ok(clubService.modifyClub(clubId, clubModifyDTO, userDetails.getUser()));
     }
 
     @Operation(summary = "모임 삭제")
     @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping("/{clubId}")
-    public ApiResponse<?> removeClub(@PathVariable("clubId") Long clubId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ApiResponse<?> removeClub(@PathVariable("clubId") Long clubId,
+                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
         clubService.removeClubById(clubId, userDetails.getUser());
+
         return ApiResponse.ok("삭제 성공");
     }
 }

@@ -6,13 +6,13 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class MyProfileResponseDTO {
+public class ProfileResponseDTO {
     private String username;
     private String email;
     private String info;
 
-    public static MyProfileResponseDTO fromEntity (User user) {
-        return MyProfileResponseDTO.builder()
+    public static ProfileResponseDTO fromEntity (User user) {
+        return ProfileResponseDTO.builder()
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .info(user.getInfo())

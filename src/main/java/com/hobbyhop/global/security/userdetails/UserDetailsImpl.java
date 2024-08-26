@@ -10,7 +10,6 @@ import java.util.ArrayDeque;
 import java.util.Collection;
 
 public class UserDetailsImpl implements UserDetails {
-
     private final User user;
 
     public UserDetailsImpl(User user) {
@@ -23,12 +22,10 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-
         UserRoleEnum role = user.getRole();
         String authority = role.getAuthority();
 
         SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(authority);
-
         Collection<GrantedAuthority> authorities = new ArrayDeque<>();
         authorities.add(simpleGrantedAuthority);
 

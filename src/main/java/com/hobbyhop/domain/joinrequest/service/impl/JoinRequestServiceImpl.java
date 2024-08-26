@@ -18,6 +18,7 @@ import com.hobbyhop.global.exception.joinrequest.JoiningClubCountExceed;
 import com.hobbyhop.global.exception.joinrequest.NoSuchRequestException;
 import com.hobbyhop.global.exception.joinrequest.PendingRequest;
 import com.hobbyhop.global.response.PageResponseDTO;
+import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -28,11 +29,11 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class JoinRequestServiceImpl implements JoinRequestService {
     private final JoinRequestRepository joinRequestRepository;
     private final ClubService clubService;
     private final ClubMemberService clubMemberService;
+
     @Override
     @Transactional
     public JoinResponseDTO sendRequest(Long clubId, User user) {
@@ -47,8 +48,6 @@ public class JoinRequestServiceImpl implements JoinRequestService {
                 .user(user)
                 .status(JoinRequestStatus.PENDING)
                 .build();
-
-        // 테이블에 저장한다.
         JoinRequest savedJoinRequest = joinRequestRepository.save(joinRequest);
 
         return JoinResponseDTO.fromEntity(savedJoinRequest);
@@ -57,8 +56,7 @@ public class JoinRequestServiceImpl implements JoinRequestService {
     @Override
     public List<JoinResponseDTO> getRequestByClub(Long clubId, User user) {
         ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
-
-       checkIfAdminRole(clubMember);
+        checkIfAdminRole(clubMember);
 
         return joinRequestRepository.findByClub_IdAndStatus(clubId, JoinRequestStatus.PENDING).stream()
                 .map(JoinResponseDTO::fromEntity).collect(Collectors.toList());
@@ -66,11 +64,14 @@ public class JoinRequestServiceImpl implements JoinRequestService {
 
     @Override
     @Transactional
-    public void processRequest(Long requestId, JoinRequestStatus status) {
+    public void processRequest(Long clubId, Long requestId, JoinRequestStatus status, User user) {
+        ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
+        checkIfAdminRole(clubMember);
+
         JoinRequest joinRequest = joinRequestRepository.findById(requestId).orElseThrow(NoSuchRequestException::new);
         joinRequest.changeStatus(status);
 
-        if(status.equals(JoinRequestStatus.APPROVED)) {
+        if (status.equals(JoinRequestStatus.APPROVED)) {
             clubMemberService.joinClub(joinRequest.getClub(), joinRequest.getUser(), MemberRole.MEMBER);
         }
     }
@@ -78,15 +79,13 @@ public class JoinRequestServiceImpl implements JoinRequestService {
     @Override
     public PageResponseDTO<JoinResponseDTO> getAllRequests(Long clubId, JoinPageRequestDTO pageRequestDTO, User user) {
         ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
-
         checkIfAdminRole(clubMember);
-
         Page<JoinResponseDTO> result = joinRequestRepository.findAllByClubId(clubId, pageRequestDTO);
 
         return PageResponseDTO.<JoinResponseDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
                 .dtoList(result.toList())
-                .total(Long.valueOf(result.getTotalElements()).intValue())
+                .total(result.getTotalElements())
                 .build();
     }
 

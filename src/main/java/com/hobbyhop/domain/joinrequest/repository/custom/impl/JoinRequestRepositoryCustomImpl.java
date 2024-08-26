@@ -17,7 +17,7 @@ import java.util.List;
 
 import static com.hobbyhop.domain.joinrequest.entity.QJoinRequest.joinRequest;
 
-public class JoinRequestRepositoryCustomImpl  extends QuerydslRepositorySupport implements JoinRequestRepositoryCustom {
+public class JoinRequestRepositoryCustomImpl extends QuerydslRepositorySupport implements JoinRequestRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     public JoinRequestRepositoryCustomImpl(JPAQueryFactory jpaQueryFactory) {
@@ -33,7 +33,7 @@ public class JoinRequestRepositoryCustomImpl  extends QuerydslRepositorySupport 
                 .where(joinRequest.club.id.eq(clubId).and(joinRequest.user.id.eq(userId)).and(joinRequest.status.eq(JoinRequestStatus.PENDING)))
                 .fetchFirst(); // limit 1
 
-        return fetchOne != null; // 1개가 있는지 없는지 판단 (없으면 null이라 null체크)
+        return fetchOne != null;
     }
 
     @Override
@@ -52,12 +52,14 @@ public class JoinRequestRepositoryCustomImpl  extends QuerydslRepositorySupport 
                         .and(joinRequest.status.eq(JoinRequestStatus.PENDING))
                 );
 
-        Pageable pageable = pageRequestDTO.getPageable();
+        Pageable pageable = pageRequestDTO.getPageable(pageRequestDTO.getSortBy());
         List<JoinResponseDTO> content = getQuerydsl().applyPagination(pageable, query).fetch();
-        long totalCount = query.fetchCount();
+        long totalCount = jpaQueryFactory.select(joinRequest.count())
+                .from(joinRequest)
+                .where(joinRequest.club.id.eq(clubId)
+                        .and(joinRequest.status.eq(JoinRequestStatus.PENDING)))
+                .fetchOne();
 
         return new PageImpl<>(content, pageable, totalCount);
     }
-
-
 }

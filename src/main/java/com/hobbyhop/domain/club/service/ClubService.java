@@ -25,6 +25,4 @@ public interface ClubService {
     Club findClub(Long clubId);
 
     List<ClubResponseDTO> getMyClubs(User user);
-
-    Long getClubCount(Long clubId);
 }

@@ -21,7 +21,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostUserPK implements Serializable {
-
     @JoinColumn(nullable = false)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private User user;

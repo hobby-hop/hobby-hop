@@ -20,23 +20,27 @@ public class JoinRequestController {
 
     @Operation(summary = "가입 신청")
     @PostMapping
-    public ApiResponse<?> sendRequest(@PathVariable("clubId") Long clubId,@AuthenticationPrincipal UserDetailsImpl userDetails) {
-
+    public ApiResponse<?> sendRequest(@PathVariable("clubId") Long clubId,
+                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ApiResponse.ok(joinRequestService.sendRequest(clubId, userDetails.getUser()));
     }
 
     @Operation(summary = "가입 신청 조회")
     @GetMapping
-    public ApiResponse<?> getAllRequests(@PathVariable("clubId") Long clubId, JoinPageRequestDTO pageRequestDTO, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-
+    public ApiResponse<?> getAllRequests(@PathVariable("clubId") Long clubId,
+                                         JoinPageRequestDTO pageRequestDTO,
+                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ApiResponse.ok(joinRequestService.getAllRequests(clubId,pageRequestDTO, userDetails.getUser()));
     }
 
     @Operation(summary = "가입 신청에 대한 처리")
     @PutMapping("/{requestId}")
-    public ApiResponse<?> processRequest(@PathVariable("requestId") Long requestId, @RequestBody JoinRequestDTO joinRequestDTO, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        joinRequestService.processRequest(requestId, joinRequestDTO.getStatus());
+    public ApiResponse<?> processRequest(@PathVariable("clubId") Long clubId,
+                                         @PathVariable("requestId") Long requestId,
+                                         @RequestBody JoinRequestDTO joinRequestDTO,
+                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        joinRequestService.processRequest(clubId, requestId, joinRequestDTO.getStatus(), userDetails.getUser());
+
         return ApiResponse.ok("성공적으로 처리되었습니다.");
     }
-
 }

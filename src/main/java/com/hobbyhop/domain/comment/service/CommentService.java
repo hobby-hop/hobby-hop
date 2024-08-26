@@ -7,12 +7,11 @@ import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.global.response.PageResponseDTO;
 
 public interface CommentService {
+    CommentResponseDTO writeComment(CommentRequestDTO request, Long clubId, Long postId, User user);
 
-    CommentResponseDTO postComment(CommentRequestDTO request, Long clubId, Long postId, User user);
+    CommentResponseDTO writeReply(CommentRequestDTO request, Long clubId, Long postId, Long commentId, User user);
 
-    CommentResponseDTO postComment(CommentRequestDTO request, Long clubId, Long postId, Long commentId, User user);
-
-    CommentResponseDTO patchComment(CommentRequestDTO requestDto, Long clubId, Long postId, Long commentId, User user);
+    CommentResponseDTO editComment(CommentRequestDTO requestDto, Long clubId, Long postId, Long commentId, User user);
 
     void deleteComment(Long clubId, Long postId, Long commentId, User user);
 

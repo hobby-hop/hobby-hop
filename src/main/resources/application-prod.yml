@@ -17,7 +17,7 @@ spring:
     multipart:
       max-file-size: 2MB
       max-request-size: 2MB
-      
+
   data:
     redis:
       host: ${REDIS_HOST}

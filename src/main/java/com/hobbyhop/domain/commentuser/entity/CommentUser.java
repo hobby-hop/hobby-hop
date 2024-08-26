@@ -1,12 +1,15 @@
 package com.hobbyhop.domain.commentuser.entity;
 
+import com.hobbyhop.domain.BaseEntity;
 import com.hobbyhop.domain.comment.entity.Comment;
 import com.hobbyhop.domain.commentuser.pk.CommentUserPK;
 import com.hobbyhop.domain.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+
 import java.sql.Timestamp;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,25 +23,24 @@ import org.hibernate.annotations.SQLRestriction;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE comment_user SET deleted_at = NOW() where comment_id=? and user_id=?")
-@SQLRestriction("deleted_at is NULL")
-public class CommentUser {
+public class CommentUser extends BaseEntity {
     @EmbeddedId
     private CommentUserPK commentUserPK;
 
-    @Column
-    private Timestamp deletedAt;
+    @Column(nullable = false)
+    private Boolean isLiked;
 
-    public static CommentUser buildCommentUser(Comment comment, User user){
+    public static CommentUser buildCommentUser(Comment comment, User user) {
         return CommentUser.builder()
                 .commentUserPK(CommentUserPK.builder()
                         .user(user)
                         .comment(comment)
                         .build())
+                .isLiked(false)
                 .build();
     }
-
-    public void restore(){
-        deletedAt = null;
+    public Boolean updateLike() {
+        this.isLiked = !isLiked;
+        return this.isLiked;
     }
 }

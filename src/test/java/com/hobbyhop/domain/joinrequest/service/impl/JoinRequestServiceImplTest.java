@@ -13,6 +13,7 @@ import com.hobbyhop.domain.joinrequest.enums.JoinRequestStatus;
 import com.hobbyhop.domain.joinrequest.repository.JoinRequestRepository;
 
 import com.hobbyhop.global.exception.clubmember.ClubMemberRoleException;
+import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
 import com.hobbyhop.test.ClubTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -34,10 +35,8 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 @DisplayName("[JoinRequest]")
 class JoinRequestServiceImplTest implements ClubTest {
-
     @InjectMocks
     private JoinRequestServiceImpl sut;
-
     @Mock
     private ClubServiceImpl clubService;
     @Mock
@@ -51,7 +50,6 @@ class JoinRequestServiceImplTest implements ClubTest {
     private ClubMemberPK clubMemberPk;
     private JoinPageRequestDTO pageRequestDTO;
 
-
     @BeforeEach
     void setUp() {
         joinRequest = JoinRequest.builder()
@@ -59,6 +57,7 @@ class JoinRequestServiceImplTest implements ClubTest {
                 .user(TEST_USER)
                 .status(JoinRequestStatus.PENDING)
                 .build();
+
         clubMemberPk = ClubMemberPK.builder()
                 .club(TEST_CLUB)
                 .user(TEST_USER)
@@ -68,33 +67,36 @@ class JoinRequestServiceImplTest implements ClubTest {
                 .memberRole(MemberRole.ADMIN)
                 .clubMemberPK(clubMemberPk)
                 .build();
+
         normalClubMember = ClubMember.builder()
                 .memberRole(MemberRole.MEMBER)
                 .clubMemberPK(clubMemberPk)
                 .build();
+
         joinResponseDTO = JoinResponseDTO.fromEntity(joinRequest);
-        int page = 1;
-        int size = 1;
-        pageRequestDTO = new JoinPageRequestDTO(page, size, true);
+        pageRequestDTO = JoinPageRequestDTO.builder().build();
     }
 
 
-    @DisplayName("[Send]")
+    @DisplayName("가입신청 성공")
     @Test
     void joinRequest_요청_보내기_성공() {
+        // Given
         given(clubService.findClub(TEST_CLUB_ID)).willReturn(TEST_CLUB);
         given(clubMemberService.isClubMember(TEST_CLUB_ID, TEST_USER_ID)).willReturn(false);
         given(joinRequestRepository.save(any())).willReturn(joinRequest);
 
+        // When&Then
         assertThat(sut.sendRequest(TEST_CLUB_ID, TEST_USER)).isEqualTo(joinResponseDTO);
     }
-    @DisplayName("[Get]")
+    @DisplayName("가입신청 단건 조회")
     @Test
     void joinRequest_조회() {
         // Given
         given(clubMemberService.findByClubAndUser(TEST_CLUB_ID, TEST_USER_ID)).willReturn(clubMember);
         given(joinRequestRepository.findByClub_IdAndStatus(TEST_CLUB_ID, JoinRequestStatus.PENDING)).willReturn(List.of(joinRequest));
 
+        // When & Then
         assertThat(sut.getRequestByClub(TEST_CLUB_ID, TEST_USER).get(0).getId()).isEqualTo(joinResponseDTO.getId());
         assertThat(sut.getRequestByClub(TEST_CLUB_ID, TEST_USER).get(0).getUsername()).isEqualTo(joinResponseDTO.getUsername());
         assertThat(sut.getRequestByClub(TEST_CLUB_ID, TEST_USER).get(0).getRecvClubId()).isEqualTo(joinResponseDTO.getRecvClubId());
@@ -102,39 +104,52 @@ class JoinRequestServiceImplTest implements ClubTest {
     }
 
 
-    @DisplayName("[GetAllRequests]")
+    @DisplayName("가입신청 리스트 조회 성공")
     @Test
-    void JoinRequest_페이징_조회() {
+    void JoinRequest_리스트_조회() {
         // Given
         List<JoinResponseDTO> list = List.of(joinResponseDTO);
         long totalCount = list.stream().count();
         given(clubMemberService.findByClubAndUser(TEST_CLUB_ID, TEST_USER_ID)).willReturn(clubMember);
-        given(joinRequestRepository.findAllByClubId(TEST_CLUB_ID, pageRequestDTO)).willReturn(new PageImpl<>(list, pageRequestDTO.getPageable("id"), totalCount));
+        given(joinRequestRepository.findAllByClubId(TEST_CLUB_ID, pageRequestDTO)).willReturn(new PageImpl<>(list, pageRequestDTO.getPageable(pageRequestDTO.getSortBy()), totalCount));
+
         // When & Then
         assertThat(sut.getAllRequests(TEST_CLUB_ID, pageRequestDTO, TEST_USER).getDtoList()).isEqualTo(list);
         assertThat(sut.getAllRequests(TEST_CLUB_ID, pageRequestDTO, TEST_USER).getTotal()).isEqualTo(totalCount);
     }
-    @DisplayName("[GetAllRequests]")
+    @DisplayName("권한이 없는 유저의 가입신청 페이징 조회 실패")
     @Test
     void JoinRequest_페이징_조회_권한이없어서_실패() {
         // Given
         given(clubMemberService.findByClubAndUser(TEST_CLUB_ID, TEST_USER_ID)).willReturn(normalClubMember);
+
         // When & Then
         assertThatCode(() -> sut.getAllRequests(TEST_CLUB_ID, pageRequestDTO, TEST_USER)).isInstanceOf(ClubMemberRoleException.class);
     }
 
 
-    @DisplayName("[Process]")
+    @DisplayName("가입신청에 대한 처리 성공")
     @Test
-    void joinRequest_처리() {
+    void joinRequest_처리_성공() {
         // Given
+        given(clubMemberService.findByClubAndUser(1L, 1L)).willReturn(clubMember);
         given(joinRequestRepository.findById(1L)).willReturn(Optional.of(joinRequest));
-        given(clubMemberService.joinClub(TEST_CLUB, TEST_USER, MemberRole.MEMBER)).willReturn(ClubMemberResponseDTO.builder()
-                .clubId(TEST_CLUB_ID)
-                .userId(TEST_USER_ID)
-                .build());
+
         // When
-        sut.processRequest(1L, JoinRequestStatus.APPROVED);
+        sut.processRequest(1L, 1L, JoinRequestStatus.APPROVED, TEST_USER);
+
+        // Then
+        verify(clubMemberService).joinClub(TEST_CLUB, TEST_USER, MemberRole.MEMBER);
+    }
+    @DisplayName("권한이 없는 유저의 가입신청 처리 실패")
+    @Test
+    void joinRequest_처리_권한이없어서실패() {
+        // Given
+        given(clubMemberService.findByClubAndUser(1L, 1L)).willReturn(clubMember);
+        given(joinRequestRepository.findById(1L)).willReturn(Optional.of(joinRequest));
+
+        // When
+        sut.processRequest(1L, 1L, JoinRequestStatus.APPROVED, TEST_USER);
 
         // Then
         verify(clubMemberService).joinClub(TEST_CLUB, TEST_USER, MemberRole.MEMBER);

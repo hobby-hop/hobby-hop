@@ -34,7 +34,6 @@ import static org.mockito.Mockito.verify;
 @DisplayName("[Club]")
 @ExtendWith(MockitoExtension.class)
 class ClubServiceImplTest implements ClubTest {
-
     @InjectMocks
     private ClubServiceImpl sut;
     @Mock
@@ -64,6 +63,7 @@ class ClubServiceImplTest implements ClubTest {
                 .memberRole(MemberRole.ADMIN)
                 .clubMemberPK(clubMemberPK)
                 .build();
+
         normalClubMember = ClubMember.builder()
                 .memberRole(MemberRole.MEMBER)
                 .clubMemberPK(clubMemberPK)
@@ -87,18 +87,23 @@ class ClubServiceImplTest implements ClubTest {
                 .content(TEST_OTHER_CLUB_CONTENT)
                 .categoryId(TEST_OTHER_CATEGORY_ID)
                 .build();
+
         clubModifyDTO = ClubModifyDTO.builder()
                 .title(TEST_OTHER_CLUB_TITLE)
                 .content(TEST_OTHER_CLUB_CONTENT)
                 .categoryId(TEST_OTHER_CATEGORY_ID)
                 .build();
+
         int page = 1;
         int size = 10;
-        pageRequestDTO = new ClubPageRequestDTO(page, size, true);
+        pageRequestDTO = ClubPageRequestDTO.builder()
+                .page(page)
+                .size(size)
+                .build();
 
     }
 
-    @DisplayName("[GetClub]")
+    @DisplayName("모임 단건 조회")
     @Test
     void club_단일_조회() {
         given(clubRepository.findById(TEST_CLUB_ID)).willReturn(Optional.of(TEST_CLUB));
@@ -108,7 +113,7 @@ class ClubServiceImplTest implements ClubTest {
         assertThat(sut.findClub(TEST_CLUB_ID).getContent()).isEqualTo(clubResponseDTO.getContent());
     }
 
-    @DisplayName("[Make]")
+    @DisplayName("모임 생성")
     @Test
     void club_생성() {
         // Given
@@ -122,7 +127,8 @@ class ClubServiceImplTest implements ClubTest {
         assertThat(sut.makeClub(clubRequestDTO, TEST_USER).getContent()).isEqualTo(TEST_CLUB_CONTENT);
         assertThat(sut.makeClub(clubRequestDTO, TEST_USER).getCategoryId()).isEqualTo(TEST_CATEGORY_ID);
     }
-    @DisplayName("[Make] [Fail]")
+
+    @DisplayName("중복된 이름의 모임 생성 실패")
     @Test
     void club_생성_중복된이름으로인한_실패() {
         // Given
@@ -131,7 +137,8 @@ class ClubServiceImplTest implements ClubTest {
         // When & Then
         assertThatCode(() -> sut.makeClub(clubRequestDTO, TEST_USER)).isInstanceOf(AlreadyExistClubTitle.class);
     }
-    @DisplayName("[Make] [Fail]")
+
+    @DisplayName("모임 최대 갯수 초과로 인한 생성 실패")
     @Test
     void club_생성_가입한_모임갯수_초과로인한_실패() {
         // Given
@@ -141,7 +148,7 @@ class ClubServiceImplTest implements ClubTest {
         assertThatCode(() -> sut.makeClub(clubRequestDTO, TEST_USER)).isInstanceOf(JoiningClubCountExceed.class);
     }
 
-    @DisplayName("[Modify]")
+    @DisplayName("모임 정보 수정")
     @Test
     void club_수정() {
         // Given
@@ -158,7 +165,7 @@ class ClubServiceImplTest implements ClubTest {
         assertThat(clubResponseDTO.getCategoryId()).isEqualTo(TEST_OTHER_CATEGORY_ID);
     }
 
-    @DisplayName("[Remove]")
+    @DisplayName("모임 삭제")
     @Test
     void club_삭제() {
         // Given
@@ -171,25 +178,25 @@ class ClubServiceImplTest implements ClubTest {
         // Then
         verify(clubRepository, atLeastOnce()).deleteAllElement(TEST_CLUB_ID);
     }
-    @DisplayName("[GetMyClubs]")
+
+    @DisplayName("내가 속한 모임 리스트 조회")
     @Test
-    void club_내가_속한_클럽_리스트_조회() {
+    void club_내가_속한_모임_리스트_조회() {
         // Given
-        List<ClubMember> list = List.of(clubMember);
-        List<ClubResponseDTO> result = List.of(ClubResponseDTO.fromEntity(clubMember.getClubMemberPK().getClub()));
-        given(clubMemberService.findByUserId(TEST_USER)).willReturn(list);
+        List<ClubResponseDTO> list = List.of(clubResponseDTO);
+        given(clubMemberService.findClubsByUserId(TEST_USER)).willReturn(list);
+
         // When & Then
-        assertThat(sut.getMyClubs(TEST_USER)).isEqualTo(result);
+        assertThat(sut.getMyClubs(TEST_USER)).isEqualTo(list);
     }
 
-    @DisplayName("[GetAllClubs]")
+    @DisplayName("모든 모임 리스트 조회")
     @Test
     void club_모든_모임_리스트_조회() {
         // Given
         long totalCount = 1L;
-
         List<ClubResponseDTO> list = List.of(clubResponseDTO);
-        given(clubRepository.findAll(pageRequestDTO)).willReturn(new PageImpl<>(list, pageRequestDTO.getPageable("id"), totalCount));
+        given(clubRepository.findAll(pageRequestDTO)).willReturn(new PageImpl<>(list, pageRequestDTO.getPageable(pageRequestDTO.getSortBy()), totalCount));
 
         // When
         sut.getAllClubs(pageRequestDTO);

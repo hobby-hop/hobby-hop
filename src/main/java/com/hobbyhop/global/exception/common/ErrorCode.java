@@ -4,7 +4,6 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
-
     // JWT
     INVALID_JWT_SIGNATURE_EXCEPTION(401, "잘못된 JWT 서명입니다."),
     EXPIRED_JWT_TOKEN_EXCEPTION(401, "만료된 JWT 토큰입니다."),
@@ -14,7 +13,6 @@ public enum ErrorCode {
     NOT_MISMATCHED_REFRESH_TOKEN_EXCEPTION(401, "DB의 리프레쉬 토큰 값과 다릅니다."),
     NO_JWT_EXCEPTION(401, "이 요청은 JWT가 필요합니다."),
     NOT_SUPPORTED_GRANT_TYPE_EXCEPTION(401, "지원하지 않는 권한 부여 유형입니다."),
-
 
     // 회원
     DUPLICATE_ENTRY_EXCEPTION(401, "중복된 사용자입니다. 다른 이름 또는 이메일을 입력해주세요."),
@@ -40,13 +38,13 @@ public enum ErrorCode {
 
     // Club
     NOT_FOUND_CLUB_EXCEPTION(404, "해당 클럽을 찾을 수 없습니다."),
-    ALREADY_USER_OF_CLUB_EXCEPTION(404, "이미 클럽에 유저가 있습니다."),
-    ALREADY_CLUB_TITLE_EXIST_EXCEPTION(404, "이미 존재하는 클럽 명입니다."),
+    ALREADY_CLUB_TITLE_EXIST_EXCEPTION(409, "이미 존재하는 클럽 명입니다."),
 
     // ClubMember
     NOT_FOUND_CLUB_MEMBER_EXCEPTION(404, "해당 멤버를 찾을 수 없습니다."),
     NO_PERMISSION_EXCEPTION(403, "수행할 권한이 없습니다."),
     CLUB_MEMBER_ALREADY_JOINED_EXCEPTION(409, "이미 가입된 유저입니다."),
+    CLUB_MEMBER_LEAVE_FAIL_EXCEPTION(401, "모임의 관리자는 탈퇴할 수 없습니다."),
 
     // JoinReqeust
     NO_SUCH_REQUEST_EXCEPTION(404, "존재하지 않는 요청입니다."),
@@ -68,7 +66,6 @@ public enum ErrorCode {
     ALREADY_EXIST_CATEGORY_NAME_EXCEPTION(400, "이미 존재하는 카테고리입니다.");
 
     private final int status;
-
     private final String message;
 
     ErrorCode(int status, String message) {
