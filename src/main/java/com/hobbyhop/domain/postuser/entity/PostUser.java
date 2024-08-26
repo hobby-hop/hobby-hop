@@ -22,19 +22,14 @@ import org.hibernate.annotations.SQLRestriction;
 @Entity
 @Getter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@SQLDelete(sql = "UPDATE post_user SET deleted_at = NOW() where post_id=? and user_id=?")
-@SQLRestriction("deleted_at is NULL")
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostUser extends BaseEntity {
     @EmbeddedId
     private PostUserPK postUserPK;
 
     @Column(nullable = false)
     private Boolean isLiked;
-
-    @Column
-    private Timestamp deletedAt;
 
     public static PostUser buildPostUser(User user, Post post) {
         return PostUser.builder()

@@ -3,15 +3,12 @@ package com.hobbyhop.domain.post.service.impl;
 import com.hobbyhop.domain.club.entity.Club;
 import com.hobbyhop.domain.club.service.ClubService;
 import com.hobbyhop.domain.clubmember.service.ClubMemberService;
-import com.hobbyhop.domain.post.dto.PostModifyRequestDTO;
-import com.hobbyhop.domain.post.dto.PostPageRequestDTO;
-import com.hobbyhop.domain.post.dto.PostPageResponseDTO;
-import com.hobbyhop.domain.post.dto.PostRequestDTO;
-import com.hobbyhop.domain.post.dto.PostResponseDTO;
+import com.hobbyhop.domain.post.dto.*;
 import com.hobbyhop.domain.post.entity.Post;
 import com.hobbyhop.domain.post.repository.PostRepository;
 import com.hobbyhop.domain.post.s3.S3Service;
 import com.hobbyhop.domain.post.service.PostService;
+import com.hobbyhop.domain.postuser.entity.PostUser;
 import com.hobbyhop.domain.postuser.service.PostUserService;
 import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.global.exception.clubmember.ClubMemberNotFoundException;
@@ -69,13 +66,18 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostResponseDTO getPostById(User user, Long clubId, Long postId) {
+    public PostDetailResponseDTO getPostById(User user, Long clubId, Long postId) {
         if(!clubMemberService.isClubMember(clubId, user.getId()))
             throw new ClubMemberNotFoundException();
 
         Post post = findAndCheckPostAndClub(clubId, postId);
+        PostUser postUser = postUserService.findPostUser(user, post);
+        boolean isLiked = false;
+        if(postUser != null) {
+            isLiked = postUser.getIsLiked();
+        }
 
-        return PostResponseDTO.fromEntity(post);
+        return PostDetailResponseDTO.fromEntity(post, isLiked);
     }
 
     private Post findAndCheckPostAndClub(Long clubId, Long postId){
@@ -130,10 +132,9 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public void likePost(User user, Long clubId, Long postId){
+    public Long likePost(User user, Long clubId, Long postId){
         Post post = findAndCheckPostAndClub(clubId, postId);
-
-        postUserService.postUser(user, post);
+        return postUserService.makePostUser(user, post);
     }
     private void applyChanges(Post post, PostModifyRequestDTO postModifyRequestDTO, MultipartFile file) {
         String originFilename = null;
