@@ -5,20 +5,17 @@ import com.hobbyhop.domain.club.entity.Club;
 import com.hobbyhop.domain.joinrequest.enums.JoinRequestStatus;
 import com.hobbyhop.domain.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.sql.Timestamp;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 @Getter
+@Builder
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLDelete(sql = "UPDATE join_request SET deleted_at = NOW() where id=?")
 @SQLRestriction("deleted_at is NULL")
 public class JoinRequest extends BaseEntity {

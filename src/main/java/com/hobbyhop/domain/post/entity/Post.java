@@ -10,6 +10,7 @@ import lombok.*;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.sql.results.graph.EntityGraphTraversalState;
 
 @Entity
 @Getter
@@ -38,11 +39,11 @@ public class Post extends BaseEntity {
     @Column(nullable = false)
     private Long likeCnt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_id")
     private Club club;
 
@@ -77,6 +78,5 @@ public class Post extends BaseEntity {
                 .user(user)
                 .likeCnt(0L)
                 .build();
-
     }
 }

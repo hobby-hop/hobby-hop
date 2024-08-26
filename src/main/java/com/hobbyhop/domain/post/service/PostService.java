@@ -1,10 +1,6 @@
 package com.hobbyhop.domain.post.service;
 
-import com.hobbyhop.domain.post.dto.PostModifyRequestDTO;
-import com.hobbyhop.domain.post.dto.PostPageRequestDTO;
-import com.hobbyhop.domain.post.dto.PostPageResponseDTO;
-import com.hobbyhop.domain.post.dto.PostRequestDTO;
-import com.hobbyhop.domain.post.dto.PostResponseDTO;
+import com.hobbyhop.domain.post.dto.*;
 import com.hobbyhop.domain.post.entity.Post;
 import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.global.response.PageResponseDTO;
@@ -21,7 +17,7 @@ public interface PostService {
 
     void imageUploadPost(User user, Long clubId, Long postId, MultipartFile file) throws IOException;
 
-    PostResponseDTO getPostById(User user, Long clubId, Long postId);
+    PostDetailResponseDTO getPostById(User user, Long clubId, Long postId);
 
     PageResponseDTO<PostPageResponseDTO> getAllPost(PostPageRequestDTO pageRequestDTO, Long clubId);
 
@@ -31,7 +27,5 @@ public interface PostService {
 
     void deletePost(User user, Long clubId, Long postId);
 
-    void likePost(User user, Long clubId, Long postId);
-
-
+    Long likePost(User user, Long clubId, Long postId);
 }

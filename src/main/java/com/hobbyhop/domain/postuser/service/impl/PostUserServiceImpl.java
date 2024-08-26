@@ -13,15 +13,22 @@ import org.springframework.stereotype.Service;
 public class PostUserServiceImpl implements PostUserService {
     private final PostUserRepository postUserRepository;
 
-    public void postUser(User user, Post post) {
+    @Override
+    public Long makePostUser(User user, Post post) {
         PostUser postUser = postUserRepository.findByPostUserPK_UserAndPostUserPK_Post(user, post)
                 .orElseGet(() -> savePostUser(user, post));
 
-        Boolean update = postUser.updateLike();
-        post.updateLikeCnt(update);
+        Boolean updated = postUser.updateLike();
+        post.updateLikeCnt(updated);
+        return post.getLikeCnt();
     }
 
-    public PostUser savePostUser(User user, Post post) {
+    @Override
+    public PostUser findPostUser(User user, Post post) {
+        return postUserRepository.findByPostUserPK_UserAndPostUserPK_Post(user, post)
+                .orElse(null);
+    }
+    private PostUser savePostUser(User user, Post post) {
         return postUserRepository.save(PostUser.buildPostUser(user, post));
     }
 }

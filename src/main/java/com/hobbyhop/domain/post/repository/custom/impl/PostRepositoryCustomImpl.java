@@ -78,8 +78,7 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 
         Timestamp now = Timestamp.valueOf(LocalDateTime.now());
 
-        jpaQueryFactory.update(commentUser)
-                .set(commentUser.deletedAt, now)
+        jpaQueryFactory.delete(commentUser)
                 .where(commentUser.commentUserPK.comment.id.in(ids))
                 .execute();
 
@@ -88,8 +87,7 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
                 .where(comment.id.in(ids))
                 .execute();
 
-        jpaQueryFactory.update(postUser)
-                .set(postUser.deletedAt, now)
+        jpaQueryFactory.delete(postUser)
                 .where(postUser.postUserPK.post.id.eq(postId))
                 .execute();
 
