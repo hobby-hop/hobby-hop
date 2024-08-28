@@ -1,12 +1,10 @@
 package com.hobbyhop.domain.joinrequest.dto;
 
 import com.hobbyhop.domain.joinrequest.entity.JoinRequest;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder

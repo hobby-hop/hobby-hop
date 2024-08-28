@@ -4,8 +4,11 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class SignupRequestDTO {
 	@NotBlank(message = "username : 이름을 입력해주세요.")
 	@Pattern(regexp = "^[a-zA-Z0-9가-힣]+$",

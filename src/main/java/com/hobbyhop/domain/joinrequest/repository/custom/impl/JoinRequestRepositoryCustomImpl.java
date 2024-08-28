@@ -31,7 +31,7 @@ public class JoinRequestRepositoryCustomImpl extends QuerydslRepositorySupport i
                 .selectOne()
                 .from(joinRequest)
                 .where(joinRequest.club.id.eq(clubId).and(joinRequest.user.id.eq(userId)).and(joinRequest.status.eq(JoinRequestStatus.PENDING)))
-                .fetchFirst(); // limit 1
+                .fetchFirst();
 
         return fetchOne != null;
     }
@@ -49,8 +49,7 @@ public class JoinRequestRepositoryCustomImpl extends QuerydslRepositorySupport i
                         )
                 ).from(joinRequest)
                 .where(joinRequest.club.id.eq(clubId)
-                        .and(joinRequest.status.eq(JoinRequestStatus.PENDING))
-                );
+                        .and(joinRequest.status.eq(JoinRequestStatus.PENDING)));
 
         Pageable pageable = pageRequestDTO.getPageable(pageRequestDTO.getSortBy());
         List<JoinResponseDTO> content = getQuerydsl().applyPagination(pageable, query).fetch();

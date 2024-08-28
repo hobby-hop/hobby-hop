@@ -55,6 +55,7 @@ public class ClubMemberRepositoryCustomImpl implements ClubMemberRepositoryCusto
                 .from(clubMember)
                 .where(clubMember.clubMemberPK.club.id.eq(clubId).and(clubMember.clubMemberPK.user.id.eq(userId)))
                 .fetchFirst();
+
         return i != null;
     }
 

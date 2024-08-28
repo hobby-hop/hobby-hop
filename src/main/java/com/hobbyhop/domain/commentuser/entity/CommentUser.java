@@ -30,6 +30,11 @@ public class CommentUser extends BaseEntity {
     @Column(nullable = false)
     private Boolean isLiked;
 
+    public Boolean updateLike() {
+        this.isLiked = !isLiked;
+        return this.isLiked;
+    }
+
     public static CommentUser buildCommentUser(Comment comment, User user) {
         return CommentUser.builder()
                 .commentUserPK(CommentUserPK.builder()
@@ -38,9 +43,5 @@ public class CommentUser extends BaseEntity {
                         .build())
                 .isLiked(false)
                 .build();
-    }
-    public Boolean updateLike() {
-        this.isLiked = !isLiked;
-        return this.isLiked;
     }
 }
