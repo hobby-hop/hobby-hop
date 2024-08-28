@@ -18,14 +18,10 @@ import com.hobbyhop.global.exception.joinrequest.JoiningClubCountExceed;
 import com.hobbyhop.global.exception.joinrequest.NoSuchRequestException;
 import com.hobbyhop.global.exception.joinrequest.PendingRequest;
 import com.hobbyhop.global.response.PageResponseDTO;
-import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -48,18 +44,8 @@ public class JoinRequestServiceImpl implements JoinRequestService {
                 .user(user)
                 .status(JoinRequestStatus.PENDING)
                 .build();
-        JoinRequest savedJoinRequest = joinRequestRepository.save(joinRequest);
 
-        return JoinResponseDTO.fromEntity(savedJoinRequest);
-    }
-
-    @Override
-    public List<JoinResponseDTO> getRequestByClub(Long clubId, User user) {
-        ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
-        checkIfAdminRole(clubMember);
-
-        return joinRequestRepository.findByClub_IdAndStatus(clubId, JoinRequestStatus.PENDING).stream()
-                .map(JoinResponseDTO::fromEntity).collect(Collectors.toList());
+        return JoinResponseDTO.fromEntity(joinRequestRepository.save(joinRequest));
     }
 
     @Override
@@ -80,6 +66,7 @@ public class JoinRequestServiceImpl implements JoinRequestService {
     public PageResponseDTO<JoinResponseDTO> getAllRequests(Long clubId, JoinPageRequestDTO pageRequestDTO, User user) {
         ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
         checkIfAdminRole(clubMember);
+
         Page<JoinResponseDTO> result = joinRequestRepository.findAllByClubId(clubId, pageRequestDTO);
 
         return PageResponseDTO.<JoinResponseDTO>withAll()

@@ -30,8 +30,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
-    private final PostService postService;
     private final CommentUserService commentUserService;
+    private final PostService postService;
     private final ClubMemberService clubMemberService;
 
     @Override
@@ -43,7 +43,7 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = Comment.buildComment(request, post, user, null);
         commentRepository.save(comment);
 
-        return CommentResponseDTO.buildDTO(comment);
+        return CommentResponseDTO.fromEntity(comment);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.save(reply);
         comment.getReply().add(reply);
 
-        return CommentResponseDTO.buildDTO(comment);
+        return CommentResponseDTO.fromEntity(comment);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = checkAuth(clubId, postId, commentId, user);
         comment.changeContent(requestDto.getContent());
 
-        return CommentResponseDTO.buildDTO(comment);
+        return CommentResponseDTO.fromEntity(comment);
     }
 
     @Override
@@ -95,6 +95,7 @@ public class CommentServiceImpl implements CommentService {
         commentUserService.modifyCommentUser(comment, user);
     }
 
+    @Override
     public Comment findById(Long clubId, Long postId, Long commentId) {
         return commentRepository.findById(clubId, postId, commentId).orElseThrow(CommentNotFoundException::new);
     }

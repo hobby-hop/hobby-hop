@@ -25,10 +25,10 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
-    private final ClubService clubService;
-    private final PostUserService postUserService;
     private final PostRepository postRepository;
+    private final PostUserService postUserService;
     private final S3Service s3Service;
+    private final ClubService clubService;
     private final ClubMemberService clubMemberService;
 
     @Override

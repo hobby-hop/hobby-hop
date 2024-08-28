@@ -89,7 +89,6 @@ public class CommentRepositoryCustomImpl extends QuerydslRepositorySupport imple
                 .set(comment.deletedAt, ts)
                 .where(comment.id.in(deleteId)).execute();
 
-
         jpaQueryFactory.delete(commentUser)
                 .where(commentUser.commentUserPK.comment.id.in(deleteId)).execute();
     }

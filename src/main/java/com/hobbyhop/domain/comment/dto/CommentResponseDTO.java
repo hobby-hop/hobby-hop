@@ -2,11 +2,11 @@ package com.hobbyhop.domain.comment.dto;
 
 import com.hobbyhop.domain.comment.entity.Comment;
 import java.sql.Timestamp;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
 
-@Data
+import lombok.*;
+
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 public class CommentResponseDTO {
@@ -16,7 +16,7 @@ public class CommentResponseDTO {
     Timestamp createdAt;
     Long id;
 
-    public static CommentResponseDTO buildDTO(Comment comment){
+    public static CommentResponseDTO fromEntity(Comment comment){
         return CommentResponseDTO.builder()
                 .content(comment.getContent())
                 .writer(comment.getUser().getUsername())

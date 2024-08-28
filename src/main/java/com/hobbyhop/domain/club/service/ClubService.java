@@ -11,7 +11,6 @@ import com.hobbyhop.global.response.PageResponseDTO;
 import java.util.List;
 
 public interface ClubService {
-
     PageResponseDTO<ClubResponseDTO> getAllClubs(ClubPageRequestDTO pageRequestDTO);
 
     ClubResponseDTO getClub(Long clubId);

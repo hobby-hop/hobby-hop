@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 public class CommentUserServiceImpl implements CommentUserService {
     private final CommentUserRepository commentUserRepository;
 
+    @Override
     @Transactional
     public void modifyCommentUser(Comment comment, User user) {
         CommentUser commentUser = commentUserRepository
