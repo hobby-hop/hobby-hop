@@ -84,10 +84,14 @@ class JoinRequestServiceImplTest implements ClubTest {
         // Given
         given(clubService.findClub(TEST_CLUB_ID)).willReturn(TEST_CLUB);
         given(clubMemberService.isClubMember(TEST_CLUB_ID, TEST_USER_ID)).willReturn(false);
+        given(joinRequestRepository.existRequest(TEST_CLUB_ID, TEST_USER_ID)).willReturn(false);
+        given(clubMemberService.isMemberLimitReached(TEST_USER_ID)).willReturn(false);
         given(joinRequestRepository.save(any())).willReturn(joinRequest);
 
-        // When&Then
-        assertThat(sut.sendRequest(TEST_CLUB_ID, TEST_USER)).isEqualTo(joinResponseDTO);
+        // When & Then
+        assertThat(sut.sendRequest(TEST_CLUB_ID, TEST_USER).getSendUserId()).isEqualTo(joinResponseDTO.getSendUserId());
+        assertThat(sut.sendRequest(TEST_CLUB_ID, TEST_USER).getUsername()).isEqualTo(TEST_USER_NAME);
+        assertThat(sut.sendRequest(TEST_CLUB_ID, TEST_USER).getRecvClubId()).isEqualTo(TEST_CLUB_ID);
     }
 
     @DisplayName("가입신청 리스트 조회 성공")
