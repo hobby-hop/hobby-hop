@@ -16,7 +16,7 @@ public class CommentResponseDTO {
     Timestamp createdAt;
     Long id;
 
-    public static CommentResponseDTO buildDTO(Comment comment){
+    public static CommentResponseDTO fromEntity(Comment comment){
         return CommentResponseDTO.builder()
                 .content(comment.getContent())
                 .writer(comment.getUser().getUsername())
