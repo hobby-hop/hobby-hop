@@ -8,6 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface JoinRequestRepository extends JpaRepository<JoinRequest, Long>, JoinRequestRepositoryCustom {
-    List<JoinRequest> findByClub_IdAndStatus(Long clubId, JoinRequestStatus status);
 
 }

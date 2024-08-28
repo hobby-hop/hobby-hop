@@ -89,20 +89,6 @@ class JoinRequestServiceImplTest implements ClubTest {
         // When&Then
         assertThat(sut.sendRequest(TEST_CLUB_ID, TEST_USER)).isEqualTo(joinResponseDTO);
     }
-    @DisplayName("가입신청 단건 조회")
-    @Test
-    void joinRequest_조회() {
-        // Given
-        given(clubMemberService.findByClubAndUser(TEST_CLUB_ID, TEST_USER_ID)).willReturn(clubMember);
-        given(joinRequestRepository.findByClub_IdAndStatus(TEST_CLUB_ID, JoinRequestStatus.PENDING)).willReturn(List.of(joinRequest));
-
-        // When & Then
-        assertThat(sut.getRequestByClub(TEST_CLUB_ID, TEST_USER).get(0).getId()).isEqualTo(joinResponseDTO.getId());
-        assertThat(sut.getRequestByClub(TEST_CLUB_ID, TEST_USER).get(0).getUsername()).isEqualTo(joinResponseDTO.getUsername());
-        assertThat(sut.getRequestByClub(TEST_CLUB_ID, TEST_USER).get(0).getRecvClubId()).isEqualTo(joinResponseDTO.getRecvClubId());
-        assertThat(sut.getRequestByClub(TEST_CLUB_ID, TEST_USER).get(0).getSendUserId()).isEqualTo(joinResponseDTO.getSendUserId());
-    }
-
 
     @DisplayName("가입신청 리스트 조회 성공")
     @Test
