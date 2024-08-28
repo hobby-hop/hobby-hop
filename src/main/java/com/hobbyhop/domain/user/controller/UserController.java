@@ -64,18 +64,14 @@ public class UserController {
     @GetMapping("/profiles/my")
     @SecurityRequirement(name = "Bearer Authentication")
     public ApiResponse<?> getMyProfile(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        ProfileResponseDTO profileResponseDTO = userService.getMyProfile(userDetails);
-
-        return ApiResponse.ok(profileResponseDTO);
+        return ApiResponse.ok(userService.getMyProfile(userDetails));
     }
 
     @Operation(summary = "다른 유저 프로필 조회")
     @GetMapping("/profiles/{userId}")
     @SecurityRequirement(name = "Bearer Authentication")
     public ApiResponse<?> getMyProfile(@PathVariable("userId") Long userId) {
-        ProfileResponseDTO profileResponseDTO = userService.getOtherProfile(userId);
-
-        return ApiResponse.ok(profileResponseDTO);
+        return ApiResponse.ok(userService.getOtherProfile(userId));
     }
 
     @Operation(summary = "내 프로필 수정")
