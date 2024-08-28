@@ -95,6 +95,7 @@ public class CommentServiceImpl implements CommentService {
         commentUserService.modifyCommentUser(comment, user);
     }
 
+    @Override
     public Comment findById(Long clubId, Long postId, Long commentId) {
         return commentRepository.findById(clubId, postId, commentId).orElseThrow(CommentNotFoundException::new);
     }
