@@ -113,8 +113,11 @@ Hobby Hop은 사용자들이 자신의 취미를 등록하고 다양한 형식�
 ---
 
 ## 트러블슈팅
+
+[내가 속한 모임리스트 조회시 발생한 N+1 문제](https://github.com/hobby-hop/hobby-hop/wiki/%EB%82%B4%EA%B0%80-%EC%86%8D%ED%95%9C-%EB%AA%A8%EC%9E%84-%EC%A1%B0%ED%9A%8C%EC%8B%9C-%EB%B0%9C%EC%83%9D%ED%95%9C-N-1%EB%AC%B8%EC%A0%9C)  
 [Comment Like 기능](https://github.com/hobby-hop/hobby-hop/wiki/Comment-Like-%EA%B8%B0%EB%8A%A5)  
 [모임 카테고리 자료형 Enum VS String](https://github.com/hobby-hop/hobby-hop/wiki/%EB%AA%A8%EC%9E%84-%EC%B9%B4%ED%85%8C%EA%B3%A0%EB%A6%AC-%EC%9E%90%EB%A3%8C%ED%98%95)  
+[게시글 번호 넘버링](https://github.com/hobby-hop/hobby-hop/wiki/%EA%B2%8C%EC%8B%9C%EA%B8%80-%EB%B2%88%ED%98%B8-%EB%84%98%EB%B2%84%EB%A7%81)  
 
 ---
 
