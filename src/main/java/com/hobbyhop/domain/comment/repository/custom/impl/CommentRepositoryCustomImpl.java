@@ -50,11 +50,11 @@ public class CommentRepositoryCustomImpl extends QuerydslRepositorySupport imple
                 .select(
                         Projections.constructor(
                                 CommentResponseDTO.class,
+                                comment.id,
                                 comment.content,
                                 user.username,
                                 comment.likeCnt,
-                                comment.createdAt,
-                                comment.id
+                                comment.createdAt
                         )
                 )
                 .from(comment)
