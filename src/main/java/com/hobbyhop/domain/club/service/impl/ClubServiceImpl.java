@@ -60,8 +60,7 @@ public class ClubServiceImpl implements ClubService {
 
         validateClubTitle(clubRequestDTO.getTitle());
         Category category = categoryService.findCategory(clubRequestDTO.getCategoryId());
-        Club club = Club.builder().title(clubRequestDTO.getTitle())
-                .content(clubRequestDTO.getContent()).category(category).build();
+        Club club = Club.buildClub(clubRequestDTO, category);
         Club savedClub = clubRepository.save(club);
         clubMemberService.joinClub(club, user, MemberRole.ADMIN);
 
@@ -83,11 +82,12 @@ public class ClubServiceImpl implements ClubService {
     public ClubResponseDTO modifyClub(Long clubId, ClubModifyDTO clubModifyDTO, User user) {
         Club club = findClub(clubId);
         ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
-        validateClubRolePermission(clubMember);
 
+        validateClubRolePermission(clubMember);
         if (clubModifyDTO.getTitle() != null) {
             validateClubTitle(clubModifyDTO.getTitle());
         }
+
         applyChanges(clubModifyDTO, club);
 
         return ClubResponseDTO.fromEntity(club);
