@@ -29,7 +29,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("[Comment")
+@DisplayName("[Comment]")
 class CommentServiceImplTest implements CommentTest {
     @InjectMocks
     private CommentServiceImpl commentService;

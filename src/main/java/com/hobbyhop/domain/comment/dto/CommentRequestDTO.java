@@ -10,5 +10,5 @@ import lombok.*;
 @NoArgsConstructor
 public class CommentRequestDTO {
     @Size(max = 200)
-    String content;
+    private String content;
 }
