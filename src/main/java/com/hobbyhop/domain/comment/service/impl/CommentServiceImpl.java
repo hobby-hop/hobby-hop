@@ -57,7 +57,7 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.save(reply);
         comment.getReply().add(reply);
 
-        return CommentResponseDTO.fromEntity(comment);
+        return CommentResponseDTO.fromEntity(reply);
     }
 
     @Override
@@ -114,7 +114,7 @@ public class CommentServiceImpl implements CommentService {
         return deleteList;
     }
 
-    Comment checkAuth(Long clubId, Long postId, Long commentId, User user) {
+    private Comment checkAuth(Long clubId, Long postId, Long commentId, User user) {
         ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
         Comment comment = findById(clubId, postId, commentId);
 
