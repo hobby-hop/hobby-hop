@@ -13,11 +13,9 @@ import lombok.*;
 public class PostResponseDTO {
     private Long clubId;
     private Long postId;
-    private String writer;
     private String title;
     private String content;
-    private String originImageUrl;
-    private String savedImageUrl;
+    private String writer;
     private Long likeCnt;
     private Timestamp createdAt;
     private Timestamp modifiedAt;
@@ -26,11 +24,9 @@ public class PostResponseDTO {
         return PostResponseDTO.builder()
                 .clubId(savedPost.getClub().getId())
                 .postId(savedPost.getId())
-                .writer(savedPost.getUser().getUsername())
                 .title(savedPost.getTitle())
                 .content(savedPost.getContent())
-                .originImageUrl(savedPost.getOriginImageUrl())
-                .savedImageUrl(savedPost.getSavedImageUrl())
+                .writer(savedPost.getUser().getUsername())
                 .likeCnt(savedPost.getLikeCnt())
                 .createdAt(savedPost.getCreatedAt())
                 .modifiedAt(savedPost.getModifiedAt())

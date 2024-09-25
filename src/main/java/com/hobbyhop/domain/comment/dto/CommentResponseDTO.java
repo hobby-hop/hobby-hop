@@ -2,6 +2,8 @@ package com.hobbyhop.domain.comment.dto;
 
 import com.hobbyhop.domain.comment.entity.Comment;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 import lombok.*;
 
@@ -9,12 +11,15 @@ import lombok.*;
 @Setter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class CommentResponseDTO {
     private Long id;
     private String content;
     private String writer;
     private Long likeCnt;
     private Timestamp createdAt;
+    @Builder.Default
+    private List<CommentResponseDTO> replies = new ArrayList<>();
 
     public static CommentResponseDTO fromEntity(Comment comment){
         return CommentResponseDTO.builder()

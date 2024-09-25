@@ -1,15 +1,13 @@
 package com.hobbyhop.domain.category.dto;
 
 import com.hobbyhop.domain.category.entity.Category;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class CategoryResponseDTO {
     private String categoryName;
     private String description;
