@@ -16,7 +16,7 @@ import com.hobbyhop.global.exception.clubmember.ClubMemberAlreadyJoined;
 import com.hobbyhop.global.exception.clubmember.ClubMemberRoleException;
 import com.hobbyhop.global.exception.joinrequest.JoiningClubCountExceed;
 import com.hobbyhop.global.exception.joinrequest.NoSuchRequestException;
-import com.hobbyhop.global.exception.joinrequest.PendingRequest;
+import com.hobbyhop.global.exception.joinrequest.PendingRequestException;
 import com.hobbyhop.global.response.PageResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -84,7 +84,7 @@ public class JoinRequestServiceImpl implements JoinRequestService {
 
     private void checkIfPendingRequestExists(Long clubId, User user) {
         if (joinRequestRepository.existRequest(clubId, user.getId())) {
-            throw new PendingRequest();
+            throw new PendingRequestException();
         }
     }
 
