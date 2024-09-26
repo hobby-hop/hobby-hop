@@ -4,15 +4,7 @@ import com.hobbyhop.domain.BaseEntity;
 import com.hobbyhop.domain.comment.dto.CommentRequestDTO;
 import com.hobbyhop.domain.post.entity.Post;
 import com.hobbyhop.domain.user.entity.User;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -35,10 +27,10 @@ public class Comment extends BaseEntity {
     @Column(length = 100)
     private String content;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Post post;
 
     @Column(nullable = false)
@@ -52,10 +44,21 @@ public class Comment extends BaseEntity {
     private Comment parent;
 
     @OneToMany(mappedBy = "parent")
-    private List<Comment> reply;
+    @Builder.Default
+    private List<Comment> replies = new ArrayList<>();
+
+    @Version
+    private Long version;
 
     public void changeContent(String content) {
         this.content = content;
+    }
+
+    public void addLike(){
+        this.likeCnt--;
+    }
+    public void subLike() {
+        this.likeCnt++;
     }
 
     public static Comment buildComment(CommentRequestDTO request, Post post, User user, Comment comment) {
@@ -65,15 +68,6 @@ public class Comment extends BaseEntity {
                 .post(post)
                 .likeCnt(0L)
                 .parent(comment)
-                .reply(new ArrayList<>())
                 .build();
-    }
-    public void updateLikeCnt(Boolean updated) {
-        if (updated) {
-            this.likeCnt++;
-            return;
-        }
-
-        this.likeCnt--;
     }
 }

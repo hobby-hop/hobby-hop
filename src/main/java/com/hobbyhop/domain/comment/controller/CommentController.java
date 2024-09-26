@@ -26,6 +26,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class CommentController {
     private final CommentService commentService;
 
+    @Operation(summary = "댓글 조회")
+    @GetMapping
+    public ApiResponse<?> getComments(@PathVariable("clubId") Long clubId,
+                                      @PathVariable("postId") Long postId,
+                                      @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return ApiResponse.ok(commentService.getComments(clubId, postId, userDetails.getUser()));
+    }
+
     @Operation(summary = "댓글 작성")
     @PostMapping
     public ApiResponse<?> writeComment(@RequestBody CommentRequestDTO request,
@@ -43,23 +51,6 @@ public class CommentController {
                                       @PathVariable("commentId") Long commentId,
                                       @AuthenticationPrincipal UserDetailsImpl userDetails){
         return ApiResponse.ok(commentService.writeReply(request, clubId, postId, commentId, userDetails.getUser()));
-    }
-
-    @Operation(summary = "댓글 조회")
-    @GetMapping
-    public ApiResponse<?> getComments(CommentPageRequestDTO pageRequestDTO,
-                                      @PathVariable("clubId") Long clubId,
-                                      @PathVariable("postId") Long postId){
-        return ApiResponse.ok(commentService.getComments(pageRequestDTO, postId, null));
-    }
-
-    @Operation(summary = "대댓글 조회")
-    @GetMapping("/{commentId}")
-    public ApiResponse<?> getComments(CommentPageRequestDTO pageRequestDTO,
-                                      @PathVariable("clubId") Long clubId,
-                                      @PathVariable("postId") Long postId,
-                                      @PathVariable("commentId") Long commentId){
-        return ApiResponse.ok(commentService.getComments(pageRequestDTO, postId, commentId));
     }
 
     @Operation(summary = "댓글 수정")
