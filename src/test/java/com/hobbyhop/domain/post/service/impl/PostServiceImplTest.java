@@ -15,7 +15,7 @@ import com.hobbyhop.domain.post.dto.PostPageResponseDTO;
 import com.hobbyhop.domain.post.dto.PostRequestDTO;
 import com.hobbyhop.domain.post.dto.PostResponseDTO;
 import com.hobbyhop.domain.post.repository.PostRepository;
-import com.hobbyhop.domain.post.s3.S3Service;
+import com.hobbyhop.domain.postimage.service.S3Service;
 import com.hobbyhop.domain.postuser.repository.PostUserRepository;
 import com.hobbyhop.domain.postuser.service.impl.PostUserServiceImpl;
 import com.hobbyhop.test.CategoryTest;
@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -90,9 +92,9 @@ class PostServiceImplTest implements PostTest, UserTest, CategoryTest, ClubTest 
         given(postRepository.save(any())).willReturn(TEST_POST);
 
         // When & Then
-        assertThat(sut.makePost(TEST_USER, TEST_CLUB_ID, postRequestDTO)
+        assertThat(sut.writePost(postRequestDTO, TEST_CLUB_ID, TEST_USER)
                 .getTitle()).isEqualTo(TEST_POST_TITLE);
-        assertThat(sut.makePost(TEST_USER, TEST_CLUB_ID, postRequestDTO)
+        assertThat(sut.writePost(postRequestDTO, TEST_CLUB_ID, TEST_USER)
                 .getContent()).isEqualTo(TEST_POST_CONTENT);
 
     }
@@ -116,14 +118,14 @@ class PostServiceImplTest implements PostTest, UserTest, CategoryTest, ClubTest 
     @DisplayName("게시글 단건 조회 성공 테스트")
     void 게시글단건조회테스트() {
         // Given
-        given(postRepository.findById(TEST_POST_ID)).willReturn(Optional.of(TEST_POST));
+        given(postRepository.findByIdAndClub_Id(TEST_CLUB_ID, TEST_POST_ID)).willReturn(Optional.of(TEST_POST));
 
         // When & Then
-        assertThat(sut.findPost(TEST_POST_ID).getId()).isEqualTo(
+        assertThat(sut.findPost(TEST_CLUB_ID, TEST_POST_ID).getId()).isEqualTo(
                 postResponseDTO.getPostId());
-        assertThat(sut.findPost(TEST_POST_ID).getTitle()).isEqualTo(
+        assertThat(sut.findPost(TEST_CLUB_ID, TEST_POST_ID).getTitle()).isEqualTo(
                 postResponseDTO.getTitle());
-        assertThat(sut.findPost(TEST_POST_ID).getContent()).isEqualTo(
+        assertThat(sut.findPost(TEST_CLUB_ID, TEST_POST_ID).getContent()).isEqualTo(
                 postResponseDTO.getContent());
     }
 
@@ -168,6 +170,28 @@ class PostServiceImplTest implements PostTest, UserTest, CategoryTest, ClubTest 
     @Test
     @DisplayName("게시글 좋아요 성공 테스트")
     void 게시글좋아요테스트() {
+        // Given
+        given(postRepository.findByIdWithOptimisticLock(TEST_CLUB_ID, TEST_POST_ID)).willReturn(Optional.of(TEST_POST));
+
+        // When
+        sut.likePost(TEST_USER, TEST_CLUB_ID, TEST_POST_ID);
+
+        // Then
+        assertThat(TEST_POST.getLikeCnt().equals(1L));
+    }
+
+    @Test
+    @DisplayName("동시에 100개의 좋아요 요청 테스트 실패")
+    void 동시에_100개의_좋아요요청_실패() {
+        int threadCount = 100;
+        ExecutorService executorService =  Executors.newFixedThreadPool(32);
+
+        for (int i = 0; i < threadCount; i++) {
+            executorService.submit(() -> {
+               sut.likePost(TEST_USER, TEST_CLUB_ID, TEST_POST_ID);
+            });
+        }
+
         // Given
         given(clubServiceImpl.findClub(TEST_CLUB_ID)).willReturn(TEST_CLUB);
         given(postRepository.findById(TEST_POST_ID)).willReturn(Optional.of(TEST_POST));
