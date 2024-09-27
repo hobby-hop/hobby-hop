@@ -6,7 +6,8 @@ import lombok.Getter;
 public enum ErrorCode {
     // JWT
     INVALID_JWT_SIGNATURE_EXCEPTION(401, "잘못된 JWT 서명입니다."),
-    EXPIRED_JWT_TOKEN_EXCEPTION(401, "만료된 JWT 토큰입니다."),
+    EXPIRED_ACCESS_TOKEN_EXCEPTION(401, "만료된 Access 토큰입니다."),
+    EXPIRED_REFRESH_TOKEN_EXCEPTION(401, "만료된 Refresh 토큰입니다."),
     UNSUPPORTED_JWT_TOKEN_EXCEPTION(401, "지원되지 않는 JWT 토큰입니다."),
     INVALID_JWT_EXCEPTION(401, "JWT 토큰이 잘못되었습니다"),
     INVALID_REFRESH_TOKEN_EXCEPTION(401, "RefreshToken이 유효하지 않습니다."),
@@ -32,10 +33,6 @@ public enum ErrorCode {
     MATCHED_PASSWORD_EXCEPTION(401, "새 비밀번호와 기존 비밀번호가 일치합니다."),
     JSON_PROCESSING_EXCEPTION(408, "요청 응답 시간 초과"),
 
-    // 이메일 인증
-    MISMATCHED_AUTH_CODE_EXCEPTION(401, "인증번호가 일치하지 않습니다."),
-    NOT_FOUND_AUTH_CODE_EXCEPTION(401, "없는 인증 번호입니다."),
-
     // Club
     NOT_FOUND_CLUB_EXCEPTION(404, "해당 클럽을 찾을 수 없습니다."),
     ALREADY_CLUB_TITLE_EXIST_EXCEPTION(409, "이미 존재하는 클럽 명입니다."),
@@ -49,7 +46,7 @@ public enum ErrorCode {
     // JoinReqeust
     NO_SUCH_REQUEST_EXCEPTION(404, "존재하지 않는 요청입니다."),
     PENDING_REQUEST(409, "이전 가입신청에 대한 처리가 완료되지 않았습니다."),
-    JOINING_CLUB_COUNT_EXCEEd(400, "가입 가능한 클럽의 갯수가 초과되었습니다."),
+    JOINING_CLUB_COUNT_EXCEED(400, "가입 가능한 클럽의 갯수가 초과되었습니다."),
 
     // Comment
     NOT_FOUND_COMMENT_EXCEPTION(404, "해당 댓글을 찾을 수 없습니다."),
