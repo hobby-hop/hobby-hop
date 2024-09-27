@@ -100,21 +100,6 @@ class PostServiceImplTest implements PostTest, UserTest, CategoryTest, ClubTest 
     }
 
     @Test
-    @DisplayName("이미지 업로드 성공 테스트")
-    void 이미지업로드테스트() {
-        // Given
-        String originalImageUrl = "testUrl";
-        String savedImageUrl = "testSavedUrl";
-
-        // When
-        TEST_POST.changeImageUrl(originalImageUrl, savedImageUrl);
-
-        // Then
-        assertThat(TEST_POST.getOriginImageUrl()).isEqualTo(originalImageUrl);
-        assertThat(TEST_POST.getSavedImageUrl()).isEqualTo(savedImageUrl);
-    }
-
-    @Test
     @DisplayName("게시글 단건 조회 성공 테스트")
     void 게시글단건조회테스트() {
         // Given

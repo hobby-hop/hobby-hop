@@ -15,6 +15,7 @@ import com.hobbyhop.domain.user.enums.UserRoleEnum;
 import com.hobbyhop.domain.user.service.UserService;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -75,7 +76,8 @@ public class PostLikeTest {
     }
 
     @Test
-    void 동시에_100개의_좋아요요청() throws InterruptedException {
+    @DisplayName("낙관적 락을 적용하여 좋아요 동시성 제어 성공")
+    void 동시에_100개의_좋아요요청_성공() throws InterruptedException {
         int threadCount = 100;
         Long testClubId = 1L;
         Long testPostId = 1L;
