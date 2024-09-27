@@ -3,12 +3,12 @@ package com.hobbyhop.domain.comment.service.impl;
 import com.hobbyhop.domain.clubmember.entity.ClubMember;
 import com.hobbyhop.domain.clubmember.enums.MemberRole;
 import com.hobbyhop.domain.clubmember.service.ClubMemberService;
-import com.hobbyhop.domain.comment.dto.CommentPageRequestDTO;
 import com.hobbyhop.domain.comment.dto.CommentRequestDTO;
 import com.hobbyhop.domain.comment.dto.CommentResponseDTO;
 import com.hobbyhop.domain.comment.entity.Comment;
 import com.hobbyhop.domain.comment.repository.CommentRepository;
 import com.hobbyhop.domain.comment.service.CommentService;
+import com.hobbyhop.domain.commentuser.entity.CommentUser;
 import com.hobbyhop.domain.commentuser.service.CommentUserService;
 import com.hobbyhop.domain.post.entity.Post;
 import com.hobbyhop.domain.post.service.PostService;
@@ -16,18 +16,19 @@ import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.global.exception.auth.UnAuthorizedModifyException;
 import com.hobbyhop.global.exception.clubmember.ClubMemberNotFoundException;
 import com.hobbyhop.global.exception.comment.CommentNotFoundException;
-import com.hobbyhop.global.response.PageResponseDTO;
 import jakarta.transaction.Transactional;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final CommentUserService commentUserService;
@@ -35,11 +36,21 @@ public class CommentServiceImpl implements CommentService {
     private final ClubMemberService clubMemberService;
 
     @Override
-    public CommentResponseDTO writeComment(CommentRequestDTO request, Long clubId, Long postId, User user) {
-        if (!clubMemberService.isClubMember(clubId, user.getId()))
+    public List<CommentResponseDTO> getComments(Long clubId, Long postId, User user) {
+        if(!clubMemberService.isClubMember(clubId, user.getId())) {
             throw new ClubMemberNotFoundException();
+        }
 
-        Post post = postService.findPost(postId);
+        return commentRepository.findAllByPostId(postId, user.getId());
+    }
+
+    @Override
+    public CommentResponseDTO writeComment(CommentRequestDTO request, Long clubId, Long postId, User user) {
+        if (!clubMemberService.isClubMember(clubId, user.getId())) {
+            throw new ClubMemberNotFoundException();
+        }
+
+        Post post = postService.findPost(postId, clubId);
         Comment comment = Comment.buildComment(request, post, user, null);
         commentRepository.save(comment);
 
@@ -48,14 +59,15 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentResponseDTO writeReply(CommentRequestDTO request, Long clubId, Long postId, Long commentId, User user) {
-        if (!clubMemberService.isClubMember(clubId, user.getId()))
+        if (!clubMemberService.isClubMember(clubId, user.getId())) {
             throw new ClubMemberNotFoundException();
+        }
 
-        Post post = postService.findPost(postId);
+        Post post = postService.findPost(postId, clubId);
         Comment comment = findById(clubId, postId, commentId);
         Comment reply = Comment.buildComment(request, post, user, comment);
         commentRepository.save(reply);
-        comment.getReply().add(reply);
+        comment.getReplies().add(reply);
 
         return CommentResponseDTO.fromEntity(reply);
     }
@@ -79,20 +91,16 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public PageResponseDTO<CommentResponseDTO> getComments(CommentPageRequestDTO pageRequestDTO, Long postId, Long commentId) {
-        Page<CommentResponseDTO> result = commentRepository.findAllByPostId(pageRequestDTO, postId, commentId);
+    @Transactional
+    public Long likeComment(Long clubId, Long postId, Long commentId, User user) {
+        if(!clubMemberService.isClubMember(clubId, user.getId())) {
+            throw new ClubMemberNotFoundException();
+        }
 
-        return PageResponseDTO.<CommentResponseDTO>withAll()
-                .pageRequestDTO(pageRequestDTO)
-                .dtoList(result.toList())
-                .total(result.getTotalElements())
-                .build();
-    }
+        Comment comment = commentRepository.findByIdWithOptimisticLock(commentId)
+                .orElseThrow(CommentNotFoundException::new);
 
-    @Override
-    public void likeComment(Long clubId, Long postId, Long commentId, User user) {
-        Comment comment = findById(clubId, postId, commentId);
-        commentUserService.modifyCommentUser(comment, user);
+        return commentUserService.toggleCommentUser(comment, user);
     }
 
     @Override
@@ -103,8 +111,8 @@ public class CommentServiceImpl implements CommentService {
     Map<Long, Comment> makeDeleteList(Comment comment) {
         Map<Long, Comment> deleteList = new HashMap<>();
 
-        if (comment.getReply() != null) {
-            comment.getReply().forEach((c) -> {
+        if (comment.getReplies() != null) {
+            comment.getReplies().forEach((c) -> {
                 Map<Long, Comment> temp = makeDeleteList(c);
                 deleteList.putAll(temp);
             });
@@ -116,10 +124,12 @@ public class CommentServiceImpl implements CommentService {
 
     private Comment checkAuth(Long clubId, Long postId, Long commentId, User user) {
         ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
-        Comment comment = findById(clubId, postId, commentId);
+        Comment comment = commentRepository.findById(commentId).orElseThrow();
+                findById(clubId, postId, commentId);
 
-        if (!comment.getUser().getId().equals(user.getId()) && !clubMember.getMemberRole().equals(MemberRole.ADMIN))
+        if (!comment.getUser().getId().equals(user.getId()) && !clubMember.getMemberRole().equals(MemberRole.ADMIN)) {
             throw new UnAuthorizedModifyException();
+        }
 
         return comment;
     }

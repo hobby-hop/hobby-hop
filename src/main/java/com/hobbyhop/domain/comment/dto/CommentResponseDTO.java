@@ -17,6 +17,7 @@ public class CommentResponseDTO {
     private String content;
     private String writer;
     private Long likeCnt;
+    private boolean isLiked;
     private Timestamp createdAt;
     @Builder.Default
     private List<CommentResponseDTO> replies = new ArrayList<>();
@@ -27,6 +28,18 @@ public class CommentResponseDTO {
                 .content(comment.getContent())
                 .writer(comment.getUser().getUsername())
                 .likeCnt(comment.getLikeCnt())
+                .isLiked(false)
+                .createdAt(comment.getCreatedAt())
+                .build();
+    }
+
+    public static CommentResponseDTO fromEntity(Comment comment, boolean isLiked){
+        return CommentResponseDTO.builder()
+                .id(comment.getId())
+                .content(comment.getContent())
+                .writer(comment.getUser().getUsername())
+                .likeCnt(comment.getLikeCnt())
+                .isLiked(isLiked)
                 .createdAt(comment.getCreatedAt())
                 .build();
     }

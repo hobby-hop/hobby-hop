@@ -3,78 +3,75 @@ package com.hobbyhop.domain.comment.repository.custom.impl;
 import static com.hobbyhop.domain.comment.entity.QComment.comment;
 import static com.hobbyhop.domain.commentuser.entity.QCommentUser.commentUser;
 import static com.hobbyhop.domain.post.entity.QPost.post;
-import static com.hobbyhop.domain.user.entity.QUser.user;
 
-import com.hobbyhop.domain.comment.dto.CommentPageRequestDTO;
 import com.hobbyhop.domain.comment.dto.CommentResponseDTO;
 import com.hobbyhop.domain.comment.entity.Comment;
+import com.hobbyhop.domain.comment.entity.QComment;
 import com.hobbyhop.domain.comment.repository.custom.CommentRepositoryCustom;
-import com.hobbyhop.domain.post.entity.Post;
-import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.impl.JPAQuery;
+
+import com.querydsl.core.Tuple;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import lombok.RequiredArgsConstructor;
 
-public class CommentRepositoryCustomImpl extends QuerydslRepositorySupport implements CommentRepositoryCustom {
+@RequiredArgsConstructor
+public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
-
-    public CommentRepositoryCustomImpl(JPAQueryFactory jpaQueryFactory) {
-        super(Comment.class);
-        this.jpaQueryFactory = jpaQueryFactory;
-    }
 
     @Override
     public Optional<Comment> findById(Long clubId, Long postId, Long commentId) {
         return Optional.ofNullable(jpaQueryFactory
                 .selectFrom(comment)
-                .join(post).fetchJoin()
-                .on(comment.post.id.eq(post.id))
-                .where(comment.id.eq(commentId).and(post.id.eq(postId)).and(post.club.id.eq(clubId)))
+                .where(comment.id.eq(commentId)
+                        .and(post.club.id.eq(clubId))
+                        .and(post.id.eq(postId)))
                 .fetchOne());
     }
 
     @Override
-    public Page<CommentResponseDTO> findAllByPostId(CommentPageRequestDTO pageRequestDTO, Long postId, Long parent) {
-        JPAQuery<CommentResponseDTO> query = jpaQueryFactory
-                .select(
-                        Projections.constructor(
-                                CommentResponseDTO.class,
-                                comment.id,
-                                comment.content,
-                                user.username,
-                                comment.likeCnt,
-                                comment.createdAt
-                        )
-                )
+    public List<CommentResponseDTO> findAllByPostId(Long postId, Long userId) {
+        List<Tuple> commentTuples = jpaQueryFactory
+                .select(comment,
+                        JPAExpressions
+                                .selectOne()
+                                .from(commentUser)
+                                .where(commentUser.commentUserPK.user.id.eq(userId)
+                                        .and(commentUser.commentUserPK.comment.id.eq(comment.id)))
+                                .exists())
                 .from(comment)
-                .where(comment.post.id.eq(postId), eqParentId(parent));
+                .leftJoin(comment.parent).fetchJoin()
+                .leftJoin(commentUser).on(commentUser.commentUserPK.comment.id.eq(comment.id))
+                .join(comment.user).fetchJoin()
+                .where(comment.post.id.eq(postId))
+                .orderBy(comment.parent.id.asc().nullsFirst(),
+                        comment.createdAt.asc())
+                .fetch();
 
-        Pageable pageable = pageRequestDTO.getPageable(pageRequestDTO.getSortBy());
-        List<CommentResponseDTO> content = getQuerydsl().applyPagination(pageable, query).fetch();
-        long totalCount = jpaQueryFactory.select(comment.count())
-                .from(comment)
-                .where(comment.post.id.eq(postId), eqParentId(parent))
-                .fetchOne();
+        List<CommentResponseDTO> commentResponseDTOList = new ArrayList<>();
+        Map<Long, CommentResponseDTO> commentDTOHashMap = new HashMap<>();
 
-        return new PageImpl<>(content, pageable, totalCount);
-    }
+        commentTuples.forEach(tuple -> {
+            Comment comment1 = tuple.get(comment);
+            Boolean isLiked = tuple.get(1, Boolean.class);
 
-    private BooleanExpression eqParentId(Long parent) {
-        if (parent == null) {
-            return null;
-        }
-        return comment.parent.id.eq(parent);
+            CommentResponseDTO commentResponseDTO = CommentResponseDTO.fromEntity(comment1);
+            commentResponseDTO.setLiked(isLiked);
+
+            commentDTOHashMap.put(commentResponseDTO.getId(), commentResponseDTO);
+            if (comment1.getParent() != null) {
+                commentDTOHashMap.get(comment1.getParent().getId()).getReplies().add(commentResponseDTO);
+            } else {
+                commentResponseDTOList.add(commentResponseDTO);
+            }
+        });
+
+        return commentResponseDTOList;
+
     }
 
     @Override
