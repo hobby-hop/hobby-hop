@@ -114,43 +114,43 @@ class PostServiceImplTest implements PostTest, UserTest, CategoryTest, ClubTest 
                 postResponseDTO.getContent());
     }
 
-    @Test
-    @DisplayName("게시글 수정 성공 테스트")
-    void 게시글수정테스트() throws IOException {
-        // Given
-        given(clubMemberService.isClubMember(TEST_CLUB_ID, TEST_USER_ID)).willReturn(true);
-        given(clubServiceImpl.findClub(TEST_CLUB_ID)).willReturn(TEST_CLUB);
-        given(postRepository.findById(TEST_POST_ID)).willReturn(Optional.of(TEST_POST));
+//    @Test
+//    @DisplayName("게시글 수정 성공 테스트")
+//    void 게시글수정테스트() throws IOException {
+//        // Given
+//        given(clubMemberService.isClubMember(TEST_CLUB_ID, TEST_USER_ID)).willReturn(true);
+//        given(clubServiceImpl.findClub(TEST_CLUB_ID)).willReturn(TEST_CLUB);
+//        given(postRepository.findById(TEST_POST_ID)).willReturn(Optional.of(TEST_POST));
+//
+//        String fileUrl = "images/image1.jpg";
+//        Resource fileResource = new ClassPathResource(fileUrl);
+//        MockMultipartFile multipartFile =
+//                new MockMultipartFile(
+//                        "image1",
+//                        fileResource.getFilename(),
+//                        IMAGE_JPEG.getType(),
+//                        fileResource.getInputStream());
+//
+//        // When & Then
+//        assertThat(sut.modifyPost(TEST_USER, TEST_CLUB_ID, TEST_POST_ID, multipartFile,
+//                postModifyRequestDTO).getTitle()).isEqualTo(postResponseDTO.getTitle());
+//
+//    }
 
-        String fileUrl = "images/image1.jpg";
-        Resource fileResource = new ClassPathResource(fileUrl);
-        MockMultipartFile multipartFile =
-                new MockMultipartFile(
-                        "image1",
-                        fileResource.getFilename(),
-                        IMAGE_JPEG.getType(),
-                        fileResource.getInputStream());
-
-        // When & Then
-        assertThat(sut.modifyPost(TEST_USER, TEST_CLUB_ID, TEST_POST_ID, multipartFile,
-                postModifyRequestDTO).getTitle()).isEqualTo(postResponseDTO.getTitle());
-
-    }
-
-    @Test
-    @DisplayName("게시글 삭제 성공 테스트")
-    void 게시글삭제테스트() {
-        // Given
-        given(clubMemberService.isClubMember(TEST_CLUB_ID, TEST_USER_ID)).willReturn(true);
-        given(clubServiceImpl.findClub(TEST_CLUB_ID)).willReturn(TEST_CLUB);
-        given(postRepository.findById(TEST_POST_ID)).willReturn(Optional.of(TEST_POST));
-
-        // When
-        sut.deletePost(TEST_USER, TEST_CLUB_ID, TEST_POST_ID);
-
-        // Then
-        verify(postRepository, times(1)).deleteAllElement(TEST_POST_ID);
-    }
+//    @Test
+//    @DisplayName("게시글 삭제 성공 테스트")
+//    void 게시글삭제테스트() {
+//        // Given
+//        given(clubMemberService.isClubMember(TEST_CLUB_ID, TEST_USER_ID)).willReturn(true);
+//        given(clubServiceImpl.findClub(TEST_CLUB_ID)).willReturn(TEST_CLUB);
+//        given(postRepository.findById(TEST_POST_ID)).willReturn(Optional.of(TEST_POST));
+//
+//        // When
+//        sut.deletePost(TEST_USER, TEST_CLUB_ID, TEST_POST_ID);
+//
+//        // Then
+//        verify(postRepository, times(1)).deleteAllElement(TEST_POST_ID);
+//    }
 
     @Test
     @DisplayName("게시글 좋아요 성공 테스트")

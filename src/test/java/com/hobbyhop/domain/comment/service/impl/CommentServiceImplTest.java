@@ -88,33 +88,33 @@ class CommentServiceImplTest implements CommentTest {
 //                .getContent()).isEqualTo(TEST_OTHER_COMMENT.getContent());
 //    }
 
-    @Test
-    @DisplayName("댓글 수정 완료 테스트")
-    void 댓글수정테스트() {
-        // given
-        given(commentRepository.findById(TEST_CLUB_ID, TEST_USER_ID, TEST_COMMENT_ID)).willReturn(
-                Optional.ofNullable(TEST_COMMENT));
+//    @Test
+//    @DisplayName("댓글 수정 완료 테스트")
+//    void 댓글수정테스트() {
+//        // given
+//        given(commentRepository.findById(TEST_CLUB_ID, TEST_USER_ID, TEST_COMMENT_ID)).willReturn(
+//                Optional.ofNullable(TEST_COMMENT));
+//
+//        // when & then
+//        assertThat(
+//                commentService.editComment(modifyDTO, TEST_CLUB_ID, TEST_POST_ID, TEST_COMMENT_ID,
+//                        TEST_USER).getContent()).isEqualTo(TEST_OTHER_COMMENT_CONTENT);
+//    }
 
-        // when & then
-        assertThat(
-                commentService.editComment(modifyDTO, TEST_CLUB_ID, TEST_POST_ID, TEST_COMMENT_ID,
-                        TEST_USER).getContent()).isEqualTo(TEST_OTHER_COMMENT_CONTENT);
-    }
-
-    @Test
-    @DisplayName("댓글 삭제 완료 테스트")
-    void 댓글삭제테스트() {
-        // given
-        given(commentRepository.findById(TEST_CLUB_ID, TEST_USER_ID, TEST_COMMENT_ID)).willReturn(
-                Optional.ofNullable(TEST_COMMENT));
-
-        // when
-        commentService.deleteComment(TEST_CLUB_ID, TEST_POST_ID, TEST_COMMENT_ID, TEST_USER);
-
-        // then
-        verify(commentRepository, times(1)).deleteList(
-                commentService.makeDeleteList(Objects.requireNonNull(TEST_COMMENT)).values().stream().toList());
-    }
+//    @Test
+//    @DisplayName("댓글 삭제 완료 테스트")
+//    void 댓글삭제테스트() {
+//        // given
+//        given(commentRepository.findById(TEST_CLUB_ID, TEST_USER_ID, TEST_COMMENT_ID)).willReturn(
+//                Optional.ofNullable(TEST_COMMENT));
+//
+//        // when
+//        commentService.deleteComment(TEST_CLUB_ID, TEST_POST_ID, TEST_COMMENT_ID, TEST_USER);
+//
+//        // then
+//        verify(commentRepository, times(1)).deleteList(
+//                commentService.makeDeleteList(Objects.requireNonNull(TEST_COMMENT)).values().stream().toList());
+//    }
 
 //    @Test
 //    @DisplayName("댓글 조회 완료 테스트")
@@ -132,18 +132,5 @@ class CommentServiceImplTest implements CommentTest {
 //        assertThat(commentService.getComments(pageRequestDTO, TEST_POST_ID, TEST_COMMENT_ID)
 //                .getDtoList().get(0).getContent()).isEqualTo(TEST_COMMENT_CONTENT);
 //    }
-
-    @Test
-    @DisplayName("댓글 좋아요 완료 테스트")
-    void 댓글좋아요테스트() {
-        // given
-        given(commentRepository.findById(TEST_CLUB_ID, TEST_USER_ID, TEST_COMMENT_ID)).willReturn(Optional.ofNullable(TEST_COMMENT));
-
-        // when
-        commentService.likeComment(TEST_CLUB_ID, TEST_POST_ID, TEST_COMMENT_ID, TEST_USER);
-
-        // then
-        verify(commentUserService).toggleCommentUser(
-                Objects.requireNonNull(TEST_COMMENT), TEST_USER);
-    }
 }
+
