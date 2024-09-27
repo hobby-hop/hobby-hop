@@ -9,14 +9,11 @@ import static org.mockito.Mockito.verify;
 import com.hobbyhop.domain.clubmember.service.impl.ClubMemberServiceImpl;
 import com.hobbyhop.domain.comment.dto.CommentPageRequestDTO;
 import com.hobbyhop.domain.comment.dto.CommentRequestDTO;
-import com.hobbyhop.domain.comment.dto.CommentResponseDTO;
 import com.hobbyhop.domain.comment.repository.CommentRepository;
 import com.hobbyhop.domain.commentuser.service.impl.CommentUserServiceImpl;
 import com.hobbyhop.domain.post.service.impl.PostServiceImpl;
 import com.hobbyhop.test.CommentTest;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -58,7 +55,7 @@ class CommentServiceImplTest implements CommentTest {
         pageRequestDTO = CommentPageRequestDTO.builder()
                 .page(1)
                 .size(10)
-                .isDesc(true)
+                .desc(true)
                 .sortBy("standard")
                 .build();
     }
@@ -68,7 +65,7 @@ class CommentServiceImplTest implements CommentTest {
     void 댓글생성테스트() {
         // given
         given(clubMemberService.isClubMember(TEST_CLUB_ID, TEST_USER_ID)).willReturn(true);
-        given(postService.findPost(TEST_POST_ID)).willReturn(TEST_POST);
+        given(postService.findPost(TEST_CLUB_ID, TEST_POST_ID)).willReturn(TEST_POST);
         given(commentRepository.save(any())).willReturn(TEST_COMMENT);
 
         // when & then
@@ -146,7 +143,7 @@ class CommentServiceImplTest implements CommentTest {
         commentService.likeComment(TEST_CLUB_ID, TEST_POST_ID, TEST_COMMENT_ID, TEST_USER);
 
         // then
-        verify(commentUserService).modifyCommentUser(
+        verify(commentUserService).toggleCommentUser(
                 Objects.requireNonNull(TEST_COMMENT), TEST_USER);
     }
 }
