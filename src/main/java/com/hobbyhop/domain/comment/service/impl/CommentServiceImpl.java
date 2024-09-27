@@ -124,8 +124,7 @@ public class CommentServiceImpl implements CommentService {
 
     private Comment checkAuth(Long clubId, Long postId, Long commentId, User user) {
         ClubMember clubMember = clubMemberService.findByClubAndUser(clubId, user.getId());
-        Comment comment = commentRepository.findById(commentId).orElseThrow();
-                findById(clubId, postId, commentId);
+        Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
 
         if (!comment.getUser().getId().equals(user.getId()) && !clubMember.getMemberRole().equals(MemberRole.ADMIN)) {
             throw new UnAuthorizedModifyException();

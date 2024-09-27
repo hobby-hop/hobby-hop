@@ -1,7 +1,7 @@
 package com.hobbyhop.domain.comment.controller;
 
-import com.hobbyhop.domain.comment.dto.CommentPageRequestDTO;
 import com.hobbyhop.domain.comment.dto.CommentRequestDTO;
+import com.hobbyhop.domain.comment.facade.OptimisticLockCommentLikeFacade;
 import com.hobbyhop.domain.comment.service.CommentService;
 import com.hobbyhop.global.response.ApiResponse;
 import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @SecurityRequirement(name = "Bearer Authentication")
 public class CommentController {
     private final CommentService commentService;
+    private final OptimisticLockCommentLikeFacade olcf;
 
     @Operation(summary = "댓글 조회")
     @GetMapping
@@ -81,9 +82,7 @@ public class CommentController {
     public ApiResponse<?> likeComment(@PathVariable("clubId") Long clubId,
                                       @PathVariable("postId") Long postId,
                                       @PathVariable("commentId") Long commentId,
-                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        commentService.likeComment(clubId, postId, commentId, userDetails.getUser());
-
-        return ApiResponse.ok("좋아요 변경 성공");
+                                      @AuthenticationPrincipal UserDetailsImpl userDetails) throws InterruptedException {
+        return ApiResponse.ok(olcf.likeComment(clubId, postId, commentId, userDetails.getUser()));
     }
 }
