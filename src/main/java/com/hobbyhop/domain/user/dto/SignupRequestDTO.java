@@ -8,6 +8,8 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class SignupRequestDTO {
     @NotBlank(message = "username : 이름을 입력해주세요.")
     @Pattern(regexp = "^[a-zA-Z0-9가-힣]+$",
