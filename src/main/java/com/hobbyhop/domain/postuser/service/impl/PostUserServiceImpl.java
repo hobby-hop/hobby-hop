@@ -8,27 +8,30 @@ import com.hobbyhop.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class PostUserServiceImpl implements PostUserService {
     private final PostUserRepository postUserRepository;
 
     @Override
-    public Long makePostUser(User user, Post post) {
-        PostUser postUser = postUserRepository.findByPostUserPK_UserAndPostUserPK_Post(user, post)
-                .orElseGet(() -> savePostUser(user, post));
+    public Long togglePostUser(User user, Post post) {
+        Optional<PostUser> optionalPostUser = postUserRepository.findPostUser(user.getId(), post.getId());
 
-        Boolean updated = postUser.updateLike();
-        post.updateLikeCnt(updated);
+        if (optionalPostUser.isPresent()) {
+            postUserRepository.delete(optionalPostUser.get());
+            post.subLikeCnt();
+        } else {
+            postUserRepository.save(PostUser.buildPostUser(user, post));
+            post.addLikeCnt();
+        }
+
         return post.getLikeCnt();
     }
 
     @Override
     public PostUser findPostUser(User user, Post post) {
-        return postUserRepository.findByPostUserPK_UserAndPostUserPK_Post(user, post)
-                .orElse(null);
-    }
-    private PostUser savePostUser(User user, Post post) {
-        return postUserRepository.save(PostUser.buildPostUser(user, post));
+        return postUserRepository.findPostUser(user.getId(), post.getId()).orElse(null);
     }
 }
