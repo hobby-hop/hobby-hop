@@ -1,12 +1,8 @@
 package com.hobbyhop.domain.comment.facade;
 
 import com.hobbyhop.domain.comment.service.CommentService;
-import com.hobbyhop.domain.post.service.PostService;
 import com.hobbyhop.domain.user.entity.User;
-import com.hobbyhop.global.exception.common.BusinessException;
-import jakarta.persistence.OptimisticLockException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -20,12 +16,8 @@ public class OptimisticLockCommentLikeFacade {
                 Long likeCnt = commentService.likeComment(clubId, postId, commentId, user);
 
                 return likeCnt;
-            } catch (OptimisticLockException e) {
+            } catch (Exception e) {
                 Thread.sleep(50);
-            } catch (DataIntegrityViolationException e) {
-                Thread.sleep(50);
-            } catch (BusinessException e) {
-                throw new RuntimeException("Unhandled exception occurred", e);
             }
         }
     }

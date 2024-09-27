@@ -87,8 +87,8 @@ public class CommentLikeTest {
         commentService.writeComment(commentRequestDTO, 1L, 1L, testuser);
     }
 
-    @Test
     @DisplayName("낙관적 락을 적용해 동시성 제어 성공")
+    @Test
     void 동시에_100개의_좋아요요청() throws InterruptedException {
         int threadCount = 100;
         Long testClubId = 1L;

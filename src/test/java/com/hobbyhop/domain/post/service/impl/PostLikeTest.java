@@ -40,6 +40,7 @@ public class PostLikeTest {
     CategoryService categoryService;
     @Autowired
     PostService postService;
+
     User testuser = User.builder()
             .id(1L)
             .email("testuser1@naver.com")
@@ -95,6 +96,7 @@ public class PostLikeTest {
                 }
             });
         }
+
         countDownLatch.await();
         Post post = postService.findPost(testClubId, testPostId);
         assertThat(post.getLikeCnt()).isEqualTo(0);

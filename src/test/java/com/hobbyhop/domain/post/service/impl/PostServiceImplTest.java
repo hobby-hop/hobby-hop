@@ -153,42 +153,6 @@ class PostServiceImplTest implements PostTest, UserTest, CategoryTest, ClubTest 
 //    }
 
     @Test
-    @DisplayName("게시글 좋아요 성공 테스트")
-    void 게시글좋아요테스트() {
-        // Given
-        given(postRepository.findByIdWithOptimisticLock(TEST_CLUB_ID, TEST_POST_ID)).willReturn(Optional.of(TEST_POST));
-
-        // When
-        sut.likePost(TEST_USER, TEST_CLUB_ID, TEST_POST_ID);
-
-        // Then
-        assertThat(TEST_POST.getLikeCnt().equals(1L));
-    }
-
-    @Test
-    @DisplayName("동시에 100개의 좋아요 요청 테스트 실패")
-    void 동시에_100개의_좋아요요청_실패() {
-        int threadCount = 100;
-        ExecutorService executorService =  Executors.newFixedThreadPool(32);
-
-        for (int i = 0; i < threadCount; i++) {
-            executorService.submit(() -> {
-               sut.likePost(TEST_USER, TEST_CLUB_ID, TEST_POST_ID);
-            });
-        }
-
-        // Given
-        given(clubServiceImpl.findClub(TEST_CLUB_ID)).willReturn(TEST_CLUB);
-        given(postRepository.findById(TEST_POST_ID)).willReturn(Optional.of(TEST_POST));
-
-        // When
-        sut.likePost(TEST_USER, TEST_CLUB_ID, TEST_POST_ID);
-
-        // Then
-        assertThat(TEST_POST.getLikeCnt().equals(1L));
-    }
-
-    @Test
     @DisplayName("게시글 전체 조회 성공 테스트")
     void 게시글전체조회테스트() {
         // Given
