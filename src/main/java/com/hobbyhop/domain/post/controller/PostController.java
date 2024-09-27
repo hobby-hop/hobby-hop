@@ -3,7 +3,7 @@ package com.hobbyhop.domain.post.controller;
 import com.hobbyhop.domain.post.dto.PostModifyRequestDTO;
 import com.hobbyhop.domain.post.dto.PostPageRequestDTO;
 import com.hobbyhop.domain.post.dto.PostRequestDTO;
-import com.hobbyhop.domain.post.s3.S3Service;
+import com.hobbyhop.domain.post.facade.OptimisticLockPostLikeFacade;
 import com.hobbyhop.domain.post.service.PostService;
 import com.hobbyhop.global.response.ApiResponse;
 import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
@@ -31,7 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class PostController {
     private final PostService postService;
-    private final S3Service s3Service;
+    private final OptimisticLockPostLikeFacade olpf;
 
     @Operation(summary = "게시글 작성")
     @SecurityRequirement(name = "Bearer Authentication")
@@ -39,19 +39,7 @@ public class PostController {
     public ApiResponse<?> makePost(@PathVariable(name = "clubId") Long clubId,
                                    @RequestBody @Valid PostRequestDTO postRequestDTO,
                                    @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return ApiResponse.ok(postService.makePost(userDetails.getUser(), clubId, postRequestDTO));
-    }
-
-    @Operation(summary = "게시글 이미지 업로드")
-    @SecurityRequirement(name = "Bearer Authentication")
-    @PostMapping("/{postId}")
-    public ApiResponse<?> imageUploadPost(@PathVariable(name = "clubId") Long clubId,
-                                          @PathVariable(name = "postId") Long postId,
-                                          @RequestParam("file") MultipartFile file,
-                                          @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-        postService.imageUploadPost(userDetails.getUser(), clubId, postId, file);
-
-        return ApiResponse.ok("이미지 업로드 성공");
+        return ApiResponse.ok(postService.writePost(postRequestDTO, clubId, userDetails.getUser()));
     }
 
     @Operation(summary = "게시글 단일 조회")
@@ -60,7 +48,7 @@ public class PostController {
     public ApiResponse<?> getPostById(@PathVariable(name = "clubId") Long clubId,
                                       @PathVariable(name = "postId") Long postId,
                                       @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return ApiResponse.ok(postService.getPostById(userDetails.getUser(), clubId, postId));
+        return ApiResponse.ok(postService.getPostById(clubId, postId, userDetails.getUser()));
     }
 
     @Operation(summary = "게시글 전체 조회")
@@ -97,7 +85,7 @@ public class PostController {
     @PostMapping("/{postId}/likes")
     public ApiResponse<?> likePost(@PathVariable(name = "clubId") Long clubId,
                                    @PathVariable(name = "postId") Long postId,
-                                   @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return ApiResponse.ok(postService.likePost(userDetails.getUser(), clubId, postId));
+                                   @AuthenticationPrincipal UserDetailsImpl userDetails) throws InterruptedException {
+        return ApiResponse.ok(olpf.likePost(userDetails.getUser(), clubId, postId));
     }
 }

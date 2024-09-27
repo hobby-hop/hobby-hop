@@ -96,6 +96,7 @@ public class PostServiceImpl implements PostService {
             throw new PostNotCorrespondUser();
         }
 
+        post.clearImages();
         applyChanges(post, postModifyRequestDTO);
 
         return PostResponseDTO.fromEntity(post);
@@ -112,11 +113,12 @@ public class PostServiceImpl implements PostService {
         if(!post.getUser().getId().equals(user.getId())) {
             throw new PostNotCorrespondUser();
         }
-        //프론트에서 삭제 목록 제공하기
+
         List<String> savedFileNames = post.getImageSet().stream()
                 .map(image -> image.getUuid() + image.getFileName())
                 .collect(Collectors.toList());
 
+        // 게시글 삭제 완료시 이미지 파일을 삭제하는 요청을 보낸다.
         postRepository.deleteAllElement(postId);
         removeFiles(savedFileNames);
     }
@@ -136,7 +138,14 @@ public class PostServiceImpl implements PostService {
         if(postModifyRequestDTO.getContent() != null) {
             post.changeContent(postModifyRequestDTO.getContent());
         }
+        if(postModifyRequestDTO.getPostImages() != null) {
+            postModifyRequestDTO.getPostImages().forEach(postImage -> {
+                String[] arr = postImage.getSavedFileName().split("_");
+                post.addImage(arr[0], arr[1], postImage.getSavedFileUrl());
+            });
+        }
     }
+
     public void removeFiles(List<String> files) {
         for(String savedFileName: files) {
             s3Service.deleteImage(savedFileName);

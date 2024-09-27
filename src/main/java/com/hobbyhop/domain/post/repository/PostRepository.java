@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long>, PostRepositoryCustom {
     @Lock(LockModeType.OPTIMISTIC)
-    @Query("select p from Post p where p.id = :postId and p.club.id = :clubId")
+    @Query("select p from Post p where p.club.id = :clubId and p.id = :postId")
     Optional<Post> findByIdWithOptimisticLock(@Param("clubId")Long clubId, @Param("postId")Long postId);
 
     Optional<Post> findByIdAndClub_Id(Long id, Long clubId);
