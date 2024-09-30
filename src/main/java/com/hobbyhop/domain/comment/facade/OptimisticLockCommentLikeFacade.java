@@ -18,6 +18,7 @@ public class OptimisticLockCommentLikeFacade {
         while (true) {
             try {
                 Long likeCnt = commentService.likeComment(clubId, postId, commentId, user);
+
                 return likeCnt;
             } catch (ObjectOptimisticLockingFailureException e) {
                 Thread.sleep(50);

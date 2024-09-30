@@ -3,7 +3,6 @@ package com.hobbyhop.domain.comment.service.impl;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import com.hobbyhop.domain.clubmember.service.impl.ClubMemberServiceImpl;
@@ -13,9 +12,6 @@ import com.hobbyhop.domain.comment.repository.CommentRepository;
 import com.hobbyhop.domain.commentuser.service.impl.CommentUserServiceImpl;
 import com.hobbyhop.domain.post.service.impl.PostServiceImpl;
 import com.hobbyhop.test.CommentTest;
-
-import java.util.Objects;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,7 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @DisplayName("[Comment]")
 class CommentServiceImplTest implements CommentTest {
     @InjectMocks
-    private CommentServiceImpl commentService;
+    private CommentServiceImpl sut;
     @Mock
     private CommentRepository commentRepository;
     @Mock
@@ -69,7 +65,7 @@ class CommentServiceImplTest implements CommentTest {
         given(commentRepository.save(any())).willReturn(TEST_COMMENT);
 
         // when & then
-        assertThat(commentService.writeComment(requestDTO, TEST_CLUB_ID, TEST_POST_ID, TEST_USER)
+        assertThat(sut.writeComment(requestDTO, TEST_CLUB_ID, TEST_POST_ID, TEST_USER)
                 .getContent()).isEqualTo(TEST_COMMENT.getContent());
     }
 

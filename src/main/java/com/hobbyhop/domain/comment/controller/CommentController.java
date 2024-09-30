@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @SecurityRequirement(name = "Bearer Authentication")
 public class CommentController {
     private final CommentService commentService;
-    private final OptimisticLockCommentLikeFacade olcf;
+    private final OptimisticLockCommentLikeFacade ocf;
 
     @Operation(summary = "댓글 조회")
     @GetMapping
@@ -83,6 +83,6 @@ public class CommentController {
                                       @PathVariable("postId") Long postId,
                                       @PathVariable("commentId") Long commentId,
                                       @AuthenticationPrincipal UserDetailsImpl userDetails) throws InterruptedException {
-        return ApiResponse.ok(olcf.likeComment(clubId, postId, commentId, userDetails.getUser()));
+        return ApiResponse.ok(ocf.likeComment(clubId, postId, commentId, userDetails.getUser()));
     }
 }

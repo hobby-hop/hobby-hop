@@ -48,7 +48,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public PostResponseDTO writePost(PostRequestDTO postRequestDTO, Long clubId, User user) {
-        if(!clubMemberService.isClubMember(clubId, user.getId())) {
+        if (!clubMemberService.isClubMember(clubId, user.getId())) {
             throw new ClubMemberNotFoundException();
         }
 
@@ -62,7 +62,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDetailResponseDTO getPostById(Long clubId, Long postId, User user) {
-        if(!clubMemberService.isClubMember(clubId, user.getId())) {
+        if (!clubMemberService.isClubMember(clubId, user.getId())) {
             throw new ClubMemberNotFoundException();
         }
 
@@ -87,12 +87,12 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public PostResponseDTO modifyPost(User user, Long clubId, Long postId, MultipartFile file, PostModifyRequestDTO postModifyRequestDTO) {
-        if(!clubMemberService.isClubMember(clubId, user.getId())) {
+        if (!clubMemberService.isClubMember(clubId, user.getId())) {
             throw new ClubMemberNotFoundException();
         }
 
         Post post = findPost(clubId, postId);
-        if(!post.getUser().getId().equals(user.getId())) {
+        if (!post.getUser().getId().equals(user.getId())) {
             throw new PostNotCorrespondUser();
         }
 
@@ -104,13 +104,13 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public void deletePost(User user, Long clubId, Long postId){
-        if(!clubMemberService.isClubMember(clubId, user.getId())) {
+    public void deletePost(User user, Long clubId, Long postId) {
+        if (!clubMemberService.isClubMember(clubId, user.getId())) {
             throw new ClubMemberNotFoundException();
         }
 
         Post post = findPost(clubId, postId);
-        if(!post.getUser().getId().equals(user.getId())) {
+        if (!post.getUser().getId().equals(user.getId())) {
             throw new PostNotCorrespondUser();
         }
 
@@ -125,20 +125,24 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public Long likePost(User user, Long clubId, Long postId){
-        Post post = postRepository.findByIdWithOptimisticLock(clubId, postId).orElseThrow();
+    public Long likePost(User user, Long clubId, Long postId) {
+        if(!clubMemberService.isClubMember(clubId, user.getId())) {
+            throw new ClubMemberNotFoundException();
+        }
+
+        Post post = postRepository.findByIdWithOptimisticLock(postId).orElseThrow(PostNotFoundException::new);
 
         return postUserService.togglePostUser(user, post);
     }
 
     private void applyChanges(Post post, PostModifyRequestDTO postModifyRequestDTO) {
-        if(postModifyRequestDTO.getTitle() != null) {
+        if (postModifyRequestDTO.getTitle() != null) {
             post.changeTitle(postModifyRequestDTO.getTitle());
         }
-        if(postModifyRequestDTO.getContent() != null) {
+        if (postModifyRequestDTO.getContent() != null) {
             post.changeContent(postModifyRequestDTO.getContent());
         }
-        if(postModifyRequestDTO.getPostImages() != null) {
+        if (postModifyRequestDTO.getPostImages() != null) {
             postModifyRequestDTO.getPostImages().forEach(postImage -> {
                 String[] arr = postImage.getSavedFileName().split("_");
                 post.addImage(arr[0], arr[1], postImage.getSavedFileUrl());
@@ -147,7 +151,7 @@ public class PostServiceImpl implements PostService {
     }
 
     public void removeFiles(List<String> files) {
-        for(String savedFileName: files) {
+        for (String savedFileName : files) {
             s3Service.deleteImage(savedFileName);
         }
     }

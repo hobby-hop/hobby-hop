@@ -31,7 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class PostController {
     private final PostService postService;
-    private final OptimisticLockPostLikeFacade olpf;
+    private final OptimisticLockPostLikeFacade opf;
 
     @Operation(summary = "게시글 작성")
     @SecurityRequirement(name = "Bearer Authentication")
@@ -86,6 +86,6 @@ public class PostController {
     public ApiResponse<?> likePost(@PathVariable(name = "clubId") Long clubId,
                                    @PathVariable(name = "postId") Long postId,
                                    @AuthenticationPrincipal UserDetailsImpl userDetails) throws InterruptedException {
-        return ApiResponse.ok(olpf.likePost(userDetails.getUser(), clubId, postId));
+        return ApiResponse.ok(opf.likePost(userDetails.getUser(), clubId, postId));
     }
 }

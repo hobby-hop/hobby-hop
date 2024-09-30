@@ -13,8 +13,6 @@ import java.util.Optional;
 public interface CommentRepository extends JpaRepository<Comment, Long>, CommentRepositoryCustom {
     @Lock(LockModeType.OPTIMISTIC)
     @Query("select c from Comment c where c.id = :commentId")
+
     Optional<Comment> findByIdWithOptimisticLock(@Param("commentId") Long commentId);
-    Long countByPost_Id(Long postId);
-
-
 }

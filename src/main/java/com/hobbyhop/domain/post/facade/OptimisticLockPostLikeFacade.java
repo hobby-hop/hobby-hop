@@ -21,6 +21,7 @@ public class OptimisticLockPostLikeFacade {
         while(true){
             try {
                 Long likeCnt = postService.likePost(user, clubId, postId);
+
                 return likeCnt;
             } catch (ObjectOptimisticLockingFailureException e) {
                 Thread.sleep(50);
