@@ -2,11 +2,13 @@ package com.hobbyhop.domain.post.facade;
 
 import com.hobbyhop.domain.post.service.PostService;
 import com.hobbyhop.domain.user.entity.User;
-import jakarta.persistence.OptimisticLockException;
+import com.hobbyhop.global.exception.clubmember.ClubMemberNotFoundException;
+import com.hobbyhop.global.exception.common.BusinessException;
+import com.hobbyhop.global.exception.post.PostNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,11 +21,15 @@ public class OptimisticLockPostLikeFacade {
         while(true){
             try {
                 Long likeCnt = postService.likePost(user, clubId, postId);
-                log.info("Successfully liked post. Like count: {}", likeCnt);
                 return likeCnt;
-            } catch (Exception e) {
-                log.error(e.getMessage());
+            } catch (ObjectOptimisticLockingFailureException e) {
                 Thread.sleep(50);
+            } catch(DataIntegrityViolationException e) {
+                Thread.sleep(50);
+            } catch (PostNotFoundException e) {
+                throw new PostNotFoundException();
+            } catch (ClubMemberNotFoundException e) {
+                throw new ClubMemberNotFoundException();
             }
         }
     }
