@@ -9,8 +9,6 @@ import com.hobbyhop.domain.comment.entity.Comment;
 import com.hobbyhop.domain.comment.facade.OptimisticLockCommentLikeFacade;
 import com.hobbyhop.domain.comment.service.CommentService;
 import com.hobbyhop.domain.post.dto.PostRequestDTO;
-import com.hobbyhop.domain.post.entity.Post;
-import com.hobbyhop.domain.post.facade.OptimisticLockPostLikeFacade;
 import com.hobbyhop.domain.post.service.PostService;
 import com.hobbyhop.domain.user.dto.SignupRequestDTO;
 import com.hobbyhop.domain.user.entity.User;
@@ -31,11 +29,12 @@ import java.util.concurrent.Executors;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@DisplayName("[CommentLike]")
+@DirtiesContext
 @Log4j2
 public class CommentLikeTest {
     @Autowired
-    OptimisticLockPostLikeFacade olpf;
+    OptimisticLockCommentLikeFacade sut;
     @Autowired
     UserService userService;
     @Autowired
@@ -46,9 +45,6 @@ public class CommentLikeTest {
     PostService postService;
     @Autowired
     CommentService commentService;
-
-    @Autowired
-    OptimisticLockCommentLikeFacade olcf;
 
     User testuser = User.builder()
             .id(1L)
@@ -102,7 +98,7 @@ public class CommentLikeTest {
         for (int i = 0; i < threadCount; i++) {
             executorService.submit(() -> {
                 try {
-                    olcf.likeComment(testClubId, testPostId, testCommentId, testuser);
+                    sut.likeComment(testClubId, testPostId, testCommentId, testuser);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 } finally {

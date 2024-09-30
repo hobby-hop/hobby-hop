@@ -1,13 +1,13 @@
 package com.hobbyhop.domain.post.service.impl;
 
 import com.hobbyhop.domain.category.dto.CategoryRequestDTO;
+import com.hobbyhop.domain.category.repository.CategoryRepository;
 import com.hobbyhop.domain.category.service.CategoryService;
 import com.hobbyhop.domain.club.dto.ClubRequestDTO;
 import com.hobbyhop.domain.club.service.ClubService;
 import com.hobbyhop.domain.post.dto.PostRequestDTO;
 import com.hobbyhop.domain.post.entity.Post;
 import com.hobbyhop.domain.post.facade.OptimisticLockPostLikeFacade;
-import com.hobbyhop.domain.post.repository.PostRepository;
 import com.hobbyhop.domain.post.service.PostService;
 import com.hobbyhop.domain.user.dto.SignupRequestDTO;
 import com.hobbyhop.domain.user.entity.User;
@@ -29,17 +29,20 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @SpringBootTest
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@DisplayName("[PostLike]")
+@DirtiesContext
 @Log4j2
 public class PostLikeTest {
     @Autowired
-    OptimisticLockPostLikeFacade olpf;
+    OptimisticLockPostLikeFacade sut;
     @Autowired
     UserService userService;
     @Autowired
     ClubService clubService;
     @Autowired
     CategoryService categoryService;
+    @Autowired
+    CategoryRepository categoryRepository;
     @Autowired
     PostService postService;
 
@@ -80,7 +83,7 @@ public class PostLikeTest {
 
     @Test
     @DisplayName("낙관적 락을 적용하여 좋아요 동시성 제어 성공")
-    void 동시에_100개의_좋아요요청_성공() throws InterruptedException {
+    void 동시에_100개의_좋아요_요청_성공() throws InterruptedException {
         int threadCount = 100;
         Long testClubId = 1L;
         Long testPostId = 1L;
@@ -90,7 +93,7 @@ public class PostLikeTest {
         for (int i = 0; i < threadCount; i++) {
             executorService.submit(() -> {
                 try {
-                    olpf.likePost(testuser, testClubId, testPostId);
+                    sut.likePost(testuser, testClubId, testPostId);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 } finally {
