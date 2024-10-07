@@ -96,7 +96,7 @@ Hobby Hop은 사용자들이 자신의 취미를 등록하고 다양한 형식�
 
 
 ## 🐇 ERD
-![image](https://github.com/hobby-hop/hobby-hop/assets/148298032/0ab02635-06e5-4f11-8d08-eea68875a1ba)
+![diagram](https://github.com/user-attachments/assets/31a9e1c0-f6bb-43d4-b09e-80f0d29d2fe7)
 
 
 ---
@@ -114,10 +114,11 @@ Hobby Hop은 사용자들이 자신의 취미를 등록하고 다양한 형식�
 
 ## 트러블슈팅
 
-[내가 속한 모임리스트 조회시 발생한 N+1 문제](https://github.com/hobby-hop/hobby-hop/wiki/%EB%82%B4%EA%B0%80-%EC%86%8D%ED%95%9C-%EB%AA%A8%EC%9E%84-%EC%A1%B0%ED%9A%8C%EC%8B%9C-%EB%B0%9C%EC%83%9D%ED%95%9C-N-1%EB%AC%B8%EC%A0%9C)  
+[내가 속한 모임리스트 조회시 발생한 N+1 문제](https://github.com/hobby-hop/hobby-hop/wiki/%EB%82%B4%EA%B0%80-%EC%86%8D%ED%95%9C-%EB%AA%A8%EC%9E%84-%EC%A1%B0%ED%9A%8C-%EC%8B%9C-%EB%B0%9C%EC%83%9D%ED%95%9C-N-1%EB%AC%B8%EC%A0%9C)   
 [Comment Like 기능](https://github.com/hobby-hop/hobby-hop/wiki/Comment-Like-%EA%B8%B0%EB%8A%A5)  
 [모임 카테고리 자료형 Enum VS String](https://github.com/hobby-hop/hobby-hop/wiki/%EB%AA%A8%EC%9E%84-%EC%B9%B4%ED%85%8C%EA%B3%A0%EB%A6%AC-%EC%9E%90%EB%A3%8C%ED%98%95)  
 [게시글 번호 넘버링](https://github.com/hobby-hop/hobby-hop/wiki/%EA%B2%8C%EC%8B%9C%EA%B8%80-%EB%B2%88%ED%98%B8-%EB%84%98%EB%B2%84%EB%A7%81)  
+[좋아요 기능 동시성 문제](https://github.com/hobby-hop/hobby-hop/wiki/%EC%A2%8B%EC%95%84%EC%9A%94-%EA%B8%B0%EB%8A%A5-%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%9D%B4%EC%8A%88)  
 
 ---
 
