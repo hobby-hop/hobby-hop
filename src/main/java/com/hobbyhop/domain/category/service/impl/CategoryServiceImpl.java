@@ -24,9 +24,8 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         Category category = Category.buildCategory(categoryRequestDTO);
-        Category savedCategory = categoryRepository.save(category);
 
-        return CategoryResponseDTO.fromEntity(savedCategory);
+        return CategoryResponseDTO.fromEntity(categoryRepository.save(category));
     }
 
     @Override
