@@ -48,7 +48,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                                 post.club.id,
                                 post.id,
                                 post.title,
-                                user.username,
+                                post.user.username,
                                 post.likeCnt,
                                 post.createdAt,
                                 post.modifiedAt
@@ -94,9 +94,10 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
     @Override
     public Optional<Post> findByIdWithImages(Long clubId, Long postId) {
         return Optional.ofNullable(jpaQueryFactory.select(post)
-                .leftJoin(postImage)
-                .where(post.id.eq(postId)
-                        .and(post.club.id.eq(clubId)))
+                .from(post)
+                .leftJoin(post.imageSet, postImage).fetchJoin()
+                .join(post.user).fetchJoin()
+                .where(post.id.eq(postId))
                 .fetchOne());
     }
 

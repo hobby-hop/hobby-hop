@@ -16,5 +16,7 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
     @Query("select p from Post p where p.id = :postId")
     Optional<Post> findByIdWithOptimisticLock(@Param("postId")Long postId);
 
+
+
     Optional<Post> findByIdAndClub_Id(Long id, Long clubId);
 }

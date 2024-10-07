@@ -10,6 +10,7 @@ import java.util.Optional;
 
 public interface PostRepositoryCustom {
     Page<PostPageResponseDTO> findAllByClubId(PostPageRequestDTO pageRequestDTO, Long clubId);
+
     Optional<Post> findByIdWithImages(Long clubId, Long postId);
 
     void deleteAllElement(Long postId);

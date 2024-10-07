@@ -109,7 +109,5 @@ public class Post extends BaseEntity {
             postImage.changePost(null);
             this.imageSet.clear();
         });
-
     }
-
 }

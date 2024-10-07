@@ -6,8 +6,6 @@ import com.hobbyhop.domain.clubmember.service.ClubMemberService;
 import com.hobbyhop.domain.post.dto.*;
 import com.hobbyhop.domain.post.entity.Post;
 import com.hobbyhop.domain.post.repository.PostRepository;
-import com.hobbyhop.domain.postimage.dto.PostImageDTO;
-import com.hobbyhop.domain.postimage.repository.PostImageRepository;
 import com.hobbyhop.domain.postimage.service.S3Service;
 import com.hobbyhop.domain.post.service.PostService;
 import com.hobbyhop.domain.postuser.entity.PostUser;
@@ -18,9 +16,7 @@ import com.hobbyhop.global.exception.post.PostNotCorrespondUser;
 import com.hobbyhop.global.exception.post.PostNotFoundException;
 import com.hobbyhop.global.response.PageResponseDTO;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
@@ -32,7 +28,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
-@Log4j2
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final PostUserService postUserService;
@@ -118,7 +113,6 @@ public class PostServiceImpl implements PostService {
                 .map(image -> image.getUuid() + image.getFileName())
                 .collect(Collectors.toList());
 
-        // 게시글 삭제 완료시 이미지 파일을 삭제하는 요청을 보낸다.
         postRepository.deleteAllElement(postId);
         removeFiles(savedFileNames);
     }
@@ -130,7 +124,8 @@ public class PostServiceImpl implements PostService {
             throw new ClubMemberNotFoundException();
         }
 
-        Post post = postRepository.findByIdWithOptimisticLock(postId).orElseThrow(PostNotFoundException::new);
+        Post post = postRepository.findByIdWithOptimisticLock(postId)
+                .orElseThrow(PostNotFoundException::new);
 
         return postUserService.togglePostUser(user, post);
     }
