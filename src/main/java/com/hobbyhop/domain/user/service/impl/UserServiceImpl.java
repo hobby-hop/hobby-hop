@@ -56,10 +56,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         String accessToken = httpServletRequest.getHeader(AUTHORIZATION_HEADER);
-        processToken(accessToken);
-
-        String responseHeaderAccessToken = httpServletResponse.getHeader(AUTHORIZATION_HEADER);
-        processToken(responseHeaderAccessToken);
+        removeToken(accessToken);
 
         httpServletResponse.setHeader(AUTHORIZATION_HEADER, "logged-out");
     }
@@ -68,9 +65,6 @@ public class UserServiceImpl implements UserService {
     public void withdraw(WithdrawalRequestDTO withdrawalRequestDTO, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         String accessToken = httpServletRequest.getHeader(AUTHORIZATION_HEADER);
 
-        if (accessToken == null || !jwtUtil.validateToken(accessToken.substring(7))) {
-            throw new InvalidJwtException();
-        }
         Claims claims = jwtUtil.getUserInfo(accessToken.substring(7));
         String username = claims.getSubject();
 
@@ -78,8 +72,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(NotFoundUserException::new);
         validatePassword(user, withdrawalRequestDTO.getPassword());
 
-        jwtUtil.removeAccessToken(accessToken);
-        jwtUtil.removeRefreshToken(accessToken);
+        removeToken(accessToken);
         userRepository.delete(user);
 
         httpServletResponse.setHeader(AUTHORIZATION_HEADER, "withdrawal");
@@ -115,7 +108,6 @@ public class UserServiceImpl implements UserService {
 
         updateAccessToken(httpServletRequest, httpServletResponse, user);
     }
-
 
 
     private void validatePassword(User user, String password) {
@@ -166,11 +158,9 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private void processToken(String token) {
-        if (token != null && jwtUtil.validateToken(token.substring(7))) {
-            jwtUtil.removeAccessToken(token);
-            jwtUtil.removeRefreshToken(token);
-        }
+    private void removeToken(String token) {
+        jwtUtil.removeAccessToken(token);
+        jwtUtil.removeRefreshToken(token);
     }
 
     private void validateNewPassword(String oldPassword, String newPassword, String confirmPassword) {

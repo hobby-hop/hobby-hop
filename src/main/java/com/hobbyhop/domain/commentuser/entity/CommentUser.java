@@ -27,20 +27,12 @@ public class CommentUser extends BaseEntity {
     @EmbeddedId
     private CommentUserPK commentUserPK;
 
-    @Column(nullable = false)
-    private Boolean isLiked;
-
     public static CommentUser buildCommentUser(Comment comment, User user) {
         return CommentUser.builder()
                 .commentUserPK(CommentUserPK.builder()
                         .user(user)
                         .comment(comment)
                         .build())
-                .isLiked(false)
                 .build();
-    }
-    public Boolean updateLike() {
-        this.isLiked = !isLiked;
-        return this.isLiked;
     }
 }

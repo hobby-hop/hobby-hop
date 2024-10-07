@@ -1,11 +1,10 @@
 package com.hobbyhop.domain.joinrequest.dto;
 
 import com.hobbyhop.domain.joinrequest.enums.JoinRequestStatus;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class JoinRequestDTO {

@@ -1,6 +1,7 @@
 package com.hobbyhop.domain.category.entity;
 
 import com.hobbyhop.domain.BaseEntity;
+import com.hobbyhop.domain.category.dto.CategoryRequestDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
@@ -27,4 +28,11 @@ public class Category extends BaseEntity {
 
     @Column(name = "deleted_at")
     private Timestamp deletedAt;
+
+    public static Category buildCategory(CategoryRequestDTO categoryRequestDTO) {
+        return Category.builder()
+                .categoryName(categoryRequestDTO.getCategoryName())
+                .description(categoryRequestDTO.getDescription())
+                .build();
+    }
 }

@@ -24,7 +24,7 @@ public class JwtUtil {
     private final RedisTemplate<String, String> redisTemplate;
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String BEARER_PREFIX = "Bearer ";
-    private static final long ACCESS_TOKEN_TIME = 24 * 60 * 60 * 1000L;
+    private static final long ACCESS_TOKEN_TIME = 60 * 60 * 1000L;
     private static final long REFRESH_TOKEN_TIME = 30 * 24 * 60 * 60 * 1000L;
     @Value("${jwt.secret.key}")
     private String secretKey;
@@ -49,14 +49,14 @@ public class JwtUtil {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
-        } catch (SecurityException | MalformedJwtException e) {
-            throw new InvalidJwtSignatureException();
+        } catch (MalformedJwtException e) {
+            throw new InvalidJwtException();
         } catch (ExpiredJwtException e) {
             throw new ExpiredJwtTokenException();
         } catch (UnsupportedJwtException e) {
             throw new UnsupportedJwtTokenException();
-        } catch (IllegalArgumentException e) {
-            throw new InvalidJwtException();
+        } catch (SignatureException e) {
+            throw new InvalidJwtSignatureException();
         }
     }
 
@@ -81,22 +81,22 @@ public class JwtUtil {
         redisTemplate.opsForValue().set(accessToken, refreshToken, REFRESH_TOKEN_TIME, TimeUnit.MILLISECONDS);
     }
 
-    public boolean shouldAccessTokenBeRefreshed(String accessTokenValue) {
+    public boolean shouldAccessTokenByRefreshed(String accessTokenValue) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessTokenValue);
             return false;
-        } catch (SecurityException | MalformedJwtException e) {
-            throw new InvalidJwtSignatureException();
+        } catch (MalformedJwtException e) {
+            throw new InvalidJwtException();
         } catch (ExpiredJwtException e) {
-            throw new ExpiredJwtTokenException();
+            return true;
         } catch (UnsupportedJwtException e) {
             throw new UnsupportedJwtTokenException();
-        } catch (IllegalArgumentException e) {
-            throw new InvalidJwtException();
+        } catch (SignatureException e) {
+            throw new InvalidJwtSignatureException();
         }
     }
 
-    public String getRefreshtokenByAccessToken(String accessToken) {
+    public String getRefreshTokenByAccessToken(String accessToken) {
         return redisTemplate.opsForValue().get(accessToken);
     }
 
@@ -123,15 +123,6 @@ public class JwtUtil {
                 expirationTime, TimeUnit.MILLISECONDS);
 
         redisTemplate.delete(accessToken);
-    }
-
-    public boolean checkIsLoggedOut(String accessToken) {
-        return !redisTemplate.hasKey(accessToken);
-    }
-
-    public String createExpiredToken(String accessToken) {
-        String username = getUserInfo(accessToken.substring(7)).getSubject();
-        return createToken(username, 0);
     }
 
     public void removeRefreshToken(String accessToken) {

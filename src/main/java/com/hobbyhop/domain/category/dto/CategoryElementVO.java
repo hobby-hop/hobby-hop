@@ -10,7 +10,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class CategoryElementVO {
-    Long clubId;
-    Long postId;
-    Long commentId;
+    private Long clubId;
+    private Long postId;
+    private Long commentId;
 }

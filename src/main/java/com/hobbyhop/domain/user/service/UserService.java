@@ -15,6 +15,7 @@ public interface UserService {
     void updateProfile(UpdateProfileRequestDTO updateProfileRequestDTO, UserDetailsImpl userDetails, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest);
 
     ProfileResponseDTO getMyProfile(UserDetailsImpl userDetails);
+
     ProfileResponseDTO getOtherProfile(Long userId);
 
     void withdraw(WithdrawalRequestDTO withdrawalRequestDTO, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse);

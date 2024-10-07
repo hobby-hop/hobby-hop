@@ -13,21 +13,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
 
     @Override
     @Transactional
     public CategoryResponseDTO makeCategory(CategoryRequestDTO categoryRequestDTO) {
-        validateCategoryName(categoryRequestDTO.getCategoryName());
-        Category category = Category.builder()
-                .categoryName(categoryRequestDTO.getCategoryName())
-                .description(categoryRequestDTO.getDescription())
-                .build();
+        if (categoryRepository.existsByCategoryName(categoryRequestDTO.getCategoryName())) {
+            throw new AlreadyExistCategoryException();
+        }
 
-        Category savedCategory = categoryRepository.save(category);
-        return CategoryResponseDTO.fromEntity(savedCategory);
+        Category category = Category.buildCategory(categoryRequestDTO);
+
+        return CategoryResponseDTO.fromEntity(categoryRepository.save(category));
     }
 
     @Override
@@ -39,11 +37,5 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Category findCategory(Long categoryId) {
         return categoryRepository.findById(categoryId).orElseThrow(CategoryNotFoundException::new);
-    }
-
-    private void validateCategoryName(String categoryName) {
-        if (categoryRepository.existsByCategoryName(categoryName)) {
-            throw new AlreadyExistCategoryException();
-        }
     }
 }

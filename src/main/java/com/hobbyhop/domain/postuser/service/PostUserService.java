@@ -5,6 +5,6 @@ import com.hobbyhop.domain.postuser.entity.PostUser;
 import com.hobbyhop.domain.user.entity.User;
 
 public interface PostUserService {
-    Long makePostUser(User user, Post post);
+    Long togglePostUser(User user, Post post);
     PostUser findPostUser(User user, Post post);
 }

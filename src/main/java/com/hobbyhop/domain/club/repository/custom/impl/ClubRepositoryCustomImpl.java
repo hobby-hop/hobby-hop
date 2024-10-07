@@ -14,8 +14,13 @@ import com.hobbyhop.domain.club.dto.ClubPageRequestDTO;
 import com.hobbyhop.domain.club.dto.ClubResponseDTO;
 import com.hobbyhop.domain.club.entity.Club;
 import com.hobbyhop.domain.club.repository.custom.ClubRepositoryCustom;
+import com.hobbyhop.domain.post.entity.Post;
+import com.hobbyhop.domain.post.entity.QPost;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -24,24 +29,23 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
 import java.util.List;
 
-public class ClubRepositoryCustomImpl extends QuerydslRepositorySupport implements ClubRepositoryCustom {
+@RequiredArgsConstructor
+public class ClubRepositoryCustomImpl implements ClubRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
-
-    public ClubRepositoryCustomImpl(JPAQueryFactory jpaQueryFactory) {
-        super(Club.class);
-        this.jpaQueryFactory = jpaQueryFactory;
-    }
 
     @Override
     public Page<ClubResponseDTO> findAll(ClubPageRequestDTO pageRequestDTO) {
-        JPAQuery<ClubResponseDTO> query= jpaQueryFactory
+        Pageable pageable = pageRequestDTO.getPageable(pageRequestDTO.getSortBy());
+        List<ClubResponseDTO> content= jpaQueryFactory
                 .select(
                         Projections.constructor(
                                 ClubResponseDTO.class,
@@ -55,10 +59,12 @@ public class ClubRepositoryCustomImpl extends QuerydslRepositorySupport implemen
                         ))
                 .from(club)
                 .where(contains(club.title, pageRequestDTO.getKeyword()),
-                        eqCategory(pageRequestDTO.getCategoryId()));
+                        eqCategory(pageRequestDTO.getCategoryId()))
+                .limit(pageRequestDTO.getSize())
+                .offset(pageable.getOffset())
+                .orderBy(createOrderSpecifier(pageable))
+                .fetch();
 
-        Pageable pageable = pageRequestDTO.getPageable(pageRequestDTO.getSortBy());
-        List<ClubResponseDTO> content = getQuerydsl().applyPagination(pageable, query).fetch();
         long totalCount = jpaQueryFactory
                 .select(club.count())
                 .from(club)
@@ -73,6 +79,7 @@ public class ClubRepositoryCustomImpl extends QuerydslRepositorySupport implemen
         if (searchWord == null || searchWord.isBlank()) {
             return null;
         }
+
         searchWord = searchWord.trim();
         if (searchWord.length() == 1) {
             return target.containsIgnoreCase(searchWord);
@@ -90,6 +97,18 @@ public class ClubRepositoryCustomImpl extends QuerydslRepositorySupport implemen
         }
         return club.category.id.eq(categoryId);
     }
+
+    private OrderSpecifier<?> createOrderSpecifier(Pageable pageable) {
+        if(!pageable.getSort().isSorted()) {
+            return null;
+        }
+
+        Sort.Order order = pageable.getSort().iterator().next();
+        PathBuilder pathBuilder = new PathBuilder(club.getType(), club.getMetadata());
+
+        return new OrderSpecifier(order.isAscending() ? Order.ASC: Order.DESC, pathBuilder.get(order.getProperty()));
+    }
+
 
     @Override
     public void deleteAllElement(Long clubId) {

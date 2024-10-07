@@ -12,7 +12,6 @@ import java.util.List;
 public interface JoinRequestService {
 
     JoinResponseDTO sendRequest(Long clubId, User user);
-    List<JoinResponseDTO> getRequestByClub(Long ClubId, User user);
     void processRequest(Long clubId, Long requestId, JoinRequestStatus status, User user);
     PageResponseDTO<JoinResponseDTO> getAllRequests(Long clubId, JoinPageRequestDTO pageRequestDTO, User user);
 }

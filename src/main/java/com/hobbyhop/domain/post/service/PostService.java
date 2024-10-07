@@ -11,13 +11,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 public interface PostService {
-    Post findPost(Long postId);
+    Post findPost(Long postId, Long clubId);
 
-    PostResponseDTO makePost(User user, Long clubId, PostRequestDTO postRequestDTO);
+    PostResponseDTO writePost(PostRequestDTO postRequestDTO, Long clubId, User user);
 
-    void imageUploadPost(User user, Long clubId, Long postId, MultipartFile file) throws IOException;
-
-    PostDetailResponseDTO getPostById(User user, Long clubId, Long postId);
+    PostDetailResponseDTO getPostById(Long clubId, Long postId, User user);
 
     PageResponseDTO<PostPageResponseDTO> getAllPost(PostPageRequestDTO pageRequestDTO, Long clubId);
 

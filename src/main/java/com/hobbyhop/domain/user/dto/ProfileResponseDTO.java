@@ -3,8 +3,10 @@ package com.hobbyhop.domain.user.dto;
 import com.hobbyhop.domain.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 @Builder
 public class ProfileResponseDTO {
     private String username;

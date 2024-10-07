@@ -6,7 +6,7 @@ import com.hobbyhop.domain.clubmember.service.ClubMemberService;
 import com.hobbyhop.domain.post.dto.*;
 import com.hobbyhop.domain.post.entity.Post;
 import com.hobbyhop.domain.post.repository.PostRepository;
-import com.hobbyhop.domain.post.s3.S3Service;
+import com.hobbyhop.domain.postimage.service.S3Service;
 import com.hobbyhop.domain.post.service.PostService;
 import com.hobbyhop.domain.postuser.entity.PostUser;
 import com.hobbyhop.domain.postuser.service.PostUserService;
@@ -15,8 +15,12 @@ import com.hobbyhop.global.exception.clubmember.ClubMemberNotFoundException;
 import com.hobbyhop.global.exception.post.PostNotCorrespondUser;
 import com.hobbyhop.global.exception.post.PostNotFoundException;
 import com.hobbyhop.global.response.PageResponseDTO;
-import java.util.UUID;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,24 +29,26 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
-    private final ClubService clubService;
-    private final PostUserService postUserService;
     private final PostRepository postRepository;
+    private final PostUserService postUserService;
     private final S3Service s3Service;
     private final ClubMemberService clubMemberService;
+    private final ClubService clubService;
 
     @Override
-    public Post findPost(Long postId) {
-        return postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+    public Post findPost(Long clubId, Long postId) {
+        return postRepository.findByIdAndClub_Id(postId, clubId).orElseThrow(PostNotFoundException::new);
     }
 
     @Override
     @Transactional
-    public PostResponseDTO makePost(User user, Long clubId, PostRequestDTO postRequestDTO) {
-        if(!clubMemberService.isClubMember(clubId, user.getId()))
+    public PostResponseDTO writePost(PostRequestDTO postRequestDTO, Long clubId, User user) {
+        if (!clubMemberService.isClubMember(clubId, user.getId())) {
             throw new ClubMemberNotFoundException();
+        }
 
         Club club = clubService.findClub(clubId);
+
         Post post = Post.buildPost(postRequestDTO, club, user);
         postRepository.save(post);
 
@@ -50,45 +56,16 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    @Transactional
-    public void imageUploadPost(User user, Long clubId, Long postId, MultipartFile file) {
-        if(!clubMemberService.isClubMember(clubId, user.getId()))
+    public PostDetailResponseDTO getPostById(Long clubId, Long postId, User user) {
+        if (!clubMemberService.isClubMember(clubId, user.getId())) {
             throw new ClubMemberNotFoundException();
-
-        Post post = findAndCheckPostAndClub(clubId, postId);
-        if(!post.getUser().getId().equals(user.getId()))
-            throw new PostNotCorrespondUser();
-
-        String originFilename = s3Service.saveFile(file);
-        String savedFilename = UUID.randomUUID() + "_" + originFilename;
-
-        post.changeImageUrl(originFilename, savedFilename);
-    }
-
-    @Override
-    public PostDetailResponseDTO getPostById(User user, Long clubId, Long postId) {
-        if(!clubMemberService.isClubMember(clubId, user.getId()))
-            throw new ClubMemberNotFoundException();
-
-        Post post = findAndCheckPostAndClub(clubId, postId);
-        PostUser postUser = postUserService.findPostUser(user, post);
-        boolean isLiked = false;
-        if(postUser != null) {
-            isLiked = postUser.getIsLiked();
         }
+
+        Post post = postRepository.findByIdWithImages(clubId, postId).orElseThrow(PostNotFoundException::new);
+        PostUser postUser = postUserService.findPostUser(user, post);
+        boolean isLiked = postUser != null;
 
         return PostDetailResponseDTO.fromEntity(post, isLiked);
-    }
-
-    private Post findAndCheckPostAndClub(Long clubId, Long postId){
-        Club club = clubService.findClub(clubId);
-        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
-
-        if(!club.getId().equals(post.getClub().getId())){
-            throw new PostNotCorrespondUser();
-        }
-
-        return post;
     }
 
     @Override
@@ -105,53 +82,72 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public PostResponseDTO modifyPost(User user, Long clubId, Long postId, MultipartFile file, PostModifyRequestDTO postModifyRequestDTO) {
-        if(!clubMemberService.isClubMember(clubId, user.getId()))
+        if (!clubMemberService.isClubMember(clubId, user.getId())) {
             throw new ClubMemberNotFoundException();
+        }
 
-        Post post = findAndCheckPostAndClub(clubId, postId);
-        if(!post.getUser().getId().equals(user.getId()))
+        Post post = findPost(clubId, postId);
+        if (!post.getUser().getId().equals(user.getId())) {
             throw new PostNotCorrespondUser();
+        }
 
-        applyChanges(post, postModifyRequestDTO, file);
+        post.clearImages();
+        applyChanges(post, postModifyRequestDTO);
 
         return PostResponseDTO.fromEntity(post);
     }
 
     @Override
     @Transactional
-    public void deletePost(User user, Long clubId, Long postId){
-        if(!clubMemberService.isClubMember(clubId, user.getId()))
+    public void deletePost(User user, Long clubId, Long postId) {
+        if (!clubMemberService.isClubMember(clubId, user.getId())) {
             throw new ClubMemberNotFoundException();
+        }
 
-        Post post = findAndCheckPostAndClub(clubId, postId);
-        if(!post.getUser().getId().equals(user.getId()))
+        Post post = findPost(clubId, postId);
+        if (!post.getUser().getId().equals(user.getId())) {
             throw new PostNotCorrespondUser();
+        }
+
+        List<String> savedFileNames = post.getImageSet().stream()
+                .map(image -> image.getUuid() + image.getFileName())
+                .collect(Collectors.toList());
 
         postRepository.deleteAllElement(postId);
+        removeFiles(savedFileNames);
     }
 
     @Override
     @Transactional
-    public Long likePost(User user, Long clubId, Long postId){
-        Post post = findAndCheckPostAndClub(clubId, postId);
-        return postUserService.makePostUser(user, post);
-    }
-    private void applyChanges(Post post, PostModifyRequestDTO postModifyRequestDTO, MultipartFile file) {
-        String originFilename = null;
-        String savedFilename = null;
-
-        if(file != null && !file.isEmpty()){
-            originFilename = s3Service.saveFile(file);
-            savedFilename = UUID.randomUUID() + "_" + originFilename;
+    public Long likePost(User user, Long clubId, Long postId) {
+        if(!clubMemberService.isClubMember(clubId, user.getId())) {
+            throw new ClubMemberNotFoundException();
         }
-        if(postModifyRequestDTO.getTitle() != null) {
+
+        Post post = postRepository.findByIdWithOptimisticLock(postId)
+                .orElseThrow(PostNotFoundException::new);
+
+        return postUserService.togglePostUser(user, post);
+    }
+
+    private void applyChanges(Post post, PostModifyRequestDTO postModifyRequestDTO) {
+        if (postModifyRequestDTO.getTitle() != null) {
             post.changeTitle(postModifyRequestDTO.getTitle());
         }
-        if(postModifyRequestDTO.getContent() != null) {
+        if (postModifyRequestDTO.getContent() != null) {
             post.changeContent(postModifyRequestDTO.getContent());
         }
-        if(originFilename != null) {
-            post.changeImageUrl(originFilename, savedFilename);
+        if (postModifyRequestDTO.getPostImages() != null) {
+            postModifyRequestDTO.getPostImages().forEach(postImage -> {
+                String[] arr = postImage.getSavedFileName().split("_");
+                post.addImage(arr[0], arr[1], postImage.getSavedFileUrl());
+            });
+        }
+    }
+
+    public void removeFiles(List<String> files) {
+        for (String savedFileName : files) {
+            s3Service.deleteImage(savedFileName);
         }
     }
 }

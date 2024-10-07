@@ -33,7 +33,6 @@ import static org.mockito.Mockito.verify;
 class ClubMemberServiceImplTest implements ClubTest {
     @InjectMocks
     private ClubMemberServiceImpl sut;
-
     @Mock
     private ClubMemberRepository clubMemberRepository;
     private ClubMember clubMember;
