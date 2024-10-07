@@ -7,6 +7,8 @@ import com.hobbyhop.domain.comment.entity.Comment;
 import com.hobbyhop.domain.user.entity.User;
 import com.hobbyhop.global.response.PageResponseDTO;
 
+import java.util.List;
+
 public interface CommentService {
     CommentResponseDTO writeComment(CommentRequestDTO request, Long clubId, Long postId, User user);
 
@@ -16,8 +18,9 @@ public interface CommentService {
 
     void deleteComment(Long clubId, Long postId, Long commentId, User user);
 
-    PageResponseDTO<CommentResponseDTO> getComments(CommentPageRequestDTO pageRequestDTO, Long postId, Long commentId);
+    List<CommentResponseDTO> getComments(Long clubId, Long postId, User user);
+
     Comment findById(Long clubId, Long postId, Long commentId);
 
-    void likeComment(Long clubId, Long postId, Long commentId, User user);
+    Long likeComment(Long clubId, Long postId, Long commentId, User user);
 }

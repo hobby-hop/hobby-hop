@@ -116,7 +116,6 @@ public class WebSecurityConfig {
 
     private AuthenticationEntryPoint errorPoint() {
         return (request, response, authException) -> {
-            authException.printStackTrace();
             ApiResponse apiResponse = ApiResponse.of(HttpStatus.BAD_REQUEST, "유효한 토큰이 아닙니다. 혹은 url을 다시 확인하세요.");
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.setContentType("application/json; charset=UTF-8");

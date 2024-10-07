@@ -14,8 +14,8 @@ import lombok.*;
 public class PostPageResponseDTO {
     private Long clubId;
     private Long postId;
-    private String writer;
     private String title;
+    private String writer;
     private Long likeCnt;
     private Timestamp createdAt;
     private Timestamp modifiedAt;

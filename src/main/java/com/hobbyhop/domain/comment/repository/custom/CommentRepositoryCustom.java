@@ -12,7 +12,7 @@ import org.springframework.data.domain.Page;
 public interface CommentRepositoryCustom {
     Optional<Comment> findById(Long clubId, Long postId, Long commentId);
 
-    Page<CommentResponseDTO> findAllByPostId(CommentPageRequestDTO pageRequestDTO, Long postId, Long parent);
+    List<CommentResponseDTO> findAllByPostId(Long postId, Long userId);
 
     void deleteList(List<Comment> list);
 }

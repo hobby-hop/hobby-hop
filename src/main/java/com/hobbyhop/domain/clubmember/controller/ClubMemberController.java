@@ -19,8 +19,8 @@ public class ClubMemberController {
     @Operation(summary = "모임의 관리자인지 체크")
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/adminstatus")
-    public ApiResponse<?> checkPermission(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                          @PathVariable("clubId") Long clubId) {
+    public ApiResponse<?> checkAdminPermission(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                               @PathVariable("clubId") Long clubId) {
         return ApiResponse.ok(clubMemberService.isAdminMember(clubId, userDetails.getUser().getId()));
     }
 

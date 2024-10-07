@@ -1,7 +1,7 @@
 package com.hobbyhop.domain.comment.controller;
 
-import com.hobbyhop.domain.comment.dto.CommentPageRequestDTO;
 import com.hobbyhop.domain.comment.dto.CommentRequestDTO;
+import com.hobbyhop.domain.comment.facade.OptimisticLockCommentLikeFacade;
 import com.hobbyhop.domain.comment.service.CommentService;
 import com.hobbyhop.global.response.ApiResponse;
 import com.hobbyhop.global.security.userdetails.UserDetailsImpl;
@@ -25,6 +25,15 @@ import org.springframework.web.bind.annotation.RestController;
 @SecurityRequirement(name = "Bearer Authentication")
 public class CommentController {
     private final CommentService commentService;
+    private final OptimisticLockCommentLikeFacade ocf;
+
+    @Operation(summary = "댓글 조회")
+    @GetMapping
+    public ApiResponse<?> getComments(@PathVariable("clubId") Long clubId,
+                                      @PathVariable("postId") Long postId,
+                                      @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return ApiResponse.ok(commentService.getComments(clubId, postId, userDetails.getUser()));
+    }
 
     @Operation(summary = "댓글 작성")
     @PostMapping
@@ -43,23 +52,6 @@ public class CommentController {
                                       @PathVariable("commentId") Long commentId,
                                       @AuthenticationPrincipal UserDetailsImpl userDetails){
         return ApiResponse.ok(commentService.writeReply(request, clubId, postId, commentId, userDetails.getUser()));
-    }
-
-    @Operation(summary = "댓글 조회")
-    @GetMapping
-    public ApiResponse<?> getComments(CommentPageRequestDTO pageRequestDTO,
-                                      @PathVariable("clubId") Long clubId,
-                                      @PathVariable("postId") Long postId){
-        return ApiResponse.ok(commentService.getComments(pageRequestDTO, postId, null));
-    }
-
-    @Operation(summary = "대댓글 조회")
-    @GetMapping("/{commentId}")
-    public ApiResponse<?> getComments(CommentPageRequestDTO pageRequestDTO,
-                                      @PathVariable("clubId") Long clubId,
-                                      @PathVariable("postId") Long postId,
-                                      @PathVariable("commentId") Long commentId){
-        return ApiResponse.ok(commentService.getComments(pageRequestDTO, postId, commentId));
     }
 
     @Operation(summary = "댓글 수정")
@@ -90,9 +82,7 @@ public class CommentController {
     public ApiResponse<?> likeComment(@PathVariable("clubId") Long clubId,
                                       @PathVariable("postId") Long postId,
                                       @PathVariable("commentId") Long commentId,
-                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        commentService.likeComment(clubId, postId, commentId, userDetails.getUser());
-
-        return ApiResponse.ok("좋아요 변경 성공");
+                                      @AuthenticationPrincipal UserDetailsImpl userDetails) throws InterruptedException {
+        return ApiResponse.ok(ocf.likeComment(clubId, postId, commentId, userDetails.getUser()));
     }
 }

@@ -17,7 +17,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Objects;
 
 @Slf4j(topic = "JWT 검증 및 인가")
 @RequiredArgsConstructor
@@ -28,23 +27,18 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String accessToken = jwtUtil.getJwtFromHeader(request);
-
-        if (Objects.nonNull(accessToken)) {
-            if (jwtUtil.checkIsLoggedOut(accessToken)) {
-                accessToken = jwtUtil.createExpiredToken(accessToken);
-            }
-
+        if (accessToken != null) {
             String accessTokenValue = accessToken.substring(7);
 
-            if (jwtUtil.shouldAccessTokenBeRefreshed(accessToken.substring(7))) {
-                String refreshTokenValue = jwtUtil.getRefreshtokenByAccessToken(accessToken).substring(7);
+            if (jwtUtil.shouldAccessTokenByRefreshed(accessToken.substring(7))) {
+                String refreshTokenValue = jwtUtil.getRefreshTokenByAccessToken(accessToken).substring(7);
+
                 if (jwtUtil.validateToken(refreshTokenValue)) {
                     String newAccessToken = jwtUtil.createAccessTokenByRefreshToken(refreshTokenValue);
-                    response.setHeader(JwtUtil.AUTHORIZATION_HEADER, newAccessToken);
-
                     jwtUtil.regenerateToken(newAccessToken, accessToken, refreshTokenValue);
-
                     accessTokenValue = newAccessToken.substring(7);
+
+                    response.setHeader(JwtUtil.AUTHORIZATION_HEADER, newAccessToken);
                 }
             }
 
@@ -55,6 +49,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "유효한 토큰이 아닙니다.");
                 return;
             }
+
             Claims info = jwtUtil.getUserInfo(accessTokenValue);
             String username = info.getSubject();
             setAuthentication(username);

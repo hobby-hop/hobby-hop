@@ -1,8 +1,10 @@
 package com.hobbyhop.domain.commentuser.service;
 
 import com.hobbyhop.domain.comment.entity.Comment;
+import com.hobbyhop.domain.commentuser.entity.CommentUser;
 import com.hobbyhop.domain.user.entity.User;
 
 public interface CommentUserService {
-    void modifyCommentUser(Comment comment, User user);
+    Long toggleCommentUser(Comment comment, User user);
+    CommentUser findCommentUser(Long commentId, Long userId);
 }

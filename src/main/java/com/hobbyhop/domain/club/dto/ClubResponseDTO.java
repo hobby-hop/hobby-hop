@@ -1,17 +1,15 @@
 package com.hobbyhop.domain.club.dto;
 
 import com.hobbyhop.domain.club.entity.Club;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.sql.Timestamp;
 
-@Data
+@Getter
+@Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class ClubResponseDTO {
     private Long id;
     private String title;

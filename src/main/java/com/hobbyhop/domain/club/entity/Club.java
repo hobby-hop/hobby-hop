@@ -2,6 +2,7 @@ package com.hobbyhop.domain.club.entity;
 
 import com.hobbyhop.domain.BaseEntity;
 import com.hobbyhop.domain.category.entity.Category;
+import com.hobbyhop.domain.club.dto.ClubRequestDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
@@ -43,5 +44,12 @@ public class Club extends BaseEntity {
 
     public void changeCategory(Category category) {
         this.category = category;
+    }
+
+    public static Club buildClub(ClubRequestDTO clubRequestDTO, Category category) {
+        return Club.builder()
+                .title(clubRequestDTO.getTitle())
+                .content(clubRequestDTO.getContent())
+                .category(category).build();
     }
 }

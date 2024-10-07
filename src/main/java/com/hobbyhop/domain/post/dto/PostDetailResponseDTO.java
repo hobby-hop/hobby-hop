@@ -1,9 +1,12 @@
 package com.hobbyhop.domain.post.dto;
 
 import com.hobbyhop.domain.post.entity.Post;
+import com.hobbyhop.domain.postimage.dto.PostImageDTO;
 import lombok.*;
 
 import java.sql.Timestamp;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -16,6 +19,7 @@ public class PostDetailResponseDTO {
     private String writer;
     private String title;
     private String content;
+    private List<PostImageDTO> postImages;
     private String originImageUrl;
     private String savedImageUrl;
     private Long likeCnt;
@@ -30,8 +34,7 @@ public class PostDetailResponseDTO {
                 .writer(savedPost.getUser().getUsername())
                 .title(savedPost.getTitle())
                 .content(savedPost.getContent())
-                .originImageUrl(savedPost.getOriginImageUrl())
-                .savedImageUrl(savedPost.getSavedImageUrl())
+                .postImages(PostImageDTO.fromEntity(savedPost.getImageSet()))
                 .likeCnt(savedPost.getLikeCnt())
                 .isLiked(isLiked)
                 .createdAt(savedPost.getCreatedAt())
