@@ -49,19 +49,14 @@ Hobby Hop은 사용자들이 자신의 취미를 등록하고 다양한 형식�
 
   
 ## 🐇 팀 소개 및 역할 분담
-- **권준혁** : 리더   - 그룹, 배포, 프론트
-- **홍효정** : 부리더 - 댓글, 성능 개선, 코드 퀄리티 개선 및 컨벤션 점검
-- **김한준** : 팀원   - 게시글, 배포, 성능테스트, CI/CD
-- **송지헌** : 팀원   - 와이어 프레임, 대댓글, 프론트 구조 제작
-- **정유진** : 팀원   - ERD 설계, 유저, 시큐리티, 배포
 
-이름 | 역할 | Github | 블로그 
---|--|--|--
-권준혁 | 팀장 | [https://github.com/jh10253267](https://github.com/jh10253267) | [https://github.com/jh10253267/TIL](https://github.com/jh10253267/TIL)
-홍효정 | 부팀장 | [https://github.com/dearel4416](https://github.com/dearel4416) | [https://javach1p.tistory.com/](https://javach1p.tistory.com/)
-김한준 | 팀원 | [https://github.com/wkdehf217](https://github.com/wkdehf217) | [https://velog.io/@wkdehf217/posts](https://velog.io/@wkdehf217/posts)
-송지헌 | 팀원 | 공사중 | [https://github.com/pepsisong](https://github.com/pepsisong)
-정유진 | 팀원 | [https://github.com/kkamjjing2](https://github.com/kkamjjing2) | [https://kkamjjing.tistory.com/](https://kkamjjing.tistory.com/)
+이름 | 역할 | Github | 블로그 | 파트
+--|--|--|--|--
+권준혁 | 팀장 | [https://github.com/jh10253267](https://github.com/jh10253267) | [https://github.com/jh10253267/TIL](https://github.com/jh10253267/TIL) | 그룹, 배포, 프론트
+홍효정 | 부팀장 | [https://github.com/dearel4416](https://github.com/dearel4416) | [https://javach1p.tistory.com/](https://javach1p.tistory.com/) | 댓글, 성능 개선, 코드 퀄리티 개선 및 컨벤션 점검
+김한준 | 팀원 | [https://github.com/wkdehf217](https://github.com/wkdehf217) | [https://velog.io/@wkdehf217/posts](https://velog.io/@wkdehf217/posts) | 게시글, 배포, CI/CD
+송지헌 | 팀원 | 공사중 | [https://github.com/pepsisong](https://github.com/pepsisong) | 와이어 프레임, 대댓글, 프론트 구조 제작
+정유진 | 팀원 | [https://github.com/kkamjjing2](https://github.com/kkamjjing2) | [https://kkamjjing.tistory.com/](https://kkamjjing.tistory.com/) |  ERD 설계, 유저, 시큐리티, 배포
 
 
 ---
@@ -81,16 +76,13 @@ Hobby Hop은 사용자들이 자신의 취미를 등록하고 다양한 형식�
 - **Server** : AWS EC2, AWS S3
 - **DataBase** : AWS RDS, H2, JPQL, MySQL, Redis 7.2.4
 - **Container distribution** : Docker
-- **아이디어 회의** : Slack, Zep, Notion
-
 
 ---
 
 
 ## 🐇 프로젝트 아키텍처
 
-![image](https://github.com/hobby-hop/hobby-hop/assets/45251507/8b773287-95aa-4088-bc2b-3b664285f79c)
-
+![hobby-hob](https://github.com/hobby-hop/hobby-hop/assets/108499717/b8923cfc-a720-464a-b0e3-6ebccb22bf36)
 
 
 ---
@@ -104,7 +96,7 @@ Hobby Hop은 사용자들이 자신의 취미를 등록하고 다양한 형식�
 
 
 ## 🐇 ERD
-![image](https://github.com/hobby-hop/hobby-hop/assets/148298032/0ab02635-06e5-4f11-8d08-eea68875a1ba)
+![diagram](https://github.com/user-attachments/assets/31a9e1c0-f6bb-43d4-b09e-80f0d29d2fe7)
 
 
 ---
@@ -113,15 +105,25 @@ Hobby Hop은 사용자들이 자신의 취미를 등록하고 다양한 형식�
 ## 🐇 기술적 의사결정
 
 [Main DB 결정](https://github.com/hobby-hop/hobby-hop/wiki/AWS-Mysql-RDS-VS-%EB%B3%84%EB%8F%84%EC%9D%98-Mysql-EC2-%EC%9D%B8%EC%8A%A4%ED%84%B4%EC%8A%A4)  
-[Github Actions VS Jenkins](https://github.com/hobby-hop/hobby-hop/wiki/AWS-Mysql-RDS-VS-%EB%B3%84%EB%8F%84%EC%9D%98-Mysql-EC2-%EC%9D%B8%EC%8A%A4%ED%84%B4%EC%8A%A4)  
+[Github Actions VS Jenkins](https://github.com/hobby-hop/hobby-hop/wiki/Github-Actions-VS-Jenkins)  
 [복합키 사용](https://github.com/hobby-hop/hobby-hop/wiki/%EB%B3%B5%ED%95%A9%ED%82%A4-%EC%82%AC%EC%9A%A9)    
 [QueryDSL VS JPQL](https://github.com/hobby-hop/hobby-hop/wiki/QueryDSL-VS-JPQL)
 
 
 ---
 
-## 🐇 성과
+## 트러블슈팅
 
+[내가 속한 모임리스트 조회시 발생한 N+1 문제](https://github.com/hobby-hop/hobby-hop/wiki/%EB%82%B4%EA%B0%80-%EC%86%8D%ED%95%9C-%EB%AA%A8%EC%9E%84-%EC%A1%B0%ED%9A%8C-%EC%8B%9C-%EB%B0%9C%EC%83%9D%ED%95%9C-N-1%EB%AC%B8%EC%A0%9C)   
+[Comment Like 기능](https://github.com/hobby-hop/hobby-hop/wiki/Comment-Like-%EA%B8%B0%EB%8A%A5)  
+[모임 카테고리 자료형 Enum VS String](https://github.com/hobby-hop/hobby-hop/wiki/%EB%AA%A8%EC%9E%84-%EC%B9%B4%ED%85%8C%EA%B3%A0%EB%A6%AC-%EC%9E%90%EB%A3%8C%ED%98%95)  
+[게시글 번호 넘버링](https://github.com/hobby-hop/hobby-hop/wiki/%EA%B2%8C%EC%8B%9C%EA%B8%80-%EB%B2%88%ED%98%B8-%EB%84%98%EB%B2%84%EB%A7%81)  
+[좋아요 기능 동시성 문제](https://github.com/hobby-hop/hobby-hop/wiki/%EC%A2%8B%EC%95%84%EC%9A%94-%EA%B8%B0%EB%8A%A5-%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%9D%B4%EC%8A%88)  
+
+---
+
+## 🐇 성과
+[Full Text Search 적용](https://github.com/hobby-hop/hobby-hop/wiki/Full-Text-Search-%EC%A0%81%EC%9A%A9)  
 [CI 시간 단축](https://github.com/hobby-hop/hobby-hop/wiki/CI-%EC%8B%9C%EA%B0%84-%EB%8B%A8%EC%B6%95)
 
 ---
