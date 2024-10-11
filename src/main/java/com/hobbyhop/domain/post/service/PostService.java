@@ -19,8 +19,7 @@ public interface PostService {
 
     PageResponseDTO<PostPageResponseDTO> getAllPost(PostPageRequestDTO pageRequestDTO, Long clubId);
 
-    PostResponseDTO modifyPost(User user, Long clubId, Long postId,
-                               MultipartFile file, PostModifyRequestDTO postModifyRequestDTO)
+    PostResponseDTO modifyPost(User user, Long clubId, Long postId, PostModifyRequestDTO postModifyRequestDTO)
             throws IOException;
 
     void deletePost(User user, Long clubId, Long postId);

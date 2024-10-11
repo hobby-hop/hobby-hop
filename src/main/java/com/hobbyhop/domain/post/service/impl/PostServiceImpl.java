@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -81,7 +80,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public PostResponseDTO modifyPost(User user, Long clubId, Long postId, MultipartFile file, PostModifyRequestDTO postModifyRequestDTO) {
+    public PostResponseDTO modifyPost(User user, Long clubId, Long postId, PostModifyRequestDTO postModifyRequestDTO) {
         if (!clubMemberService.isClubMember(clubId, user.getId())) {
             throw new ClubMemberNotFoundException();
         }
