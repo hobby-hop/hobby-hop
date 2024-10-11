@@ -17,17 +17,12 @@ import java.sql.Timestamp;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE club_member SET deleted_at = NOW() where club_id=? and user_id=?")
-@SQLRestriction("deleted_at is NULL")
 public class ClubMember extends BaseEntity {
     @EmbeddedId
     private ClubMemberPK clubMemberPK;
 
     @Enumerated(EnumType.STRING)
     private MemberRole memberRole;
-
-    @Column(name = "deleted_at")
-    private Timestamp deletedAt;
 
     public static ClubMember buildClubMember(Club club, User user, MemberRole memberRole) {
         return ClubMember.builder()

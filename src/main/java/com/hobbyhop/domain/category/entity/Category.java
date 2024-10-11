@@ -14,8 +14,6 @@ import java.sql.Timestamp;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE category SET deleted_at = NOW() where id=?")
-@SQLRestriction("deleted_at is NULL")
 public class Category extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,9 +23,6 @@ public class Category extends BaseEntity {
     private String categoryName;
 
     private String description;
-
-    @Column(name = "deleted_at")
-    private Timestamp deletedAt;
 
     public static Category buildCategory(CategoryRequestDTO categoryRequestDTO) {
         return Category.builder()

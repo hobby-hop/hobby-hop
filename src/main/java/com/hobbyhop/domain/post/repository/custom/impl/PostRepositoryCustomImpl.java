@@ -109,14 +109,11 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 .where(comment.post.id.eq(postId))
                 .fetch().stream().distinct().toList();
 
-        Timestamp now = Timestamp.valueOf(LocalDateTime.now());
-
         jpaQueryFactory.delete(commentUser)
                 .where(commentUser.commentUserPK.comment.id.in(ids))
                 .execute();
 
-        jpaQueryFactory.update(comment)
-                .set(comment.deletedAt, now)
+        jpaQueryFactory.delete(comment)
                 .where(comment.id.in(ids))
                 .execute();
 
@@ -128,8 +125,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 .where(postImage.post.id.eq(postId))
                 .execute();
 
-        jpaQueryFactory.update(post)
-                .set(post.deletedAt, now)
+        jpaQueryFactory.delete(post)
                 .where(post.id.eq(postId))
                 .execute();
     }

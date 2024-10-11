@@ -16,8 +16,6 @@ import java.sql.Timestamp;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE join_request SET deleted_at = NOW() where id=?")
-@SQLRestriction("deleted_at is NULL")
 public class JoinRequest extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,9 +31,6 @@ public class JoinRequest extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private JoinRequestStatus status;
-
-    @Column(name="deleted_at")
-    private Timestamp deletedAt;
 
     public void changeStatus(JoinRequestStatus status) {
         this.status = status;

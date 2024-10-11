@@ -55,14 +55,11 @@ public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
             commentIds.add(id.getCommentId());
         });
 
-        Timestamp now = Timestamp.valueOf(LocalDateTime.now());
-
         jpaQueryFactory.delete(commentUser)
                 .where(commentUser.commentUserPK.comment.id.in(commentIds))
                 .execute();
 
-        jpaQueryFactory.update(comment)
-                .set(comment.deletedAt, now)
+        jpaQueryFactory.delete(comment)
                 .where(comment.id.in(commentIds))
                 .execute();
 
@@ -70,23 +67,19 @@ public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
                 .where(postUser.postUserPK.post.id.in(postIds))
                 .execute();
 
-        jpaQueryFactory.update(post)
-                .set(post.deletedAt, now)
+        jpaQueryFactory.delete(post)
                 .where(post.id.in(postIds))
                 .execute();
 
-        jpaQueryFactory.update(clubMember)
-                .set(clubMember.deletedAt, now)
+        jpaQueryFactory.delete(clubMember)
                 .where(clubMember.clubMemberPK.club.id.eq(clubId))
                 .execute();
 
-        jpaQueryFactory.update(club)
-                .set(club.deletedAt, now)
+        jpaQueryFactory.delete(club)
                 .where(club.id.eq(clubId))
                 .execute();
 
-        jpaQueryFactory.update(category)
-                .set(category.deletedAt, now)
+        jpaQueryFactory.delete(category)
                 .where(category.id.eq(categoryId))
                 .execute();
     }

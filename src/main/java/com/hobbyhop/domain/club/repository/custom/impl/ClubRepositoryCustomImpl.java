@@ -143,8 +143,7 @@ public class ClubRepositoryCustomImpl implements ClubRepositoryCustom {
                 .where(commentUser.commentUserPK.comment.id.in(commentIds))
                 .execute();
 
-        jpaQueryFactory.update(comment)
-                .set(comment.deletedAt, now)
+        jpaQueryFactory.delete(comment)
                 .where(comment.id.in(commentIds))
                 .execute();
 
@@ -152,18 +151,15 @@ public class ClubRepositoryCustomImpl implements ClubRepositoryCustom {
                 .where(postUser.postUserPK.post.id.in(postIds))
                 .execute();
 
-        jpaQueryFactory.update(post)
-                .set(post.deletedAt, now)
+        jpaQueryFactory.delete(post)
                 .where(post.id.in(postIds))
                 .execute();
 
-        jpaQueryFactory.update(clubMember)
-                .set(clubMember.deletedAt, now)
+        jpaQueryFactory.delete(clubMember)
                 .where(clubMember.clubMemberPK.club.id.eq(clubId))
                 .execute();
 
-        jpaQueryFactory.update(club)
-                .set(club.deletedAt, now)
+        jpaQueryFactory.delete(club)
                 .where(club.id.eq(clubId))
                 .execute();
     }
