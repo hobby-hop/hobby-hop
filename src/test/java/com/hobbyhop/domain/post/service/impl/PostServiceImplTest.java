@@ -15,6 +15,7 @@ import com.hobbyhop.domain.post.dto.PostPageResponseDTO;
 import com.hobbyhop.domain.post.dto.PostRequestDTO;
 import com.hobbyhop.domain.post.dto.PostResponseDTO;
 import com.hobbyhop.domain.post.repository.PostRepository;
+import com.hobbyhop.domain.postimage.dto.PostImageDTO;
 import com.hobbyhop.domain.postimage.service.S3Service;
 import com.hobbyhop.domain.postuser.repository.PostUserRepository;
 import com.hobbyhop.domain.postuser.service.impl.PostUserServiceImpl;
@@ -50,15 +51,9 @@ class PostServiceImplTest implements PostTest, UserTest, CategoryTest, ClubTest 
     @Mock
     private PostRepository postRepository;
     @Mock
-    private PostUserServiceImpl postUserService;
-    @Mock
-    private PostUserRepository postUserRepository;
-    @Mock
     private ClubServiceImpl clubServiceImpl;
     @Mock
     private ClubMemberServiceImpl clubMemberService;
-    @Mock
-    private S3Service s3Service;
 
     private PostRequestDTO postRequestDTO;
     private PostResponseDTO postResponseDTO;
@@ -77,6 +72,11 @@ class PostServiceImplTest implements PostTest, UserTest, CategoryTest, ClubTest 
         postModifyRequestDTO = PostModifyRequestDTO.builder()
                 .title(TEST_POST_TITLE)
                 .content(TEST_POST_CONTENT)
+                .postImages(List.of(PostImageDTO.builder()
+                        .fileName("test")
+                        .savedFileName("uuid_testtest")
+                        .savedFileUrl("testtest")
+                        .build()))
                 .build();
 
         postPageRequestDTO = PostPageRequestDTO.builder()
@@ -114,43 +114,32 @@ class PostServiceImplTest implements PostTest, UserTest, CategoryTest, ClubTest 
                 postResponseDTO.getContent());
     }
 
-//    @Test
-//    @DisplayName("게시글 수정 성공 테스트")
-//    void 게시글수정테스트() throws IOException {
-//        // Given
-//        given(clubMemberService.isClubMember(TEST_CLUB_ID, TEST_USER_ID)).willReturn(true);
-//        given(clubServiceImpl.findClub(TEST_CLUB_ID)).willReturn(TEST_CLUB);
-//        given(postRepository.findById(TEST_POST_ID)).willReturn(Optional.of(TEST_POST));
-//
-//        String fileUrl = "images/image1.jpg";
-//        Resource fileResource = new ClassPathResource(fileUrl);
-//        MockMultipartFile multipartFile =
-//                new MockMultipartFile(
-//                        "image1",
-//                        fileResource.getFilename(),
-//                        IMAGE_JPEG.getType(),
-//                        fileResource.getInputStream());
-//
-//        // When & Then
-//        assertThat(sut.modifyPost(TEST_USER, TEST_CLUB_ID, TEST_POST_ID, multipartFile,
-//                postModifyRequestDTO).getTitle()).isEqualTo(postResponseDTO.getTitle());
-//
-//    }
+    @Test
+    @DisplayName("게시글 수정 성공 테스트")
+    void 게시글수정테스트() {
+        // Given
+        given(clubMemberService.isClubMember(TEST_CLUB_ID, TEST_USER_ID)).willReturn(true);
+        given(postRepository.findByIdAndClub_Id(TEST_POST_ID, TEST_CLUB_ID)).willReturn(Optional.of(TEST_POST));
 
-//    @Test
-//    @DisplayName("게시글 삭제 성공 테스트")
-//    void 게시글삭제테스트() {
-//        // Given
-//        given(clubMemberService.isClubMember(TEST_CLUB_ID, TEST_USER_ID)).willReturn(true);
-//        given(clubServiceImpl.findClub(TEST_CLUB_ID)).willReturn(TEST_CLUB);
-//        given(postRepository.findById(TEST_POST_ID)).willReturn(Optional.of(TEST_POST));
-//
-//        // When
-//        sut.deletePost(TEST_USER, TEST_CLUB_ID, TEST_POST_ID);
-//
-//        // Then
-//        verify(postRepository, times(1)).deleteAllElement(TEST_POST_ID);
-//    }
+        // When & Then
+        assertThat(sut.modifyPost(TEST_USER, TEST_CLUB_ID, TEST_POST_ID, postModifyRequestDTO).getTitle())
+                .isEqualTo(postResponseDTO.getTitle());
+
+    }
+
+    @Test
+    @DisplayName("게시글 삭제 성공 테스트")
+    void 게시글삭제테스트() {
+        // Given
+        given(clubMemberService.isClubMember(TEST_CLUB_ID, TEST_USER_ID)).willReturn(true);
+        given(postRepository.findByIdAndClub_Id(TEST_POST_ID, TEST_CLUB_ID)).willReturn(Optional.of(TEST_POST));
+
+        // When
+        sut.deletePost(TEST_USER, TEST_CLUB_ID, TEST_POST_ID);
+
+        // Then
+        verify(postRepository, times(1)).deleteAllElement(TEST_POST_ID);
+    }
 
     @Test
     @DisplayName("게시글 전체 조회 성공 테스트")
