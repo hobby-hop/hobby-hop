@@ -21,8 +21,6 @@ import org.hibernate.annotations.SQLRestriction;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE post SET deleted_at = NOW() where id=?")
-@SQLRestriction("deleted_at is NULL")
 public class Post extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,18 +43,12 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "club_id")
     private Club club;
 
-    @OneToMany(mappedBy = "post",
-            fetch = FetchType.LAZY,
-            cascade = {CascadeType.ALL},
-            orphanRemoval = true)
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
     @Builder.Default
     private Set<PostImage> imageSet = new HashSet<>();
 
     @Version
     private Long version;
-
-    @Column(name = "deleted_at")
-    private Timestamp deletedAt;
 
     public void changeTitle(String title) {
         this.title = title;

@@ -81,9 +81,7 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
             deleteId.add(d.getId());
         });
 
-        Timestamp ts = Timestamp.valueOf(LocalDateTime.now());
-        jpaQueryFactory.update(comment)
-                .set(comment.deletedAt, ts)
+        jpaQueryFactory.delete(comment)
                 .where(comment.id.in(deleteId)).execute();
 
         jpaQueryFactory.delete(commentUser)

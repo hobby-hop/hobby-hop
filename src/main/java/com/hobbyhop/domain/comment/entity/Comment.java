@@ -18,7 +18,6 @@ import org.hibernate.annotations.SQLRestriction;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLRestriction("deleted_at is NULL")
 public class Comment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,9 +34,6 @@ public class Comment extends BaseEntity {
 
     @Column(nullable = false)
     private Long likeCnt;
-
-    @Column(name = "deleted_at")
-    private Timestamp deletedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")

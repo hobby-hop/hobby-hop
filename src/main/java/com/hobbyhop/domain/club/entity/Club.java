@@ -15,8 +15,6 @@ import java.sql.Timestamp;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE club SET deleted_at = NOW() where id=?")
-@SQLRestriction("deleted_at is NULL")
 public class Club extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,9 +28,6 @@ public class Club extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
-
-    @Column(name = "deleted_at")
-    private Timestamp deletedAt;
 
     public void changeTitle(String title) {
         this.title = title;
