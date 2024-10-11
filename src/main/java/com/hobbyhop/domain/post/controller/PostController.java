@@ -64,9 +64,8 @@ public class PostController {
     public ApiResponse<?> modifyPost(@PathVariable(name = "clubId") Long clubId,
                                      @PathVariable(name = "postId") Long postId,
                                      @RequestBody @Valid PostModifyRequestDTO postModifyRequestDTO,
-                                     @RequestParam(required = false, value = "file") MultipartFile file,
                                      @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-        return ApiResponse.ok(postService.modifyPost(userDetails.getUser(), clubId, postId, file, postModifyRequestDTO));
+        return ApiResponse.ok(postService.modifyPost(userDetails.getUser(), clubId, postId, postModifyRequestDTO));
     }
 
     @Operation(summary = "게시글 삭제")
